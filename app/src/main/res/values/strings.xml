@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Plant monitor</string>
+
+    <!--  GENERAL  -->
+    <string name="back">Back</string>
+    <string name="errorIcon">Error icon</string>
+    <string name="appLogo">App logo</string>
+    <string name="user">User</string>
+    <string name="icon">Icon</string>
+    <string name="somethingWentWrong">Something went wrong</string>
+    <string name="couldNotLoadData">Could not load data from server</string>
+
+    <!--  LOGIN SCREEN  -->
+    <string name="loginScreen">Login</string>
+
+    <!--  PLANTS SCREEN  -->
+    <string name="plantsScreen">Plants</string>
+
+    <!--  DEVICES SCREEN  -->
+    <string name="devicesScreen">Devices</string>
+
+    <!--  PROFILE SCREEN  -->
+    <string name="profileScreen">Profile</string>
+
+
+</resources>
