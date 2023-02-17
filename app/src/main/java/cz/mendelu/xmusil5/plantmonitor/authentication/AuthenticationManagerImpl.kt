@@ -1,6 +1,6 @@
 package cz.mendelu.xmusil5.plantmonitor.authentication
 
-import cz.mendelu.xmusil5.plantmonitor.models.api.User
+import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import javax.inject.Inject
 
@@ -8,13 +8,13 @@ class AuthenticationManagerImpl @Inject constructor(
     private val navigationRouter: INavigationRouter
 ): IAuthenticationManager {
 
-    private var loggedUser: User? = null
+    private var loggedUser: GetUser? = null
 
-    override fun getUser(): User? {
+    override fun getUser(): GetUser? {
         return loggedUser
     }
 
-    override fun setUser(user: User?) {
+    override fun setUser(user: GetUser?) {
         this.loggedUser = user
     }
 
