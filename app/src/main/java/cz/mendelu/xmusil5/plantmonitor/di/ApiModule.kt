@@ -11,6 +11,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.scopes.ActivityScoped
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -24,7 +25,7 @@ import javax.inject.Singleton
 class ApiModule {
 
     @Provides
-    @Singleton
+    @ActivityScoped
     fun provideInterceptor(): HttpLoggingInterceptor {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
@@ -32,7 +33,7 @@ class ApiModule {
     }
 
     @Provides
-    @Singleton
+    @ActivityScoped
     fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         val httpClient: OkHttpClient.Builder = OkHttpClient.Builder()
         val dispatcher = Dispatcher()
@@ -44,7 +45,7 @@ class ApiModule {
     }
 
     @Provides
-    @Singleton
+    @ActivityScoped
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val moshi = Moshi.Builder()
             .add(RoleAdapter())
@@ -62,7 +63,7 @@ class ApiModule {
 
 
     @Provides
-    @Singleton
+    @ActivityScoped
     fun provideHousePlantsMeasurementsApi(retrofit: Retrofit): HousePlantMeasurementsApi{
         return retrofit.create(HousePlantMeasurementsApi::class.java)
     }

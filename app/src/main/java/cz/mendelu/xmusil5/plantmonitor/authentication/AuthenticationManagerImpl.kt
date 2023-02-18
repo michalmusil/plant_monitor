@@ -18,6 +18,10 @@ class AuthenticationManagerImpl @Inject constructor(
         this.loggedUser = user
     }
 
+    override fun getUserId(): Long {
+        return loggedUser?.userId ?: -1L
+    }
+
     override fun getToken(): String {
         return "Bearer ${loggedUser?.token ?: ""}"
     }

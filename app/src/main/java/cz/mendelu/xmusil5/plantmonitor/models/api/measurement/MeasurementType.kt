@@ -2,12 +2,12 @@ package cz.mendelu.xmusil5.plantmonitor.models.api.measurement
 
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.Role
 
-enum class MeasurementType(val typeNumber: Int) {
-    TEMPERATURE(0),
-    LIGHT_INTENSITY(1),
-    SOIL_MOISTURE(2),
+enum class MeasurementType(val typeNumber: Int, val unit: String) {
+    TEMPERATURE(0, "°C"),
+    LIGHT_INTENSITY(1, "lux"),
+    SOIL_MOISTURE(2, "%"),
 
-    UNKNOWN(-1);
+    UNKNOWN(-1, "");
 
     companion object {
         fun getByTypeNumber(typeNumber: Int): MeasurementType?{
