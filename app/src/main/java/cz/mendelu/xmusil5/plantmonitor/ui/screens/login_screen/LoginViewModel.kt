@@ -9,6 +9,7 @@ import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.communication.repositories.user_auth.IUserAuthRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
+import cz.mendelu.xmusil5.plantmonitor.utils.validation.IStringValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val authenticationManager: IAuthenticationManager,
-    private val userAuthRepository: IUserAuthRepository
+    private val userAuthRepository: IUserAuthRepository,
+    val stringValidator: IStringValidator
 ): ViewModel() {
 
     val uiState: MutableState<LoginUiState> = mutableStateOf(LoginUiState.Start())
@@ -41,5 +43,10 @@ class LoginViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun emailAndPasswordAreValid(email: String, password: String): Boolean{
+        return stringValidator.isEmailValid(email) &&
+                stringValidator.isPasswordValid(password)
     }
 }

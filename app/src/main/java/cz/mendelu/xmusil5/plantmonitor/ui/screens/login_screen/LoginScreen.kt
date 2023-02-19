@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -87,7 +88,7 @@ fun LoginScreenContent(
 ){
     val localFocusManager = LocalFocusManager.current
     // FORM VALIDATION
-    val userNameError = remember{
+    val emailError = remember{
         mutableStateOf(false)
     }
     val passwordError = remember{
@@ -115,15 +116,24 @@ fun LoginScreenContent(
                 }
         ) {
 
+            Text(
+                text = stringResource(id = R.string.login),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier
+                    .padding(vertical = 12.dp)
+            )
+
             CustomTextField(
                 labelTitle = stringResource(id = R.string.email),
                 value = email,
                 maxChars = 50,
                 singleLine = true,
-                isError = userNameError.value,
+                isError = emailError.value,
                 errorMessage = stringResource(id = R.string.emailNotInCorrectFormat),
                 onTextChanged = {
-                    userNameError.value = it.isBlank()
+                    emailError.value = !viewModel.stringValidator.isEmailValid(it)
                 }
             )
 
@@ -134,11 +144,13 @@ fun LoginScreenContent(
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 isError = passwordError.value,
-                errorMessage = stringResource(id = R.string.passwordCantBeEmpty),
+                errorMessage = stringResource(id = R.string.passwordTooShort),
                 onTextChanged = {
-                    passwordError.value = it.isBlank()
+                    passwordError.value = !viewModel.stringValidator.isPasswordValid(it)
                 }
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             errorMessage?.let {
                 Text(
@@ -149,11 +161,14 @@ fun LoginScreenContent(
                 )
             }
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             CustomButton(
                 text = stringResource(id = R.string.login),
-                enabled = email.value.isNotBlank() && password.value.isNotBlank(),
+                enabled = viewModel.emailAndPasswordAreValid(
+                    email = email.value,
+                    password = password.value
+                ),
                 onClick = {
                     viewModel.uiState.value = LoginUiState.LoggingIn()
                     viewModel.login(email.value, password.value)

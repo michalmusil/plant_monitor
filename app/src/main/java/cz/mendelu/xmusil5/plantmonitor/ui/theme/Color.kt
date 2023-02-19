@@ -14,7 +14,7 @@ val shadowColor = Color(0xFF636363)
 val disabledColor = Color(0xFF575757)
 val errorColor = Color(0xFFE40000)
 
-val primary = Color(0xFF6cf3ff)
+val primary = Color(0xFF32B1BD)
 val onPrimary = Color(0xFF2B2B2B)
 val secondary = Color(0xFFff8e15)
 val onSecondary = Color(0xFF2B2B2B)

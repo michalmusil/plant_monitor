@@ -19,7 +19,7 @@
 
     <string name="invalidCredentials">Invalid credentials</string>
     <string name="emailNotInCorrectFormat">Email not in correct format</string>
-    <string name="passwordCantBeEmpty">Password can\'t be empty</string>
+    <string name="passwordTooShort">Password is too short</string>
 
     <!--  PLANTS SCREEN  -->
     <string name="plantsScreen">Plants</string>
