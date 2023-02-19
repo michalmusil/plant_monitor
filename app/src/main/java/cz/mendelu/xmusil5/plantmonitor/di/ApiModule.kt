@@ -7,10 +7,13 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsA
 import cz.mendelu.xmusil5.plantmonitor.jsonAdapters.measurement.MeasurementTypeAdapter
 import cz.mendelu.xmusil5.plantmonitor.jsonAdapters.user.RoleAdapter
 import cz.mendelu.xmusil5.plantmonitor.jsonAdapters.utils.DateTimeFromApiAdapter
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.android.scopes.ActivityScoped
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
@@ -21,11 +24,11 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(ActivityRetainedComponent::class)
 class ApiModule {
 
     @Provides
-    @ActivityScoped
+    @ActivityRetainedScoped
     fun provideInterceptor(): HttpLoggingInterceptor {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
@@ -33,7 +36,7 @@ class ApiModule {
     }
 
     @Provides
-    @ActivityScoped
+    @ActivityRetainedScoped
     fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         val httpClient: OkHttpClient.Builder = OkHttpClient.Builder()
         val dispatcher = Dispatcher()
@@ -45,7 +48,7 @@ class ApiModule {
     }
 
     @Provides
-    @ActivityScoped
+    @ActivityRetainedScoped
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         val moshi = Moshi.Builder()
             .add(RoleAdapter())
@@ -63,7 +66,7 @@ class ApiModule {
 
 
     @Provides
-    @ActivityScoped
+    @ActivityRetainedScoped
     fun provideHousePlantsMeasurementsApi(retrofit: Retrofit): HousePlantMeasurementsApi{
         return retrofit.create(HousePlantMeasurementsApi::class.java)
     }

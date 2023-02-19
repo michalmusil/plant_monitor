@@ -14,16 +14,18 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import dagger.hilt.android.scopes.ActivityScoped
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(ActivityRetainedComponent::class)
 class RepositoryModule {
 
+    @ActivityRetainedScoped
     @Provides
-    @ActivityScoped
     fun provideUserAuthRepository(
         authenticationManager: IAuthenticationManager,
         api: HousePlantMeasurementsApi
@@ -31,8 +33,8 @@ class RepositoryModule {
         return UserAuthRepositoryImpl(authenticationManager, api)
     }
 
+    @ActivityRetainedScoped
     @Provides
-    @ActivityScoped
     fun providePlantsRepository(
         authenticationManager: IAuthenticationManager,
         api: HousePlantMeasurementsApi
@@ -40,8 +42,8 @@ class RepositoryModule {
         return PlantsRepositoryImpl(authenticationManager, api)
     }
 
+    @ActivityRetainedScoped
     @Provides
-    @ActivityScoped
     fun provideMeasurementsRepository(
         authenticationManager: IAuthenticationManager,
         api: HousePlantMeasurementsApi
@@ -49,8 +51,8 @@ class RepositoryModule {
         return MeasurementsRepositoryImpl(authenticationManager, api)
     }
 
+    @ActivityRetainedScoped
     @Provides
-    @ActivityScoped
     fun provideDevicesRepository(
         authenticationManager: IAuthenticationManager,
         api: HousePlantMeasurementsApi

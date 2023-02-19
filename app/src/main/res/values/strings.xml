@@ -13,6 +13,14 @@
     <!--  LOGIN SCREEN  -->
     <string name="loginScreen">Login</string>
 
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Log in</string>
+
+    <string name="invalidCredentials">Invalid credentials</string>
+    <string name="emailNotInCorrectFormat">Email not in correct format</string>
+    <string name="passwordCantBeEmpty">Password can\'t be empty</string>
+
     <!--  PLANTS SCREEN  -->
     <string name="plantsScreen">Plants</string>
 

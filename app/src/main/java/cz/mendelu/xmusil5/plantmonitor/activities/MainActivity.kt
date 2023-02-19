@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     NavGraph(
                         authenticationManager = authenticationManager,
                         navigation = navigationRouter,
-                        startDestination = Destination.PlantsScreen.route
+                        startDestination = Destination.LoginScreen.route
                     )
                 }
             }
