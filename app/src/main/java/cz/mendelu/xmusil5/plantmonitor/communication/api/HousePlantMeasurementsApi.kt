@@ -5,6 +5,8 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -49,4 +51,11 @@ interface HousePlantMeasurementsApi {
         @Path("id")deviceId: Long,
         @Header("Authorization") bearerToken: String
     ): Response<List<GetMeasurement>>
+
+
+    @GET("plants/images/{plantId}")
+    suspend fun getPlantImage(
+        @Path("plantId")plantId: Long,
+        @Header("Authorization") bearerToken: String
+    ): Response<ResponseBody>
 }

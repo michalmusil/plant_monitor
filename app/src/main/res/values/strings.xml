@@ -3,7 +3,9 @@
 
     <!--  GENERAL  -->
     <string name="back">Back</string>
+    <string name="expand">Expand</string>
     <string name="errorIcon">Error icon</string>
+    <string name="plantImage">Plant image</string>
     <string name="appLogo">App logo</string>
     <string name="user">User</string>
     <string name="icon">Icon</string>

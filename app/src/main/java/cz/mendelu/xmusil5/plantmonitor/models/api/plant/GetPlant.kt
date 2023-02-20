@@ -11,5 +11,6 @@ data class GetPlant(
     @Json(name = "name") val name: String,
     @Json(name = "species") val species: String,
     @Json(name = "description") val description: String?,
+    @Json(name = "hasTitleImage") val hasTitleImage: Boolean,
     @Json(name = "measurementValueLimits") val valueLimits: List<MeasurementValueLimit>
 )

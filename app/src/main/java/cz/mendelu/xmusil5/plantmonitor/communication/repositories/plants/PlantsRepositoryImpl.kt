@@ -1,5 +1,6 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants
 
+import android.graphics.Bitmap
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
@@ -18,5 +19,13 @@ class PlantsRepositoryImpl @Inject constructor(
             bearerToken = authenticationManager.getToken()
         )
         return processResponse(call)
+    }
+
+    override suspend fun getPlantImage(plantId: Long): CommunicationResult<Bitmap> {
+        val call = api.getPlantImage(
+            plantId = plantId,
+            bearerToken = authenticationManager.getToken()
+        )
+        return processImageResponse(call)
     }
 }
