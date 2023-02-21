@@ -12,84 +12,77 @@ abstract class BaseApiRepository(
     protected val authenticationManager: IAuthenticationManager
 ) {
 
-    fun <T: Any> processResponse(call: Response<T>): CommunicationResult<T> {
-        if (!isAuthorized(call)){
-            authenticationManager.logOut()
-        }
-
+    inline fun <T: Any> processRequest(request: () -> Response<T>): CommunicationResult<T> {
         try {
-            if (call.isSuccessful) {
-                call.body()?.let {
+            val response = request.invoke()
+
+            if (!isAuthorized(response)){
+                logOut()
+            }
+
+            if (response.isSuccessful) {
+                response.body()?.let {
                     return CommunicationResult.Success(it)
                 } ?: kotlin.run {
                     return CommunicationResult.Error(
                         CommunicationError(
-                            call.code(),
-                            call.errorBody().toString()
+                            response.code(),
+                            response.errorBody().toString()
                         )
                     )
                 }
             } else {
                 return CommunicationResult.Error(
                     CommunicationError(
-                        call.code(),
-                        call.errorBody().toString()
+                        response.code(),
+                        response.errorBody().toString()
                     )
                 )
             }
-
-        } catch (ex: Exception) {
+        }catch (ex: Exception){
             return CommunicationResult.Exception(ex)
         }
     }
 
-    fun <T: Any> processEmptyResponse(call: Response<T>): CommunicationResult<String> {
-        if (!isAuthorized(call)){
-            authenticationManager.logOut()
-            authenticationManager.setUser(null)
-        }
+    inline fun processImageRequest(request: () -> Response<ResponseBody>): CommunicationResult<Bitmap>{
+        try {
+            val response = request.invoke()
 
-        if (call.isSuccessful) {
-            return CommunicationResult.Success("")
-        } else {
-            return CommunicationResult.Error(
-                CommunicationError(
-                    call.code(),
-                    call.errorBody().toString()
-                )
-            )
-        }
-    }
-
-    fun processImageResponse(call: Response<ResponseBody>): CommunicationResult<Bitmap>{
-        if (!isAuthorized(call)){
-            authenticationManager.logOut()
-            authenticationManager.setUser(null)
-        }
-
-        if (call.isSuccessful()) {
-            call.body()?.let {
-                // display the image data in a ImageView or save it
-                val bmp = BitmapFactory.decodeStream(it.byteStream())
-                return CommunicationResult.Success(data = bmp)
+            if (!isAuthorized(response)){
+                logOut()
             }
-            return CommunicationResult.Error(
-                CommunicationError(
-                    call.code(),
-                    call.errorBody().toString()
+
+            if (response.isSuccessful()) {
+                response.body()?.let {
+                    // display the image data in a ImageView or save it
+                    val bmp = BitmapFactory.decodeStream(it.byteStream())
+                    return CommunicationResult.Success(data = bmp)
+                }
+                return CommunicationResult.Error(
+                    CommunicationError(
+                        response.code(),
+                        response.errorBody().toString()
+                    )
                 )
-            )
-        } else {
-            return CommunicationResult.Error(
-                CommunicationError(
-                    call.code(),
-                    call.errorBody().toString()
+            } else {
+                return CommunicationResult.Error(
+                    CommunicationError(
+                        response.code(),
+                        response.errorBody().toString()
+                    )
                 )
-            )
+            }
+        }catch(ex: Exception){
+            return CommunicationResult.Exception(ex)
         }
     }
 
     fun <T: Any> isAuthorized(call: Response<T>): Boolean {
         return call.code() != CommunicationConstants.HOUSE_PLANT_MEASUREMENTS_API_UNAUTHORIZED_CODE
+    }
+
+    fun logOut(){
+        authenticationManager.logOut()
+        authenticationManager.setUser(null)
     }
 }

@@ -8,7 +8,7 @@ import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 
 @Composable
 fun DeviceDetailScreen(
-    deviceId: Int,
+    deviceId: Long,
     navigation: INavigationRouter,
     viewModel: DeviceDetailViewModel = hiltViewModel()
 ){

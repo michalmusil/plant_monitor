@@ -14,11 +14,15 @@ class UserAuthRepositoryImpl @Inject constructor(
 ): BaseApiRepository(authenticationManager), IUserAuthRepository {
 
     override suspend fun login(postAuth: PostAuth): CommunicationResult<GetUser> {
-        return processResponse(api.login(postAuth))
+        return processRequest{
+            api.login(postAuth)
+        }
     }
 
     override suspend fun register(postAuth: PostAuth): CommunicationResult<Unit> {
-        return processResponse(api.register(postAuth))
+        return processRequest {
+            api.register(postAuth)
+        }
     }
 
 }

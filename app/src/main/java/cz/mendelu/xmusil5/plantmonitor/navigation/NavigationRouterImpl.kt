@@ -51,11 +51,11 @@ class NavigationRouterImpl: INavigationRouter {
 
 
 
-    override fun toPlantDetail(plantId: Int) {
+    override fun toPlantDetail(plantId: Long) {
         navController.navigate("${Destination.PlantDetailScreen.route}/${plantId}")
     }
 
-    override fun toDeviceDetail(deviceId: Int) {
+    override fun toDeviceDetail(deviceId: Long) {
         navController.navigate("${Destination.DeviceDetailScreen.route}/${deviceId}")
     }
 

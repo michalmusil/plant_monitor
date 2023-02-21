@@ -9,7 +9,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_device_screen.AddDeviceVie
 
 @Composable
 fun PlantDetailScreen(
-    plantId: Int,
+    plantId: Long,
     navigation: INavigationRouter,
     viewModel: PlantDetailViewModel = hiltViewModel()
 ){

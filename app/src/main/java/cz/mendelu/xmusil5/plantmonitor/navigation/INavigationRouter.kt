@@ -13,8 +13,8 @@ interface INavigationRouter {
     fun toDevicesScreen()
     fun toProfileScreen()
 
-    fun toPlantDetail(plantId: Int)
-    fun toDeviceDetail(deviceId: Int)
+    fun toPlantDetail(plantId: Long)
+    fun toDeviceDetail(deviceId: Long)
 
     fun toAddPlant()
     fun toAddDevice()

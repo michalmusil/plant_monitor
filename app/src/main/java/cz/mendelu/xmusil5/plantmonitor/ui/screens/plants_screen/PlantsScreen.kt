@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -18,6 +19,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItem
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
+import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.AddFloatingActionButton
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_device_screen.AddDeviceViewModel
 
 @Composable
@@ -62,6 +64,7 @@ fun PlantsScreenContent(
     plants: List<GetPlant>
 ){
     Box(
+        contentAlignment = Alignment.BottomEnd,
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
@@ -86,10 +89,14 @@ fun PlantsScreenContent(
                     plant = it,
                     plantImage = plantImage,
                     onClick = {
-                        // TODO()
+                        navigation.toPlantDetail(it.id)
                     }
                 )
             }
+        }
+
+        AddFloatingActionButton {
+            navigation.toAddPlant()
         }
     }
 }

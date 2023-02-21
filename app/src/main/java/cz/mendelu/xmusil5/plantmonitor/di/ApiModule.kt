@@ -4,6 +4,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import cz.mendelu.xmusil5.plantmonitor.communication.CommunicationConstants
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.call_adapters.ErrorHandledResponseAdapterFactory
 import cz.mendelu.xmusil5.plantmonitor.jsonAdapters.measurement.MeasurementTypeAdapter
 import cz.mendelu.xmusil5.plantmonitor.jsonAdapters.user.RoleAdapter
 import cz.mendelu.xmusil5.plantmonitor.jsonAdapters.utils.DateTimeFromApiAdapter

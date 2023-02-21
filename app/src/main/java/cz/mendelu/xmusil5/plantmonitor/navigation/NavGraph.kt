@@ -63,22 +63,22 @@ fun NavGraph(
                     composable(Destination.PlantDetailScreen.route + "/{plantId}",
                         arguments = listOf(
                             navArgument("plantId") {
-                                type = NavType.IntType
-                                defaultValue = -1
+                                type = NavType.LongType
+                                defaultValue = -1L
                             }
                         )) {
-                        val plantId = it.arguments?.getInt("plantId") ?: -1
+                        val plantId = it.arguments?.getLong("plantId") ?: -1L
                         PlantDetailScreen(plantId = plantId, navigation = navigation)
                     }
 
                     composable(Destination.DeviceDetailScreen.route + "/{deviceId}",
                         arguments = listOf(
                             navArgument("deviceId") {
-                                type = NavType.IntType
-                                defaultValue = -1
+                                type = NavType.LongType
+                                defaultValue = -1L
                             }
                         )) {
-                        val deviceId = it.arguments?.getInt("deviceId") ?: -1
+                        val deviceId = it.arguments?.getLong("deviceId") ?: -1L
                         DeviceDetailScreen(deviceId = deviceId, navigation = navigation)
                     }
 

@@ -14,18 +14,20 @@ class PlantsRepositoryImpl @Inject constructor(
 ): BaseApiRepository(authenticationManager), IPlantsRepository {
 
     override suspend fun getAllPlants(): CommunicationResult<List<GetPlant>> {
-        val call = api.getAllPlants(
-            userId = authenticationManager.getUserId(),
-            bearerToken = authenticationManager.getToken()
-        )
-        return processResponse(call)
+        return processRequest{
+            api.getAllPlants(
+                userId = authenticationManager.getUserId(),
+                bearerToken = authenticationManager.getToken()
+            )
+        }
     }
 
     override suspend fun getPlantImage(plantId: Long): CommunicationResult<Bitmap> {
-        val call = api.getPlantImage(
-            plantId = plantId,
-            bearerToken = authenticationManager.getToken()
-        )
-        return processImageResponse(call)
+        return processImageRequest{
+            api.getPlantImage(
+                plantId = plantId,
+                bearerToken = authenticationManager.getToken()
+            )
+        }
     }
 }
