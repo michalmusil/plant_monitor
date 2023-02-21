@@ -42,16 +42,18 @@ interface HousePlantMeasurementsApi {
     @GET("measurements/plant/{id}")
     suspend fun getMeasurementsOfPlant(
         @Path("id")plantId: Long,
+        @Query("from")from: String?,
+        @Query("to")to: String?,
         @Header("Authorization") bearerToken: String
     ): Response<List<GetMeasurement>>
 
     @Headers("Content-Type: application/json")
-    @GET("measurements/device/{id}")
-    suspend fun getMeasurementsOfDevice(
-        @Path("id")deviceId: Long,
+    @GET("measurements/plant/latest/{id}")
+    suspend fun getLatestPlantMeasurementOfType(
+        @Path("id")plantId: Long,
+        @Query("measurementType")measurementTypeNumber: Int,
         @Header("Authorization") bearerToken: String
-    ): Response<List<GetMeasurement>>
-
+    ): Response<GetMeasurement>
 
     @GET("plants/images/{plantId}")
     suspend fun getPlantImage(

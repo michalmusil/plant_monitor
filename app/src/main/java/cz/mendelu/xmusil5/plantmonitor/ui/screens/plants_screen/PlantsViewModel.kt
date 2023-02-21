@@ -6,16 +6,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.xmusil5.plantmonitor.R
+import cz.mendelu.xmusil5.plantmonitor.communication.repositories.measurements.IMeasurementsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PlantsViewModel @Inject constructor(
-    private val plantsRepository: IPlantsRepository
+    private val plantsRepository: IPlantsRepository,
+    private val measurementsRepository: IMeasurementsRepository
 ): ViewModel() {
 
     val uiState: MutableState<PlantsUiState> = mutableStateOf(PlantsUiState.Start())
@@ -36,6 +42,44 @@ class PlantsViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun fetchMostRecentValuesOfPlant(plant: GetPlant, onValuesFetched: (List<MeasurementValue>) -> Unit){
+        viewModelScope.launch {
+            val temperature = async { measurementsRepository.getLatestPlantMeasurementOfType(
+                plantId = plant.id,
+                measurementType = MeasurementType.TEMPERATURE
+            ) }
+            val lightIntensity = async { measurementsRepository.getLatestPlantMeasurementOfType(
+                plantId = plant.id,
+                measurementType = MeasurementType.LIGHT_INTENSITY
+            ) }
+            val soilMoisture = async { measurementsRepository.getLatestPlantMeasurementOfType(
+                plantId = plant.id,
+                measurementType = MeasurementType.SOIL_MOISTURE
+            ) }
+
+            val measurementResults = mutableListOf<Pair<MeasurementType, CommunicationResult<GetMeasurement>>>()
+            measurementResults.add(Pair(MeasurementType.TEMPERATURE, temperature.await()))
+            measurementResults.add(Pair(MeasurementType.LIGHT_INTENSITY, lightIntensity.await()))
+            measurementResults.add(Pair(MeasurementType.SOIL_MOISTURE, soilMoisture.await()))
+
+            val measurementValues = mutableListOf<MeasurementValue>()
+
+            measurementResults.forEach{ result ->
+                result.second.let {
+                    if (it is CommunicationResult.Success){
+                        it.data.getMeasurementValueByType(
+                            measurementType = result.first
+                        )?.let {
+                            measurementValues.add(it)
+                        }
+                    }
+                }
+            }
+
+            onValuesFetched(measurementValues)
         }
     }
 

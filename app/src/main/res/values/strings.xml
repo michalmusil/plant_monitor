@@ -4,6 +4,7 @@
     <!--  GENERAL  -->
     <string name="back">Back</string>
     <string name="expand">Expand</string>
+    <string name="unknown">Unknown</string>
     <string name="add">Add</string>
     <string name="errorIcon">Error icon</string>
     <string name="plantImage">Plant image</string>
@@ -27,11 +28,20 @@
     <!--  PLANTS SCREEN  -->
     <string name="plantsScreen">Plants</string>
 
+    <string name="latestValues">Latest values</string>
+    <string name="noMeasurementsYet">Plant has no measurements yet</string>
+
     <!--  DEVICES SCREEN  -->
     <string name="devicesScreen">Devices</string>
 
     <!--  PROFILE SCREEN  -->
     <string name="profileScreen">Profile</string>
+
+
+    <!--  MEASUREMENT TYPES  -->
+    <string name="temperature">Temperature</string>
+    <string name="lightIntensity">Light intensity</string>
+    <string name="soilMoisture">Soil moisture</string>
 
 
 </resources>

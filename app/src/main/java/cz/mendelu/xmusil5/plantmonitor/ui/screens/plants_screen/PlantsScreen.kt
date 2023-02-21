@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.ScreenSkeleton
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItem
@@ -77,6 +78,9 @@ fun PlantsScreenContent(
                 val plantImage = remember{
                     mutableStateOf<Bitmap?>(null)
                 }
+                val mostRecentMeasurementValues = remember {
+                    mutableStateOf(listOf<MeasurementValue>())
+                }
                 LaunchedEffect(it){
                     viewModel.fetchPlantImage(
                         plant = it,
@@ -88,6 +92,15 @@ fun PlantsScreenContent(
                 PlantListItem(
                     plant = it,
                     plantImage = plantImage,
+                    measurementValues = mostRecentMeasurementValues,
+                    onExpanded = {
+                        viewModel.fetchMostRecentValuesOfPlant(
+                            plant = it,
+                            onValuesFetched = {
+                                mostRecentMeasurementValues.value = it
+                            }
+                        )
+                    },
                     onClick = {
                         navigation.toPlantDetail(it.id)
                     }
