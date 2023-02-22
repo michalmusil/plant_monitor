@@ -32,13 +32,18 @@ class PlantsViewModel @Inject constructor(
             result.let {
                 when(it){
                     is CommunicationResult.Success -> {
-                        uiState.value = PlantsUiState.PlantsLoaded(plants = it.data)
+                        if(it.data.isEmpty()) {
+                            uiState.value = PlantsUiState.NoPlantsYet()
+                        }
+                        else{
+                            uiState.value = PlantsUiState.PlantsLoaded(plants = it.data)
+                        }
                     }
                     is CommunicationResult.Exception -> {
-                        uiState.value = PlantsUiState.Error(R.string.somethingWentWrong)
+                        uiState.value = PlantsUiState.Error(R.string.connectionError)
                     }
                     is CommunicationResult.Error -> {
-                        uiState.value = PlantsUiState.Error(R.string.somethingWentWrong)
+                        uiState.value = PlantsUiState.Error(R.string.connectionError)
                     }
                 }
             }

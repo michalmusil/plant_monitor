@@ -43,20 +43,20 @@ fun BottomNavBar(
     val items = listOf(
         BottomNavItem(
             title = stringResource(id = R.string.plantsScreen),
-            icon = ImageVector.vectorResource(id = R.drawable.ic_launcher_background),
-            iconFocused = ImageVector.vectorResource(id = R.drawable.ic_launcher_foreground),
+            icon = ImageVector.vectorResource(id = R.drawable.ic_plant_root),
+            iconFocused = ImageVector.vectorResource(id = R.drawable.ic_plant_root_filled),
             destination = Destination.PlantsScreen
         ),
         BottomNavItem(
             title = stringResource(id = R.string.devicesScreen),
-            icon = ImageVector.vectorResource(id = R.drawable.ic_launcher_background),
-            iconFocused = ImageVector.vectorResource(id = R.drawable.ic_launcher_foreground),
+            icon = ImageVector.vectorResource(id = R.drawable.ic_measuring_device),
+            iconFocused = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
             destination = Destination.DevicesScreen
         ),
         BottomNavItem(
             title = stringResource(id = R.string.profileScreen),
-            icon = ImageVector.vectorResource(id = R.drawable.ic_launcher_background),
-            iconFocused = ImageVector.vectorResource(id = R.drawable.ic_launcher_foreground),
+            icon = ImageVector.vectorResource(id = R.drawable.ic_person),
+            iconFocused = ImageVector.vectorResource(id = R.drawable.ic_person_filled),
             destination = Destination.ProfileScreen
         ),
     )
@@ -110,8 +110,8 @@ fun BottomNavItemView(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .height(35.dp)
-                .width(45.dp)
+                .height(40.dp)
+                .width(50.dp)
                 .clip(CircleShape)
                 .background(backgroundColor)
                 .clickable {
@@ -123,14 +123,14 @@ fun BottomNavItemView(
                 contentDescription = item.title,
                 tint = foregroundColor,
                 modifier = Modifier
-                    .height(30.dp)
+                    .height(35.dp)
                     .aspectRatio(1f)
                     .padding(5.dp)
             )
         }
         Text(
             text = item.title,
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .padding(top = 1.dp)

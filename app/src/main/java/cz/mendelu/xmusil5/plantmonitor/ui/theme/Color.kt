@@ -16,7 +16,8 @@ val soilMoisture = Color(0xFF1D6EC2)
 
 val shadowColor = Color(0xFF636363)
 val disabledColor = Color(0xFF575757)
-val errorColor = Color(0xFFE40000)
+val errorColor = Color(0xFFE23131)
+val onlineColor = Color(0xFF56D580)
 
 val primary = Color(0xFF32B1BD)
 val onPrimary = Color(0xFF2B2B2B)

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
@@ -28,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
@@ -42,7 +44,7 @@ import kotlin.math.roundToInt
 fun PlantListItem(
     plant: GetPlant,
     plantImage: MutableState<Bitmap?>,
-    measurementValues: MutableState<List<MeasurementValue>>,
+    measurementValues: MutableState<List<MeasurementValue>?>,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     onExpanded: () -> Unit
@@ -60,7 +62,7 @@ fun PlantListItem(
     )
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 7.dp)
             .customShadow(
@@ -114,11 +116,15 @@ fun PlantListItem(
                     text = plant.name,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
                     text = plant.species,
                     style = MaterialTheme.typography.labelMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
@@ -148,15 +154,24 @@ fun PlantListItem(
                     .padding(bottom = 16.dp, top = 5.dp)
                     .fillMaxWidth()
             ){
-                if (measurementValues.value.size > 0) {
-                    PlantListItemValues(
-                        measurementValues = measurementValues
-                    )
-                } else {
-                    Text(
-                        text = stringResource(id = R.string.noMeasurementsYet),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
+                if (measurementValues.value != null){
+                    if (measurementValues.value!!.size > 0) {
+                        PlantListItemValues(
+                            measurementValues = measurementValues.value!!
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(id = R.string.noMeasurementsYet),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+                else{
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .size(30.dp)
                     )
                 }
             }
@@ -166,13 +181,13 @@ fun PlantListItem(
 
 @Composable
 fun PlantListItemValues(
-    measurementValues: MutableState<List<MeasurementValue>>
+    measurementValues: List<MeasurementValue>
 ){
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ){
-        items(measurementValues.value){ measurementValue ->
+        items(measurementValues){ measurementValue ->
 
             val roundedValue = remember{
                 mutableStateOf((measurementValue.value * 10.0).roundToInt() / 10.0)

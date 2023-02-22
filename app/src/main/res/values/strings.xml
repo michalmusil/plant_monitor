@@ -4,6 +4,7 @@
     <!--  GENERAL  -->
     <string name="back">Back</string>
     <string name="expand">Expand</string>
+    <string name="arrow">Arrow</string>
     <string name="unknown">Unknown</string>
     <string name="add">Add</string>
     <string name="errorIcon">Error icon</string>
@@ -12,7 +13,11 @@
     <string name="user">User</string>
     <string name="icon">Icon</string>
     <string name="somethingWentWrong">Something went wrong</string>
+    <string name="connectionError">Couldn\'t download data, check your internet connection</string>
+    <string name="clickHereToAdd">Click here to add some</string>
     <string name="couldNotLoadData">Could not load data from server</string>
+    <string name="noPlantsYet">You don\'t have any plants on your account yet</string>
+    <string name="noDevicesYet">You don\'t have any measuring devices registered on your account yet</string>
 
     <!--  LOGIN SCREEN  -->
     <string name="loginScreen">Login</string>
@@ -33,6 +38,8 @@
 
     <!--  DEVICES SCREEN  -->
     <string name="devicesScreen">Devices</string>
+
+    <string name="noPlantAssigned">No plant assigned</string>
 
     <!--  PROFILE SCREEN  -->
     <string name="profileScreen">Profile</string>

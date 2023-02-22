@@ -36,7 +36,7 @@ class LoginViewModel @Inject constructor(
                     uiState.value = LoginUiState.LoginSuccessfull(user = result.data)
                 }
                 is CommunicationResult.Exception -> {
-                    uiState.value = LoginUiState.Error(errorStringCode = R.string.somethingWentWrong)
+                    uiState.value = LoginUiState.Error(errorStringCode = R.string.connectionError)
                 }
                 is CommunicationResult.Error -> {
                     uiState.value = LoginUiState.LoginFailed(messageStringCode = R.string.invalidCredentials)

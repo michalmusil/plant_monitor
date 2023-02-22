@@ -19,7 +19,7 @@ import cz.mendelu.xmusil5.plantmonitor.R
 @Composable
 fun ErrorScreen(
     text: String?,
-    imageResourceId: Int = R.drawable.ic_launcher_foreground,
+    imageResourceId: Int = R.drawable.ic_cloud_error,
     paintIcon: Boolean = false
 ){
     Box(
