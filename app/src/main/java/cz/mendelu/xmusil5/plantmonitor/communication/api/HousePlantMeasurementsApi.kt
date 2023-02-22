@@ -32,6 +32,13 @@ interface HousePlantMeasurementsApi {
     ): Response<List<GetPlant>>
 
     @Headers("Content-Type: application/json")
+    @GET("plants/{id}")
+    suspend fun getPlantById(
+        @Path("id")id: Long,
+        @Header("Authorization") bearerToken: String
+    ): Response<GetPlant>
+
+    @Headers("Content-Type: application/json")
     @GET("devices/user/{id}")
     suspend fun getAllDevices(
         @Path("id")userId: Long,

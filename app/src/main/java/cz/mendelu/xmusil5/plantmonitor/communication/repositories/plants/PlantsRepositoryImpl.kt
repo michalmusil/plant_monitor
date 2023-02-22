@@ -22,6 +22,15 @@ class PlantsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getPlantById(plantId: Long): CommunicationResult<GetPlant> {
+        return processRequest {
+            api.getPlantById(
+                id = plantId,
+                bearerToken = authenticationManager.getToken()
+            )
+        }
+    }
+
     override suspend fun getPlantImage(plantId: Long): CommunicationResult<Bitmap> {
         return processImageRequest{
             api.getPlantImage(

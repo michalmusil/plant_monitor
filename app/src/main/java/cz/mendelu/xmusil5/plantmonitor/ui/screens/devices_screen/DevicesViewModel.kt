@@ -6,14 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.communication.repositories.devices.IDevicesRepository
+import cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DevicesViewModel @Inject constructor(
-    private val devicesRepository: IDevicesRepository
+    private val devicesRepository: IDevicesRepository,
+    private val plantsRepository: IPlantsRepository
 ): ViewModel() {
 
     val uiState: MutableState<DevicesUiState> = mutableStateOf(DevicesUiState.Start())
@@ -27,7 +30,10 @@ class DevicesViewModel @Inject constructor(
                         uiState.value = DevicesUiState.NoDevicesYet()
                     }
                     else {
-                        uiState.value = DevicesUiState.DevicesLoaded(result.data)
+                        val devicesWithAddedPlants = addPlantsToDevices(
+                            devicesWithoutPlants = result.data
+                        )
+                        uiState.value = DevicesUiState.DevicesLoaded(devicesWithAddedPlants)
                     }
                 }
                 is CommunicationResult.Error -> {
@@ -38,5 +44,21 @@ class DevicesViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private suspend fun addPlantsToDevices(devicesWithoutPlants: List<GetDevice>): List<GetDevice>{
+        val devicesWithPlants = mutableListOf<GetDevice>()
+
+        devicesWithoutPlants.forEach { device ->
+            val deviceToAdd = device
+            deviceToAdd.plantId?.let {
+                val plantResult = plantsRepository.getPlantById(it)
+                if (plantResult is CommunicationResult.Success){
+                    deviceToAdd.plant = plantResult.data
+                }
+            }
+            devicesWithPlants.add(deviceToAdd)
+        }
+        return devicesWithPlants
     }
 }

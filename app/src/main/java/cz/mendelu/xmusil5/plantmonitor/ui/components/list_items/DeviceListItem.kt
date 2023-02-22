@@ -88,19 +88,22 @@ fun DeviceListItem(
                     .padding(top = 8.dp)
             ) {
                 Row(
-                    verticalAlignment = Alignment.Bottom
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     device.plant?.let {
                         Image(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_house_plant),
                             contentDescription = stringResource(id = R.string.icon),
                             modifier = Modifier
-                                .size(25.dp)
+                                .size(22.dp)
                         )
                     }
+
+                    Spacer(modifier = Modifier.width(2.dp))
+
                     Text(
                         text = device.plant?.name ?: stringResource(id = R.string.noPlantAssigned),
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.bodyMedium,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         color = MaterialTheme.colorScheme.onSurface
