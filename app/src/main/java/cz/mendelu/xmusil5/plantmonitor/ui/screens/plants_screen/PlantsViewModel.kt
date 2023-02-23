@@ -43,7 +43,7 @@ class PlantsViewModel @Inject constructor(
                         uiState.value = PlantsUiState.Error(R.string.connectionError)
                     }
                     is CommunicationResult.Error -> {
-                        uiState.value = PlantsUiState.Error(R.string.connectionError)
+                        uiState.value = PlantsUiState.Error(R.string.somethingWentWrong)
                     }
                 }
             }

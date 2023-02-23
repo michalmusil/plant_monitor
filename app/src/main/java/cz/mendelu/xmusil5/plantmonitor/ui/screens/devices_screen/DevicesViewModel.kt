@@ -37,7 +37,7 @@ class DevicesViewModel @Inject constructor(
                     }
                 }
                 is CommunicationResult.Error -> {
-                    uiState.value = DevicesUiState.Error(R.string.connectionError)
+                    uiState.value = DevicesUiState.Error(R.string.somethingWentWrong)
                 }
                 is CommunicationResult.Exception -> {
                     uiState.value = DevicesUiState.Error(R.string.connectionError)

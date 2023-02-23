@@ -1,5 +1,6 @@
 package cz.mendelu.xmusil5.plantmonitor.models.api.plant
 
+import android.graphics.Bitmap
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
@@ -13,4 +14,7 @@ data class GetPlant(
     @Json(name = "description") val description: String?,
     @Json(name = "hasTitleImage") val hasTitleImage: Boolean,
     @Json(name = "measurementValueLimits") val valueLimits: List<MeasurementValueLimit>
-)
+){
+
+    @Transient var titleImageBitmap: Bitmap? = null
+}

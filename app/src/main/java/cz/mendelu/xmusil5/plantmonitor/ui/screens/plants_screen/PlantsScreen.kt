@@ -83,39 +83,45 @@ fun PlantsScreenContent(
         modifier = Modifier
             .fillMaxSize()
     ){
-        items(plants){
-            val plantImage = remember{
-                mutableStateOf<Bitmap?>(null)
-            }
-            val mostRecentMeasurementValues = remember {
-                mutableStateOf<List<MeasurementValue>?>(null)
-            }
-            LaunchedEffect(it){
-                viewModel.fetchPlantImage(
-                    plant = it,
-                    onSuccess = {
-                        plantImage.value = it
-                    }
-                )
-            }
-            PlantListItem(
-                plant = it,
-                plantImage = plantImage,
-                measurementValues = mostRecentMeasurementValues,
-                onExpanded = {
-                    viewModel.fetchMostRecentValuesOfPlant(
-                        plant = it,
-                        onValuesFetched = {
-                            mostRecentMeasurementValues.value = it
+        items(
+            count = plants.count(),
+            key = {
+                plants[it].id
+            },
+            itemContent = { index ->
+                val plantImage = remember{
+                    mutableStateOf<Bitmap?>(null)
+                }
+                val mostRecentMeasurementValues = remember {
+                    mutableStateOf<List<MeasurementValue>?>(null)
+                }
+                LaunchedEffect(plants[index]){
+                    viewModel.fetchPlantImage(
+                        plant = plants[index],
+                        onSuccess = { image ->
+                            plantImage.value = image
                         }
                     )
-                },
-                onClick = {
-                    navigation.toPlantDetail(it.id)
-                },
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-            )
-        }
+                }
+                PlantListItem(
+                    plant = plants[index],
+                    plantImage = plantImage,
+                    measurementValues = mostRecentMeasurementValues,
+                    onExpanded = {
+                        viewModel.fetchMostRecentValuesOfPlant(
+                            plant = plants[index],
+                            onValuesFetched = {
+                                mostRecentMeasurementValues.value = it
+                            }
+                        )
+                    },
+                    onClick = {
+                        navigation.toPlantDetail(plants[index].id)
+                    },
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                )
+            }
+        )
     }
 }

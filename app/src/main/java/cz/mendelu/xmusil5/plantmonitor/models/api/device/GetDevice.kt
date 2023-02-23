@@ -13,6 +13,6 @@ data class GetDevice(
     @Json(name = "userId") val userId: Long?,
     @Json(name = "plantId") val plantId: Long?,
 ){
-    var plant: GetPlant? = null
-    var user: GetUser? = null
+    @Transient var plant: GetPlant? = null
+    @Transient var user: GetUser? = null
 }
