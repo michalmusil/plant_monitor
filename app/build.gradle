@@ -107,4 +107,11 @@ dependencies {
 
     // Charts
     implementation 'com.github.madrapps:plot:0.1.1'
+
+    // Pager (Tab view)
+    def accompanist_pager_version = "0.28.0"
+    implementation "com.google.accompanist:accompanist-pager:$accompanist_pager_version"
+    implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_pager_version"
+
+
 }

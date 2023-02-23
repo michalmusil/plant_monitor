@@ -1,11 +1,16 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -13,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -23,12 +29,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.google.accompanist.pager.rememberPagerState
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.DelayedAnimatedAppear
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MostRecentMeasurementValuesCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
@@ -36,6 +48,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.ExpandableCard
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import kotlin.math.roundToInt
 
@@ -95,6 +108,8 @@ fun PlantDetailScreen(
             }
             is PlantDetailUiState.MeasurementsLoaded -> {
                 LaunchedEffect(it){
+                    measurements.clear()
+                    measurements.addAll(it.measurements)
                     if (plant.value == null){
                         viewModel.uiState.value = PlantDetailUiState.Start()
                     }
@@ -145,6 +160,8 @@ fun PlantDetailScreenContent(
     }
 }
 
+
+
 @Composable
 fun PlantDetailImage(
     plant: GetPlant
@@ -152,7 +169,7 @@ fun PlantDetailImage(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(270.dp)
+            .height(300.dp)
     ) {
         if (plant.titleImageBitmap != null) {
             Image(
@@ -192,7 +209,7 @@ fun PlantDetailInfo(
     viewModel: PlantDetailViewModel,
     navigation: INavigationRouter
 ){
-    val topCornerRadius = 25.dp
+    val topCornerRadius = 30.dp
 
     val mostRecentValues = remember{
         mutableStateOf<List<MeasurementValue>>(listOf())
@@ -215,6 +232,7 @@ fun PlantDetailInfo(
             .background(MaterialTheme.colorScheme.background)
     ) {
         Spacer(modifier = Modifier.height(10.dp))
+        
         Text(
             text = plant.name,
             style = MaterialTheme.typography.headlineMedium,
@@ -247,6 +265,27 @@ fun PlantDetailInfo(
                         .padding(horizontal = 16.dp)
                 )
             }
+        }
+
+        if (measurements.isNotEmpty()){
+
+            Spacer(modifier = Modifier.height(25.dp))
+
+            Text(
+                text = stringResource(id = R.string.measurementValues),
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Bold,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+            
+            MeasurementsTabView(
+                measurements = measurements,
+                viewModel = viewModel
+            )
         }
     }
 }
@@ -283,5 +322,98 @@ fun PlantDetailDescription(
             .clip(RoundedCornerShape(cornerRadius))
             .background(MaterialTheme.colorScheme.surface)
     )
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun MeasurementsTabView(
+    measurements: List<GetMeasurement>,
+    viewModel: PlantDetailViewModel
+){
+    val measurementTypes = remember{
+        mutableStateListOf(
+            MeasurementType.TEMPERATURE,
+            MeasurementType.LIGHT_INTENSITY,
+            MeasurementType.SOIL_MOISTURE
+        )
+    }
+    val selectedMeasurementType = remember{
+        mutableStateOf(measurementTypes.first())
+    }
+    val chartValueSet = remember{
+        mutableStateOf(viewModel.getChartValueSetOfType(selectedMeasurementType.value, measurements))
+    }
+    LaunchedEffect(selectedMeasurementType.value){
+        chartValueSet.value = viewModel.getChartValueSetOfType(selectedMeasurementType.value, measurements)
+    }
+
+    val pagerState = rememberPagerState()
+    val coroutineScope = rememberCoroutineScope()
+    val tabRowCornerRadius = 30.dp
+
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+    ) {
+
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            backgroundColor = MaterialTheme.colorScheme.background,
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    modifier = Modifier
+                        .pagerTabIndicatorOffset(pagerState, tabPositions)
+                        .size(0.dp),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            },
+            modifier = Modifier
+                .background(Color.Transparent)
+                .clip(RoundedCornerShape(tabRowCornerRadius))
+        ) {
+            measurementTypes.forEachIndexed { index, item ->
+                val tabColor by animateColorAsState(
+                    targetValue = if (pagerState.currentPage == index) {
+                        MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
+                    } else {
+                        MaterialTheme.colorScheme.background
+                    },
+                    animationSpec = tween(
+                        durationMillis = 150
+                    )
+                )
+                Tab(
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        coroutineScope.launch {
+                            selectedMeasurementType.value = measurementTypes[index]
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(tabRowCornerRadius))
+                        .background(tabColor),
+                    text = {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = item.iconId), 
+                            contentDescription = stringResource(id = item.nameId),
+                            tint = item.color,
+                            modifier = Modifier
+                                .size(35.dp)
+                        )
+                    }
+                )
+            }
+        }
+        HorizontalPager(
+            count = measurementTypes.size,
+            state = pagerState,
+        ) {
+            val currentType = measurementTypes[pagerState.currentPage]
+            Text(
+                text = stringResource(id = currentType.nameId)
+            )
+        }
+    }
 }
 

@@ -39,6 +39,7 @@
     <!--  PLANT DETAIL SCREEN  -->
     <string name="plantDetailScreen">Plant detail</string>
 
+    <string name="measurementValues">Measurements</string>
     <string name="plantDescription">Description</string>
 
     <!--  DEVICES SCREEN  -->

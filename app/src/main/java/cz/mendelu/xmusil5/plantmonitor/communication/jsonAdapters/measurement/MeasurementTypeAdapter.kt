@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.jsonAdapters.measurement
+package cz.mendelu.xmusil5.plantmonitor.communication.jsonAdapters.measurement
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonAdapter

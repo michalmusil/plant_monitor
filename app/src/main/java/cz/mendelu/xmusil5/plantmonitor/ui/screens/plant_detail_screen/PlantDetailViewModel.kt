@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.madrapps.plot.line.DataPoint
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.communication.repositories.measurements.IMeasurementsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants.IPlantsRepository
@@ -13,6 +14,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -90,5 +92,36 @@ class PlantDetailViewModel @Inject constructor(
                 onValuesFetched(listOf())
             }
         }
+    }
+
+    fun getChartValueSetOfType(
+        measurementType: MeasurementType,
+        measurementsToFilter: List<GetMeasurement>
+    ): ChartValueSet{
+        val dataPointsAndLabels: MutableList<Pair<DataPoint, String>> = mutableListOf()
+
+        measurementsToFilter.forEachIndexed { index, measurement ->
+            val measurementValue = measurement.getMeasurementValueByType(measurementType)
+
+            // need both the value (y axis) and the date time taken (x axis) to add to chart set
+            if (measurementValue != null && measurement.datetime != null){
+                val dataPoint = DataPoint(
+                    x = index.toFloat(),
+                    y = measurementValue.value.toFloat()
+                )
+                val label = DateUtils.getLocalizedDateTimeString(calendar = measurement.datetime.calendarInUTC0)
+
+                dataPointsAndLabels.add(Pair(dataPoint, label))
+            }
+        }
+
+        val dataPoints = dataPointsAndLabels.map { it.first }
+        val labels = dataPointsAndLabels.map { it.second }
+
+        return ChartValueSet(
+            measurementType = measurementType,
+            set = dataPoints,
+            labels = labels
+        )
     }
 }
