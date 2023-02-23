@@ -30,8 +30,12 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
+import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MostRecentMeasurementValuesCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
+import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.ExpandableCard
+import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
+import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 import java.util.Calendar
 import kotlin.math.roundToInt
 
@@ -227,19 +231,22 @@ fun PlantDetailInfo(
             overflow = TextOverflow.Ellipsis
         )
 
+        if (plant.description != null && plant.description.length > 0) {
+            PlantDetailDescription(plant = plant)
+        }
+
         if (mostRecentValues.value.isNotEmpty()){
 
             Spacer(modifier = Modifier.height(15.dp))
 
             DelayedAnimatedAppear {
-                PlantDetailMostRecentMeasurementValues(
-                    mostRecentValues = mostRecentValues.value
+                MostRecentMeasurementValuesCard(
+                    mostRecentValues = mostRecentValues.value,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
             }
-        }
-
-        if (plant.description != null && plant.description.length > 0) {
-            PlantDetailDescription(plant = plant)
         }
     }
 }
@@ -248,99 +255,33 @@ fun PlantDetailInfo(
 fun PlantDetailDescription(
     plant: GetPlant
 ){
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .padding(16.dp)
-    ) {
-        Text(
-            text = plant.description ?: "",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-fun PlantDetailMostRecentMeasurementValues(
-    mostRecentValues: List<MeasurementValue>
-){
     val cornerRadius = 30.dp
-    Box(
-        contentAlignment = Alignment.Center,
+    ExpandableCard(
+        headlineContent = {
+            Text(
+                text = stringResource(id = R.string.plantDescription)
+            )
+        },
+        expandedContent = {
+            Text(
+                text = plant.description ?: "",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+            )
+        },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(16.dp)
+            .customShadow(
+                color = shadowColor,
+                borderRadius = cornerRadius,
+                spread = 0.dp,
+                blurRadius = 5.dp,
+                offsetY = 2.dp
+            )
             .clip(RoundedCornerShape(cornerRadius))
             .background(MaterialTheme.colorScheme.surface)
-    ){
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-        ) {
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = stringResource(id = R.string.latestValues),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            mostRecentValues.forEach { measurementValue ->
-                val roundedValue = remember{
-                    mutableStateOf((measurementValue.value * 10.0).roundToInt() / 10.0)
-                }
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp, vertical = 5.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = measurementValue.measurementType.iconId),
-                            contentDescription = stringResource(id = R.string.expand),
-                            tint = measurementValue.measurementType.color,
-                            modifier = Modifier
-                                .height(35.dp)
-                                .aspectRatio(1f)
-                        )
-
-                        Spacer(modifier = Modifier.width(10.dp))
-                        
-                        measurementValue.measurementDate?.calendarInUTC0?.let {
-                            Text(
-                                text = DateUtils.getLocalizedDateTimeString(it),
-                                style = MaterialTheme.typography.labelMedium,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    Text(
-                        text = roundedValue.value.toString() + " ${measurementValue.measurementType.unit}",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-        }
-    }
+    )
 }
+
