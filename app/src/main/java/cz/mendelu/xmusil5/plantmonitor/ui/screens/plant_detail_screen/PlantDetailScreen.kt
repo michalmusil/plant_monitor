@@ -35,6 +35,7 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.DelayedAnimatedAppear
+import com.madrapps.plot.line.DataPoint
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
@@ -42,6 +43,8 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
+import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementChartValuePopup
+import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementsLineChart
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MostRecentMeasurementValuesCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.ExpandableCard
@@ -350,6 +353,9 @@ fun MeasurementsTabView(
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     val tabRowCornerRadius = 30.dp
+    LaunchedEffect(pagerState.currentPage){
+        selectedMeasurementType.value = measurementTypes[pagerState.currentPage]
+    }
 
     Column(
         modifier = Modifier
@@ -386,7 +392,6 @@ fun MeasurementsTabView(
                     selected = pagerState.currentPage == index,
                     onClick = {
                         coroutineScope.launch {
-                            selectedMeasurementType.value = measurementTypes[index]
                             pagerState.animateScrollToPage(index)
                         }
                     },
@@ -410,10 +415,53 @@ fun MeasurementsTabView(
             state = pagerState,
         ) {
             val currentType = measurementTypes[pagerState.currentPage]
-            Text(
-                text = stringResource(id = currentType.nameId)
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = stringResource(id = currentType.nameId),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                MeasurementValuesData(
+                    chartValueSet = chartValueSet
+                )
+            }
         }
     }
+}
+
+@Composable
+fun MeasurementValuesData(
+    chartValueSet: MutableState<ChartValueSet>
+){
+    val showPopup = remember{
+        mutableStateOf(false)
+    }
+    val selectedData = remember{
+        mutableStateOf<Pair<String, DataPoint>?>(null)
+    }
+    val measurementType = remember{
+        mutableStateOf(chartValueSet.value.measurementType)
+    }
+    LaunchedEffect(chartValueSet.value){
+        measurementType.value = chartValueSet.value.measurementType
+    }
+    MeasurementsLineChart(
+        chartValues = chartValueSet.value,
+        selectedData = selectedData,
+        showSelected = showPopup
+    )
+
+    MeasurementChartValuePopup(
+        measurementType = measurementType,
+        dataToShow = selectedData,
+        visible = showPopup
+    )
 }
 

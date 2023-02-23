@@ -1,19 +1,11 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -26,9 +18,9 @@ import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 @Composable
 fun MeasurementsLineChart(
     chartValues: ChartValueSet,
-    selectedData: MutableState<Pair<MeasurementType, DataPoint>>,
+    selectedData: MutableState<Pair<String, DataPoint>?>,
     showSelected: MutableState<Boolean>,
-    height: Dp = 450.dp,
+    height: Dp = 400.dp,
     modifier: Modifier = Modifier
 ){
     val spaceAroundChart = remember {
@@ -37,6 +29,9 @@ fun MeasurementsLineChart(
 
     val measurementType = remember{
         mutableStateOf(chartValues.measurementType)
+    }
+    LaunchedEffect(chartValues){
+        measurementType.value = chartValues.measurementType
     }
 
     Column(
@@ -53,8 +48,6 @@ fun MeasurementsLineChart(
                         LinePlot.Connection(measurementType.value.color, 2.dp),
                         LinePlot.Intersection(
                             draw = { center, dataPoint ->
-                                // Drawing the default point of the chart
-                                val yValue = dataPoint.y.toDouble()
                                 drawCircle(
                                     color = measurementType.value.color,
                                     radius = 5.dp.toPx(),
@@ -81,13 +74,18 @@ fun MeasurementsLineChart(
                     content = { min, offset, max ->
                         for (it in 0 until chartValues.labels.size) {
                             val value = it * offset + min
-                            Text(
-                                text = chartValues.labels.getOrNull(it) ?: "?",
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
-                                color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
-                            )
+                            if (it == 0 || it == chartValues.labels.size-1) {
+                                Text(
+                                    text = chartValues.labels.getOrNull(it) ?: "?",
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
+                                    color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                            else{
+                                Text("")
+                            }
                             if (value > max) {
                                 break
                             }
@@ -96,14 +94,14 @@ fun MeasurementsLineChart(
                 )
             ),
             modifier = Modifier
-                .fillMaxWidth()
-                .height(500.dp),
+                .fillMaxSize(),
             onSelectionStart = { showSelected.value = true },
             onSelectionEnd = { showSelected.value = false },
             onSelection = { xOffset, datapoints ->
+                val index = datapoints.first().x.toInt()
                 selectedData.value = Pair(
-                    first = measurementType.value,
-                    second = datapoints.first()
+                    first = chartValues.labels[index],
+                    second = chartValues.set[index]
                 )
             },
         )
