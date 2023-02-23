@@ -36,6 +36,9 @@
     <string name="latestValues">Latest values</string>
     <string name="noMeasurementsYet">Plant has no measurements yet</string>
 
+    <!--  PLANTS SCREEN  -->
+    <string name="plantDetailScreen">Plant detail</string>
+
     <!--  DEVICES SCREEN  -->
     <string name="devicesScreen">Devices</string>
 

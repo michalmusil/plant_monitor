@@ -52,39 +52,15 @@ class PlantsViewModel @Inject constructor(
 
     fun fetchMostRecentValuesOfPlant(plant: GetPlant, onValuesFetched: (List<MeasurementValue>) -> Unit){
         viewModelScope.launch {
-            val temperature = async { measurementsRepository.getLatestPlantMeasurementOfType(
+            val result = measurementsRepository.getMostRecentPlantMeasurementValues(
                 plantId = plant.id,
-                measurementType = MeasurementType.TEMPERATURE
-            ) }
-            val lightIntensity = async { measurementsRepository.getLatestPlantMeasurementOfType(
-                plantId = plant.id,
-                measurementType = MeasurementType.LIGHT_INTENSITY
-            ) }
-            val soilMoisture = async { measurementsRepository.getLatestPlantMeasurementOfType(
-                plantId = plant.id,
-                measurementType = MeasurementType.SOIL_MOISTURE
-            ) }
-
-            val measurementResults = mutableListOf<Pair<MeasurementType, CommunicationResult<GetMeasurement>>>()
-            measurementResults.add(Pair(MeasurementType.TEMPERATURE, temperature.await()))
-            measurementResults.add(Pair(MeasurementType.LIGHT_INTENSITY, lightIntensity.await()))
-            measurementResults.add(Pair(MeasurementType.SOIL_MOISTURE, soilMoisture.await()))
-
-            val measurementValues = mutableListOf<MeasurementValue>()
-
-            measurementResults.forEach{ result ->
-                result.second.let {
-                    if (it is CommunicationResult.Success){
-                        it.data.getMeasurementValueByType(
-                            measurementType = result.first
-                        )?.let {
-                            measurementValues.add(it)
-                        }
-                    }
-                }
+            )
+            if (result is CommunicationResult.Success){
+                onValuesFetched(result.data)
             }
-
-            onValuesFetched(measurementValues)
+            else {
+                onValuesFetched(listOf())
+            }
         }
     }
 

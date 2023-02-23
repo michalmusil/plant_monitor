@@ -6,7 +6,9 @@ import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
+import kotlinx.coroutines.async
 import java.util.*
 import javax.inject.Inject
 
@@ -46,6 +48,46 @@ class MeasurementsRepositoryImpl @Inject constructor(
                 bearerToken = authenticationManager.getToken()
             )
         }
+    }
+
+    override suspend fun getMostRecentPlantMeasurementValues(plantId: Long): CommunicationResult<List<MeasurementValue>> {
+        val temperature = getLatestPlantMeasurementOfType(
+            plantId = plantId,
+            measurementType = MeasurementType.TEMPERATURE
+        )
+        val lightIntensity = getLatestPlantMeasurementOfType(
+            plantId = plantId,
+            measurementType = MeasurementType.LIGHT_INTENSITY
+        )
+        val soilMoisture = getLatestPlantMeasurementOfType(
+            plantId = plantId,
+            measurementType = MeasurementType.SOIL_MOISTURE
+        )
+
+        val measurementResults = mutableListOf<Pair<MeasurementType, CommunicationResult<GetMeasurement>>>()
+        measurementResults.add(Pair(MeasurementType.TEMPERATURE, temperature))
+        measurementResults.add(Pair(MeasurementType.LIGHT_INTENSITY, lightIntensity))
+        measurementResults.add(Pair(MeasurementType.SOIL_MOISTURE, soilMoisture))
+
+        val measurementValues = mutableListOf<MeasurementValue>()
+
+        measurementResults.forEach{ result ->
+            result.second.let { communicationResult ->
+                if (communicationResult is CommunicationResult.Success){
+                    communicationResult.data.getMeasurementValueByType(
+                        measurementType = result.first
+                    )?.let {
+                        val foundValue = it
+                        foundValue.measurementDate = communicationResult.data.datetime
+                        measurementValues.add(it)
+                    }
+                }
+            }
+        }
+
+        return CommunicationResult.Success(
+            data = measurementValues
+        )
     }
 
 

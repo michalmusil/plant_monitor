@@ -9,9 +9,13 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.communication.repositories.measurements.IMeasurementsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -70,6 +74,20 @@ class PlantDetailViewModel @Inject constructor(
                 is CommunicationResult.Exception -> {
                     uiState.value = PlantDetailUiState.Error(R.string.connectionError)
                 }
+            }
+        }
+    }
+
+    fun fetchMostRecentValuesOfPlant(plant: GetPlant, onValuesFetched: (List<MeasurementValue>) -> Unit){
+        viewModelScope.launch {
+            val result = measurementsRepository.getMostRecentPlantMeasurementValues(
+                plantId = plant.id,
+            )
+            if (result is CommunicationResult.Success){
+                onValuesFetched(result.data)
+            }
+            else {
+                onValuesFetched(listOf())
             }
         }
     }
