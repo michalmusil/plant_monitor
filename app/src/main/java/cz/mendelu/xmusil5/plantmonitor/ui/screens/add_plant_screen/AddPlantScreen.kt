@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +32,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
+import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailImage
@@ -49,10 +51,24 @@ fun AddPlantScreen(
 
     viewModel.uiState.value.let {
         when(it){
-            is AddPlantUiState.Start -> TODO()
-            is AddPlantUiState.PlantSaved -> TODO()
-            is AddPlantUiState.PlantPostFailed -> TODO()
-            is AddPlantUiState.Error -> TODO()
+            is AddPlantUiState.Start -> {
+                AddPlantScreenContent(
+                    viewModel = viewModel,
+                    navigation = navigation,
+                    error = errorString
+                )
+            }
+            is AddPlantUiState.PlantSaved -> {
+                LaunchedEffect(it) {
+                    navigation.toPlantsScreen()
+                }
+            }
+            is AddPlantUiState.PlantPostFailed -> {
+                errorString.value = stringResource(id = it.reasonStringCode)
+            }
+            is AddPlantUiState.Error -> {
+                ErrorScreen(text = stringResource(id = it.errorStringCode))
+            }
         }
     }
 }
@@ -61,8 +77,10 @@ fun AddPlantScreen(
 fun AddPlantScreenContent(
     viewModel: AddPlantViewModel,
     navigation: INavigationRouter,
-    error: MutableState<String>
+    error: MutableState<String?>
 ){
+    val cornerRadius = 30.dp
+
     val name = rememberSaveable{
         mutableStateOf("")
     }
@@ -80,10 +98,10 @@ fun AddPlantScreenContent(
     }
 
     val nameError = rememberSaveable{
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
     val speciesError = rememberSaveable{
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
 
     Column(
@@ -104,14 +122,41 @@ fun AddPlantScreenContent(
             viewModel = viewModel
         )
 
-        AddPlantForm(
-            name = name,
-            species = species,
-            description = description,
-            nameError = nameError,
-            speciesError = speciesError,
-            viewModel = viewModel
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .offset(y = (-25).dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius))
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+
+            AddPlantForm(
+                name = name,
+                species = species,
+                description = description,
+                nameError = nameError,
+                speciesError = speciesError,
+                viewModel = viewModel
+            )
+            
+            CustomButton(
+                text = stringResource(id = R.string.saveNewPlant),
+                iconId = R.drawable.ic_house_plant,
+                tintIcon = false,
+                enabled = name.value.isNotEmpty() && species.value.isNotEmpty(),
+                onClick = {
+                    if (name.value.isNotEmpty() && species.value.isNotEmpty())
+                    viewModel.savePlant(
+                        name = name.value,
+                        species = species.value,
+                        description = if (description.value.isNotEmpty()) description.value else null,
+                        measurementValueLimits = if (measurementValueLimits.isNotEmpty()) measurementValueLimits else null,
+                        plantImage = selectedImage.value
+                    )
+                }
+            )
+        }
     }
 }
 
@@ -125,15 +170,29 @@ fun NewPlantImage(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         if (selectedImage.value != null) {
-            Image(
-                bitmap = selectedImage.value!!.asImageBitmap(),
-                contentDescription = stringResource(id = R.string.plantImage),
-                contentScale = ContentScale.Crop,
+            Box(
+                contentAlignment = Alignment.BottomEnd,
                 modifier = Modifier
                     .fillMaxSize()
-            )
+            ) {
+                Image(
+                    bitmap = selectedImage.value!!.asImageBitmap(),
+                    contentDescription = stringResource(id = R.string.plantImage),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+                CustomButton(
+                    text = stringResource(id = R.string.changePlantImage),
+                    iconId = R.drawable.ic_change,
+                    onClick = {
+                        /*TODO*/
+                    }
+                )
+            }
         }
         else {
             CustomButton(
@@ -156,15 +215,11 @@ fun AddPlantForm(
     speciesError: MutableState<Boolean>,
     viewModel: AddPlantViewModel,
 ) {
-    val cornerRadius = 30.dp
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .offset(y = (-25).dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius))
-            .background(MaterialTheme.colorScheme.background)
+            .padding(16.dp)
     ) {
         Spacer(modifier = Modifier.height(10.dp))
         Text(
@@ -182,6 +237,34 @@ fun AddPlantForm(
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
+        )
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        CustomTextField(
+            labelTitle = stringResource(id = R.string.plantName),
+            value = name,
+            maxChars = 50,
+            isError = nameError.value,
+            errorMessage = stringResource(id = R.string.plantNameCantBeEmpty),
+            onTextChanged = {
+                nameError.value = it.isBlank()
+            }
+        )
+        CustomTextField(
+            labelTitle = stringResource(id = R.string.plantSpecies),
+            value = species,
+            maxChars = 50,
+            isError = speciesError.value,
+            errorMessage = stringResource(id = R.string.plantSpeciesCantBeEmpty),
+            onTextChanged = {
+                speciesError.value = it.isBlank()
+            }
+        )
+        CustomTextField(
+            labelTitle = stringResource(id = R.string.plantDescription),
+            value = description,
+            singleLine = false,
         )
         
     }

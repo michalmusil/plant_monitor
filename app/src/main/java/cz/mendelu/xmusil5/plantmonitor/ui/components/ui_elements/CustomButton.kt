@@ -1,9 +1,7 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -25,6 +23,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.theme.disabledColor
 fun CustomButton(
     text: String,
     iconId: Int? = null,
+    tintIcon: Boolean = true,
     backgroundColor: Color = MaterialTheme.colorScheme.primary,
     textColor: Color = MaterialTheme.colorScheme.onPrimary,
     textSize: TextUnit = 17.sp,
@@ -54,14 +53,25 @@ fun CustomButton(
                 .padding(horizontal = 8.dp, vertical = 5.dp)
         ) {
             iconId?.let {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = it),
-                    contentDescription = stringResource(id = R.string.icon),
-                    tint = textColor,
-                    modifier = Modifier
-                        .size((textSize.value * 1.5).dp)
-                        .padding(end = 5.dp)
-                )
+                if (tintIcon) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = it),
+                        contentDescription = stringResource(id = R.string.icon),
+                        tint = textColor,
+                        modifier = Modifier
+                            .size((textSize.value * 1.5).dp)
+                            .padding(end = 5.dp)
+                    )
+                }
+                else {
+                    Image(
+                        imageVector = ImageVector.vectorResource(id = it),
+                        contentDescription = stringResource(id = R.string.icon),
+                        modifier = Modifier
+                            .size((textSize.value * 1.5).dp)
+                            .padding(end = 5.dp)
+                    )
+                }
             }
             Text(
                 text = text,
