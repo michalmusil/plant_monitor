@@ -16,21 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.icontio.senscare_peresonal_mobile.ui.components.templates.ScreenSkeleton
+import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.TopBarWithBackButton
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
@@ -38,15 +33,12 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.GalleryLauncherButton
-import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailImage
-import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailInfo
-import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailViewModel
-import java.util.*
 
 @Composable
-fun AddPlantScreen(
+fun AddOrEditPlantScreen(
+    existingPlantId: Long?,
     navigation: INavigationRouter,
-    viewModel: AddPlantViewModel = hiltViewModel()
+    viewModel: AddOrEditPlantViewModel = hiltViewModel()
 ){
     val errorString = remember{
         mutableStateOf<String?>(null)
@@ -54,22 +46,37 @@ fun AddPlantScreen(
 
     viewModel.uiState.value.let {
         when(it){
-            is AddPlantUiState.Start -> {
+            is AddOrEditPlantUiState.Start -> {
+                if (existingPlantId == null){
+                    AddPlantScreenContent(
+                        viewModel = viewModel,
+                        navigation = navigation,
+                        error = errorString
+                    )
+                }
+                else {
+                    LaunchedEffect(it) {
+                        viewModel.fetchPlant(existingPlantId)
+                    }
+                    LoadingScreen()
+                }
+            }
+            is AddOrEditPlantUiState.PlantToEditLoaded -> {
                 AddPlantScreenContent(
                     viewModel = viewModel,
                     navigation = navigation,
                     error = errorString
                 )
             }
-            is AddPlantUiState.PlantSaved -> {
+            is AddOrEditPlantUiState.PlantSaved -> {
                 LaunchedEffect(it) {
                     navigation.toPlantsScreen()
                 }
             }
-            is AddPlantUiState.PlantPostFailed -> {
+            is AddOrEditPlantUiState.PlantPostFailed -> {
                 errorString.value = stringResource(id = it.reasonStringCode)
             }
-            is AddPlantUiState.Error -> {
+            is AddOrEditPlantUiState.Error -> {
                 ErrorScreen(text = stringResource(id = it.errorStringCode))
             }
         }
@@ -78,7 +85,7 @@ fun AddPlantScreen(
 
 @Composable
 fun AddPlantScreenContent(
-    viewModel: AddPlantViewModel,
+    viewModel: AddOrEditPlantViewModel,
     navigation: INavigationRouter,
     error: MutableState<String?>
 ){
@@ -108,6 +115,22 @@ fun AddPlantScreenContent(
         mutableStateOf(false)
     }
 
+    // When mode is edit, i fill all the plants info out
+    viewModel.mode.value.let {
+        if (it is AddOrEditPlantMode.EditPlant){
+            LaunchedEffect(it){
+                name.value = it.plant.name
+                species.value = it.plant.species
+                description.value = it.plant.description ?: ""
+                measurementValueLimits.clear()
+                measurementValueLimits.addAll(it.plant.valueLimits)
+                it.plant.titleImageBitmap?.let {
+                    selectedImage.value = Pair(Uri.EMPTY, it)
+                }
+            }
+        }
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -115,7 +138,12 @@ fun AddPlantScreenContent(
             .verticalScroll(rememberScrollState())
     ) {
         TopBarWithBackButton(
-            topBarTitle = stringResource(id = R.string.addPlantScreen),
+            topBarTitle = stringResource(
+                id = when(viewModel.mode.value){
+                    is AddOrEditPlantMode.EditPlant -> R.string.editPlantScreen
+                    is AddOrEditPlantMode.NewPlant -> R.string.addPlantScreen
+                }
+            ),
             onBackClick = {
                 navigation.returnBack()
             }
@@ -144,23 +172,7 @@ fun AddPlantScreenContent(
                 viewModel = viewModel
             )
             
-            CustomButton(
-                text = stringResource(id = R.string.saveNewPlant),
-                iconId = R.drawable.ic_house_plant,
-                tintIcon = false,
-                enabled = name.value.isNotEmpty() && species.value.isNotEmpty(),
-                onClick = {
-                    if (name.value.isNotEmpty() && species.value.isNotEmpty())
-                    viewModel.savePlant(
-                        context = context,
-                        name = name.value,
-                        species = species.value,
-                        description = if (description.value.isNotEmpty()) description.value else null,
-                        measurementValueLimits = if (measurementValueLimits.isNotEmpty()) measurementValueLimits else null,
-                        plantImageUri = selectedImage.value?.first
-                    )
-                }
-            )
+
         }
     }
 }
@@ -168,7 +180,7 @@ fun AddPlantScreenContent(
 @Composable
 fun NewPlantImage(
     selectedImage: MutableState<Pair<Uri, Bitmap>?>,
-    viewModel: AddPlantViewModel
+    viewModel: AddOrEditPlantViewModel
 ){
     Box(
         contentAlignment = Alignment.Center,
@@ -224,7 +236,7 @@ fun AddPlantForm(
     description: MutableState<String>,
     nameError: MutableState<Boolean>,
     speciesError: MutableState<Boolean>,
-    viewModel: AddPlantViewModel,
+    viewModel: AddOrEditPlantViewModel,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -279,4 +291,57 @@ fun AddPlantForm(
         )
         
     }
+}
+
+@Composable
+fun SavePlantButton(
+    name: MutableState<String>,
+    species: MutableState<String>,
+    description: MutableState<String>,
+    selectedImage: MutableState<Pair<Uri, Bitmap>?>,
+    measurementValueLimits: List<MeasurementValueLimit>,
+    viewModel: AddOrEditPlantViewModel,
+){
+    val context = LocalContext.current
+
+    CustomButton(
+        text = stringResource(
+            id = when(viewModel.mode.value){
+                is AddOrEditPlantMode.EditPlant -> R.string.saveChanges
+                is AddOrEditPlantMode.NewPlant -> R.string.saveNewPlant
+            }
+        ),
+        iconId = R.drawable.ic_house_plant,
+        tintIcon = false,
+        enabled = name.value.isNotEmpty() && species.value.isNotEmpty(),
+        onClick = {
+            if (name.value.isNotEmpty() && species.value.isNotEmpty()) {
+                viewModel.mode.value.let {
+                    when (it) {
+                        is AddOrEditPlantMode.NewPlant -> {
+                            viewModel.saveNewPlant(
+                                context = context,
+                                name = name.value,
+                                species = species.value,
+                                description = if (description.value.isNotEmpty()) description.value else null,
+                                measurementValueLimits = if (measurementValueLimits.isNotEmpty()) measurementValueLimits else null,
+                                plantImageUri = selectedImage.value?.first
+                            )
+                        }
+                        is AddOrEditPlantMode.EditPlant -> {
+                            viewModel.updateExistingPlant(
+                                context = context,
+                                existingPlant = it.plant,
+                                name = name.value,
+                                species = species.value,
+                                description = if (description.value.isNotEmpty()) description.value else null,
+                                measurementValueLimits = if (measurementValueLimits.isNotEmpty()) measurementValueLimits else null,
+                                plantImageUri = selectedImage.value?.first
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    )
 }

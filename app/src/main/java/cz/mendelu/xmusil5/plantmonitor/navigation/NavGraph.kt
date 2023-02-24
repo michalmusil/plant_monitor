@@ -1,6 +1,5 @@
 package cz.mendelu.xmusil5.plantmonitor.navigation
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -11,7 +10,7 @@ import androidx.navigation.navArgument
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.ScreenSkeleton
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_device_screen.AddDeviceScreen
-import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_plant_screen.AddPlantScreen
+import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_plant_screen.AddOrEditPlantScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.device_detail_screen.DeviceDetailScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.devices_screen.DevicesScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.login_screen.LoginScreen
@@ -83,7 +82,7 @@ fun NavGraph(
                     }
 
                     composable(Destination.AddPlantScreen.route) {
-                        AddPlantScreen(navigation = navigation)
+                        AddOrEditPlantScreen(navigation = navigation)
                     }
 
                     composable(Destination.AddDeviceScreen.route) {

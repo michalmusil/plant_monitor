@@ -1,10 +1,10 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants
 
 import android.graphics.Bitmap
-import android.net.Uri
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
 import okhttp3.MultipartBody
 
 interface IPlantsRepository {
@@ -17,4 +17,6 @@ interface IPlantsRepository {
     suspend fun uploadPlantImage(plantId: Long, imagePart: MultipartBody.Part): CommunicationResult<GetPlant>
 
     suspend fun postNewPlant(postPlant: PostPlant): CommunicationResult<GetPlant>
+
+    suspend fun updatePlant(putPlant: PutPlant): CommunicationResult<GetPlant>
 }

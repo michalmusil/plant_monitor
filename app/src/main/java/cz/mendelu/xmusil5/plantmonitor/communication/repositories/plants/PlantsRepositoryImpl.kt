@@ -8,6 +8,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
 import okhttp3.MultipartBody
 import javax.inject.Inject
 
@@ -60,6 +61,15 @@ class PlantsRepositoryImpl @Inject constructor(
         return processRequest {
             api.postNewPlant(
                 postPlant = postPlant,
+                bearerToken = authenticationManager.getToken()
+            )
+        }
+    }
+
+    override suspend fun updatePlant(putPlant: PutPlant): CommunicationResult<GetPlant> {
+        return processRequest {
+            api.updatePlant(
+                putPlant = putPlant,
                 bearerToken = authenticationManager.getToken()
             )
         }

@@ -4,6 +4,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import okhttp3.MultipartBody
@@ -48,6 +49,13 @@ interface HousePlantMeasurementsApi {
     @POST("plants")
     suspend fun postNewPlant(
         @Body postPlant: PostPlant,
+        @Header("Authorization") bearerToken: String
+    ): Response<GetPlant>
+
+    @Headers("Content-Type: application/json")
+    @PUT("plants")
+    suspend fun updatePlant(
+        @Body putPlant: PutPlant,
         @Header("Authorization") bearerToken: String
     ): Response<GetPlant>
 
