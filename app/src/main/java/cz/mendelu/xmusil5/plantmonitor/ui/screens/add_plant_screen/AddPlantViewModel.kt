@@ -10,12 +10,14 @@ import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Json
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
+import cz.mendelu.xmusil5.plantmonitor.communication.CommunicationConstants.HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME
 import cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -53,11 +55,13 @@ class AddPlantViewModel @Inject constructor(
             when(result){
                 is CommunicationResult.Success -> {
                     plantImageUri?.let {
-                        savePlantImage(
-                            context = context,
-                            plantId = result.data.id,
-                            imageUri = it
-                        )
+                        async {
+                            savePlantImage(
+                                context = context,
+                                plantId = result.data.id,
+                                imageUri = it
+                            )
+                        }.await()
                     }
                     uiState.value = AddPlantUiState.PlantSaved(result.data)
                 }
@@ -72,31 +76,28 @@ class AddPlantViewModel @Inject constructor(
     }
 
     private suspend fun savePlantImage(context: Context, plantId: Long, imageUri: Uri){
-        viewModelScope.launch {
-            val contentResolver = context.contentResolver
-            try {
-                val stream = contentResolver.openInputStream(imageUri)
-                stream?.let {
-                    val imageName = ImageUtils.getFileName(context, imageUri)
-                    val mediaType = contentResolver.getType(imageUri)?.toMediaTypeOrNull()
+        val contentResolver = context.contentResolver
+        try {
+            val stream = contentResolver.openInputStream(imageUri)
+            stream?.let {
+                val imageName = ImageUtils.getFileName(context, imageUri)
+                val mediaType = contentResolver.getType(imageUri)?.toMediaTypeOrNull()
 
-                    val imageInBytes = it.readBytes()
-                    val request = imageInBytes.toRequestBody(mediaType, 0, imageInBytes.size)
-                    val filePart = MultipartBody.Part.createFormData(
-                        "image",
-                        imageName,
-                        request
-                    )
-                    plantsRepository.uploadPlantImage(
-                        plantId = plantId,
-                        imagePart = filePart
-                    )
-                }
-            }
-            catch (ex: java.lang.Exception){
-                ex.printStackTrace()
+                val imageInBytes = it.readBytes()
+                val request = imageInBytes.toRequestBody(mediaType, 0, imageInBytes.size)
+                val filePart = MultipartBody.Part.createFormData(
+                    HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME,
+                    imageName,
+                    request
+                )
+                plantsRepository.uploadPlantImage(
+                    plantId = plantId,
+                    imagePart = filePart
+                )
             }
         }
+        catch (ex: java.lang.Exception){
+            ex.printStackTrace()
+        }
     }
-
 }

@@ -90,18 +90,21 @@ fun PlantsScreenContent(
             },
             itemContent = { index ->
                 val plantImage = remember{
-                    mutableStateOf<Bitmap?>(null)
+                    mutableStateOf(plants[index].titleImageBitmap)
                 }
                 val mostRecentMeasurementValues = remember {
                     mutableStateOf<List<MeasurementValue>?>(null)
                 }
                 LaunchedEffect(plants[index]){
-                    viewModel.fetchPlantImage(
-                        plant = plants[index],
-                        onSuccess = { image ->
-                            plantImage.value = image
-                        }
-                    )
+                    if (plantImage.value == null) {
+                        viewModel.fetchPlantImage(
+                            plant = plants[index],
+                            onSuccess = { image ->
+                                plants[index].titleImageBitmap = image
+                                plantImage.value = image
+                            }
+                        )
+                    }
                 }
                 PlantListItem(
                     plant = plants[index],
