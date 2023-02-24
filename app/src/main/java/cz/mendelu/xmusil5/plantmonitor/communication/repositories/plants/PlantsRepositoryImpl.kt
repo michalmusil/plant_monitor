@@ -6,6 +6,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsA
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import javax.inject.Inject
 
 class PlantsRepositoryImpl @Inject constructor(
@@ -35,6 +36,15 @@ class PlantsRepositoryImpl @Inject constructor(
         return processImageRequest{
             api.getPlantImage(
                 plantId = plantId,
+                bearerToken = authenticationManager.getToken()
+            )
+        }
+    }
+
+    override suspend fun postNewPlant(postPlant: PostPlant): CommunicationResult<GetPlant> {
+        return processRequest {
+            api.postNewPlant(
+                postPlant = postPlant,
                 bearerToken = authenticationManager.getToken()
             )
         }

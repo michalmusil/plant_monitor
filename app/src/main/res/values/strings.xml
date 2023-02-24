@@ -39,12 +39,23 @@
     <string name="latestValues">Latest values</string>
     <string name="noMeasurementsYet">Plant has no measurements yet</string>
 
+    <!--  ADD PLANT SCREEN  -->
+    <string name="addPlantScreen">New plant</string>
+
+    <string name="plantName">Name</string>
+    <string name="plantSpecies">Species</string>
+    <string name="plantDescription">Description</string>
+
+    <string name="addPlantImage">Add photo</string>
+    <string name="plantNameCantBeEmpty">Name can\'t be empty</string>
+    <string name="plantSpeciesCantBeEmpty">Species can\'t be empty</string>
+    <string name="couldNotSavePlant">Plant could not be saved</string>
+
     <!--  PLANT DETAIL SCREEN  -->
     <string name="plantDetailScreen">Plant detail</string>
 
     <string name="currentMeasuringDevice">Current measuring device</string>
     <string name="measurementValues">Measurements</string>
-    <string name="plantDescription">Description</string>
 
     <!--  DEVICES SCREEN  -->
     <string name="devicesScreen">Devices</string>

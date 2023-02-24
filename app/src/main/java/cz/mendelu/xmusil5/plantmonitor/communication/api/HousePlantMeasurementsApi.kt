@@ -3,6 +3,7 @@ package cz.mendelu.xmusil5.plantmonitor.communication.api
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import okhttp3.ResponseBody
@@ -35,6 +36,13 @@ interface HousePlantMeasurementsApi {
     @GET("plants/{id}")
     suspend fun getPlantById(
         @Path("id")id: Long,
+        @Header("Authorization") bearerToken: String
+    ): Response<GetPlant>
+
+    @Headers("Content-Type: application/json")
+    @POST("plants")
+    suspend fun postNewPlant(
+        @Body postPlant: PostPlant,
         @Header("Authorization") bearerToken: String
     ): Response<GetPlant>
 

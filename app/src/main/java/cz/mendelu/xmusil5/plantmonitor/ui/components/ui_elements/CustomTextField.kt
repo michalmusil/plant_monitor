@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -16,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -28,7 +30,6 @@ fun CustomTextField(
     isError: Boolean = false,
     errorMessage: String = "",
     onTextChanged: (String) -> Unit = {},
-    enabled: Boolean = true,
     singleLine: Boolean = true,
     maxChars: Int = 10000,
     modifierTextField: Modifier = Modifier
@@ -39,7 +40,7 @@ fun CustomTextField(
             .fillMaxWidth()
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            OutlinedTextField(
+            TextField(
                 value = value.value,
                 onValueChange = {
                     if (it.length <= maxChars) {
@@ -68,10 +69,11 @@ fun CustomTextField(
                     onDone = {
                         localFocusManager.clearFocus()
                     },
+                    onNext = {
+                        localFocusManager.moveFocus(FocusDirection.Down)
+                    }
                 ),
-                shape = RoundedCornerShape(12.dp),
                 isError = isError,
-                enabled = enabled,
                 singleLine = singleLine,
                 trailingIcon = {
                     if (isError){
