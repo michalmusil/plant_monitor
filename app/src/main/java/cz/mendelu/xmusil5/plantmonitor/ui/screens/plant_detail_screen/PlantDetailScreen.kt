@@ -6,8 +6,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
@@ -35,6 +37,7 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.DelayedAnimatedAppear
+import com.icontio.senscare_peresonal_mobile.ui.components.templates.TopBarWithBackButton
 import com.madrapps.plot.line.DataPoint
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
@@ -43,6 +46,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
+import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.DeviceCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementChartValuePopup
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementsLineChart
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MostRecentMeasurementValuesCard
@@ -55,7 +59,6 @@ import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 import kotlinx.coroutines.launch
 import java.util.Calendar
-import kotlin.math.roundToInt
 
 @Composable
 fun PlantDetailScreen(
@@ -161,6 +164,13 @@ fun PlantDetailScreenContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
+        TopBarWithBackButton(
+            topBarTitle = stringResource(id = R.string.plantDetailScreen),
+            onBackClick = {
+                navigation.returnBack()
+            }
+        )
+
         PlantDetailImage(plant = plant)
 
         PlantDetailInfo(
@@ -169,6 +179,7 @@ fun PlantDetailScreenContent(
             from = from,
             to = to,
             viewModel = viewModel,
+            navigation = navigation
         )
     }
 }
@@ -220,8 +231,9 @@ fun PlantDetailInfo(
     from: MutableState<Calendar>,
     to: MutableState<Calendar>,
     viewModel: PlantDetailViewModel,
+    navigation: INavigationRouter
 ){
-    val topCornerRadius = 30.dp
+    val cornerRadius = 30.dp
 
     val mostRecentValues = remember{
         mutableStateOf<List<MeasurementValue>>(listOf())
@@ -240,7 +252,7 @@ fun PlantDetailInfo(
         modifier = Modifier
             .offset(y = (-25).dp)
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = topCornerRadius, topEnd = topCornerRadius))
+            .clip(RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius))
             .background(MaterialTheme.colorScheme.background)
     ) {
         Spacer(modifier = Modifier.height(10.dp))
@@ -253,9 +265,10 @@ fun PlantDetailInfo(
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
+        Spacer(modifier = Modifier.height(5.dp))
         Text(
             text = plant.species,
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
@@ -263,6 +276,27 @@ fun PlantDetailInfo(
 
         if (plant.description != null && plant.description.length > 0) {
             PlantDetailDescription(plant = plant)
+        }
+
+        plant.associatedDevice?.let {
+            DeviceCard(
+                device = it,
+                onClick = {
+                    navigation.toDeviceDetail(it.id)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 5.dp)
+                    .customShadow(
+                        color = shadowColor,
+                        borderRadius = cornerRadius,
+                        spread = 0.dp,
+                        blurRadius = 5.dp,
+                        offsetY = 2.dp
+                    )
+                    .clip(RoundedCornerShape(cornerRadius))
+                    .background(MaterialTheme.colorScheme.surface)
+            )
         }
 
         if (mostRecentValues.value.isNotEmpty()){
@@ -279,7 +313,13 @@ fun PlantDetailInfo(
             }
         }
 
-        Spacer(modifier = Modifier.height(25.dp))
+        Divider(
+            modifier = Modifier
+                .padding(vertical = 25.dp)
+                .clip(CircleShape)
+                .height(2.dp)
+                .background(MaterialTheme.colorScheme.surface)
+        )
 
         Text(
             text = stringResource(id = R.string.measurementValues),
@@ -297,7 +337,7 @@ fun PlantDetailInfo(
             to = to
         )
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
         if (measurements.isNotEmpty()){
             MeasurementsTabView(
@@ -364,7 +404,7 @@ fun MeasurementsDateFilter(
 
             Text(
                 text = stringResource(id = R.string.from),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(3.dp))
@@ -380,7 +420,7 @@ fun MeasurementsDateFilter(
         ) {
             Text(
                 text = stringResource(id = R.string.to),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(3.dp))
@@ -438,7 +478,7 @@ fun MeasurementsTabView(
 
         TabRow(
             selectedTabIndex = pagerState.currentPage,
-            backgroundColor = MaterialTheme.colorScheme.background,
+            backgroundColor = MaterialTheme.colorScheme.surface,
             indicator = { tabPositions ->
                 TabRowDefaults.Indicator(
                     modifier = Modifier
@@ -456,7 +496,7 @@ fun MeasurementsTabView(
                     targetValue = if (pagerState.currentPage == index) {
                         MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)
                     } else {
-                        MaterialTheme.colorScheme.background
+                        MaterialTheme.colorScheme.surface
                     },
                     animationSpec = tween(
                         durationMillis = 150

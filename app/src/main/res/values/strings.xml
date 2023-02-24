@@ -9,6 +9,7 @@
     <string name="add">Add</string>
     <string name="errorIcon">Error icon</string>
     <string name="plantImage">Plant image</string>
+    <string name="deviceImage">Device image</string>
     <string name="appLogo">App logo</string>
     <string name="user">User</string>
     <string name="icon">Icon</string>
@@ -41,6 +42,7 @@
     <!--  PLANT DETAIL SCREEN  -->
     <string name="plantDetailScreen">Plant detail</string>
 
+    <string name="currentMeasuringDevice">Current measuring device</string>
     <string name="measurementValues">Measurements</string>
     <string name="plantDescription">Description</string>
 

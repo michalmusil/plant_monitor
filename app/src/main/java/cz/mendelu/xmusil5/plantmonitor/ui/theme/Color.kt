@@ -27,7 +27,7 @@ val onSecondary = Color(0xFF2B2B2B)
 val background = Color(0xFFFCFCFC)
 val onBackground = Color(0xFF2B2B2B)
 
-val surface = Color(0xFFC3DCDF)
+val surface = Color(0xFFE3F0F1)
 val onSurface = Color(0xFF2B2B2B)
 
 val surfaceVariant = Color(0xFFF0EADE)

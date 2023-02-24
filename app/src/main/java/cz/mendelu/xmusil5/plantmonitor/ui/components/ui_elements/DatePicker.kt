@@ -63,7 +63,7 @@ fun DatePicker(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .clip(RoundedCornerShape(cornerRadiusPercentage))
-            .background(surface)
+            .background(MaterialTheme.colorScheme.primary)
             .clickable {
                 datePickerDialog.show()
             }

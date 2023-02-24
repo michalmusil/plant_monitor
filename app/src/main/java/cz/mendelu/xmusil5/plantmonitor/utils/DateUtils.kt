@@ -5,11 +5,11 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 object DateUtils {
-    val DATETIME_FORMAT_CS = "dd.MM.yyyy | HH:mm"
+    val DATETIME_FORMAT_CS = "dd.MM.yyyy\nHH:mm"
     val DATE_FORMAT_CS = "dd.MM.yyyy"
     val TIME_FORMAT_CS = "HH:mm"
 
-    val DATETIME_FORMAT_EN = "yyyy/MM/dd | hh:mmaa"
+    val DATETIME_FORMAT_EN = "yyyy/MM/dd\nhh:mmaa"
     val DATE_FORMAT_EN = "yyyy/MM/dd"
     val TIME_FORMAT_EN = "hh:mmaa"
 

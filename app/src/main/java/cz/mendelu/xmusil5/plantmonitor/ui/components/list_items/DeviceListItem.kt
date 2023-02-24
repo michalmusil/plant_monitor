@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -64,7 +65,7 @@ fun DeviceListItem(
             ){
                 Image(
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
-                    contentDescription = stringResource(id = R.string.plantImage),
+                    contentDescription = stringResource(id = R.string.deviceImage),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -104,6 +105,7 @@ fun DeviceListItem(
                     Text(
                         text = device.plant?.name ?: stringResource(id = R.string.noPlantAssigned),
                         style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         color = MaterialTheme.colorScheme.onSurface

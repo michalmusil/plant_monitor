@@ -6,9 +6,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.madrapps.plot.line.DataPoint
 import com.madrapps.plot.line.LineGraph
 import com.madrapps.plot.line.LinePlot
@@ -77,7 +79,9 @@ fun MeasurementsLineChart(
                             if (it == 0 || it == chartValues.labels.size-1) {
                                 Text(
                                     text = chartValues.labels.getOrNull(it) ?: "?",
-                                    maxLines = 1,
+                                    maxLines = 2,
+                                    lineHeight = 12.sp,
+                                    textAlign = TextAlign.Center,
                                     overflow = TextOverflow.Ellipsis,
                                     style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
                                     color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface

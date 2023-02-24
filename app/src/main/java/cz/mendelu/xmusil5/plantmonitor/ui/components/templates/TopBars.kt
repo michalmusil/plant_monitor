@@ -62,3 +62,43 @@ fun TopBarWithBackButton(
         )
     )
 }
+
+@Composable
+fun TopBarNoNav(
+    topBarTitle: String,
+    actions: @Composable RowScope.() -> Unit = {},
+){
+    SmallTopAppBar(
+        title = {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(align = Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = topBarTitle,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(start = 0.dp)
+                )
+            }
+        },
+        actions = {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+            ) {
+                actions()
+            }
+        },
+        colors = TopAppBarDefaults.smallTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    )
+}
