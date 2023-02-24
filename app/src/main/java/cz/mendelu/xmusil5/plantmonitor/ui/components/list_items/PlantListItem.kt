@@ -35,7 +35,7 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
-import cz.mendelu.xmusil5.plantmonitor.utils.BitmapUtils
+import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 import kotlin.math.roundToInt
 
@@ -93,7 +93,7 @@ fun PlantListItem(
 
             Image(
                 bitmap = plantImage.value?.asImageBitmap()
-                    ?: BitmapUtils.getBitmapFromVectorDrawable(
+                    ?: ImageUtils.getBitmapFromVectorDrawable(
                         LocalContext.current, R.drawable.ic_plant_root
                     )!!.asImageBitmap(),
                 contentDescription = stringResource(id = R.string.plantImage),

@@ -6,6 +6,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
+import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
@@ -24,6 +25,10 @@ interface HousePlantMeasurementsApi {
     suspend fun register(
         @Body postAuth: PostAuth
     ): Response<Unit>
+
+
+
+
 
     @Headers("Content-Type: application/json")
     @GET("plants/user/{id}")
@@ -46,12 +51,36 @@ interface HousePlantMeasurementsApi {
         @Header("Authorization") bearerToken: String
     ): Response<GetPlant>
 
+    @GET("plants/images/{plantId}")
+    suspend fun getPlantImage(
+        @Path("plantId")plantId: Long,
+        @Header("Authorization") bearerToken: String
+    ): Response<ResponseBody>
+
+    @Multipart
+    @PUT("plants/images")
+    suspend fun uploadPlantImage(
+        @Query("plantId") plantId: Long,
+        @Part image: MultipartBody.Part,
+        @Header("Authorization") bearerToken: String
+    ): Response<GetPlant>
+
+
+
+
+
+
     @Headers("Content-Type: application/json")
     @GET("devices/user/{id}")
     suspend fun getAllDevices(
         @Path("id")userId: Long,
         @Header("Authorization") bearerToken: String
     ): Response<List<GetDevice>>
+
+
+
+
+
 
     @Headers("Content-Type: application/json")
     @GET("measurements/plant/{id}")
@@ -70,9 +99,5 @@ interface HousePlantMeasurementsApi {
         @Header("Authorization") bearerToken: String
     ): Response<GetMeasurement>
 
-    @GET("plants/images/{plantId}")
-    suspend fun getPlantImage(
-        @Path("plantId")plantId: Long,
-        @Header("Authorization") bearerToken: String
-    ): Response<ResponseBody>
+
 }

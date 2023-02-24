@@ -1,6 +1,8 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.add_plant_screen
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,8 +14,14 @@ import cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants.IPlants
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
+import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,11 +32,12 @@ class AddPlantViewModel @Inject constructor(
     val uiState: MutableState<AddPlantUiState> = mutableStateOf(AddPlantUiState.Start())
 
     fun savePlant(
+        context: Context,
         name: String,
         species: String,
         description: String?,
         measurementValueLimits: List<MeasurementValueLimit>?,
-        plantImage: Bitmap?
+        plantImageUri: Uri?
     ){
         val userId = authenticationManager.getUserId()
         val newPlant = PostPlant(
@@ -43,8 +52,12 @@ class AddPlantViewModel @Inject constructor(
 
             when(result){
                 is CommunicationResult.Success -> {
-                    plantImage?.let {
-                        savePlantImage(it)
+                    plantImageUri?.let {
+                        savePlantImage(
+                            context = context,
+                            plantId = result.data.id,
+                            imageUri = it
+                        )
                     }
                     uiState.value = AddPlantUiState.PlantSaved(result.data)
                 }
@@ -58,8 +71,32 @@ class AddPlantViewModel @Inject constructor(
         }
     }
 
-    private suspend fun savePlantImage(plantImage: Bitmap){
-        // TODO
+    private suspend fun savePlantImage(context: Context, plantId: Long, imageUri: Uri){
+        viewModelScope.launch {
+            val contentResolver = context.contentResolver
+            try {
+                val stream = contentResolver.openInputStream(imageUri)
+                stream?.let {
+                    val imageName = ImageUtils.getFileName(context, imageUri)
+                    val mediaType = contentResolver.getType(imageUri)?.toMediaTypeOrNull()
+
+                    val imageInBytes = it.readBytes()
+                    val request = imageInBytes.toRequestBody(mediaType, 0, imageInBytes.size)
+                    val filePart = MultipartBody.Part.createFormData(
+                        "image",
+                        imageName,
+                        request
+                    )
+                    plantsRepository.uploadPlantImage(
+                        plantId = plantId,
+                        imagePart = filePart
+                    )
+                }
+            }
+            catch (ex: java.lang.Exception){
+                ex.printStackTrace()
+            }
+        }
     }
 
 }

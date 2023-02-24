@@ -1,6 +1,7 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.add_plant_screen
 
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -35,6 +37,7 @@ import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
+import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.GalleryLauncherButton
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailImage
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailInfo
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailViewModel
@@ -80,6 +83,7 @@ fun AddPlantScreenContent(
     error: MutableState<String?>
 ){
     val cornerRadius = 30.dp
+    val context = LocalContext.current
 
     val name = rememberSaveable{
         mutableStateOf("")
@@ -94,7 +98,7 @@ fun AddPlantScreenContent(
         mutableStateListOf<MeasurementValueLimit>()
     }
     val selectedImage = remember {
-        mutableStateOf<Bitmap?>(null)
+        mutableStateOf<Pair<Uri, Bitmap>?>(null)
     }
 
     val nameError = rememberSaveable{
@@ -148,11 +152,12 @@ fun AddPlantScreenContent(
                 onClick = {
                     if (name.value.isNotEmpty() && species.value.isNotEmpty())
                     viewModel.savePlant(
+                        context = context,
                         name = name.value,
                         species = species.value,
                         description = if (description.value.isNotEmpty()) description.value else null,
                         measurementValueLimits = if (measurementValueLimits.isNotEmpty()) measurementValueLimits else null,
-                        plantImage = selectedImage.value
+                        plantImageUri = selectedImage.value?.first
                     )
                 }
             )
@@ -162,14 +167,14 @@ fun AddPlantScreenContent(
 
 @Composable
 fun NewPlantImage(
-    selectedImage: MutableState<Bitmap?>,
+    selectedImage: MutableState<Pair<Uri, Bitmap>?>,
     viewModel: AddPlantViewModel
 ){
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height(350.dp)
             .background(MaterialTheme.colorScheme.surface)
     ) {
         if (selectedImage.value != null) {
@@ -179,28 +184,34 @@ fun NewPlantImage(
                     .fillMaxSize()
             ) {
                 Image(
-                    bitmap = selectedImage.value!!.asImageBitmap(),
+                    bitmap = selectedImage.value!!.second.asImageBitmap(),
                     contentDescription = stringResource(id = R.string.plantImage),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
                 )
-                CustomButton(
+                GalleryLauncherButton(
                     text = stringResource(id = R.string.changePlantImage),
                     iconId = R.drawable.ic_change,
-                    onClick = {
-                        /*TODO*/
-                    }
+                    onImagePicked = { uri, bitmap ->
+                        bitmap?.let {
+                            selectedImage.value = Pair(uri, it)
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 40.dp)
                 )
             }
         }
         else {
-            CustomButton(
+            GalleryLauncherButton(
                 text = stringResource(id = R.string.addPlantImage),
                 iconId = R.drawable.ic_plus,
-                onClick = {
-                    /*TODO*/
-                }
+                onImagePicked = { uri, bitmap ->
+                    bitmap?.let {
+                        selectedImage.value = Pair(uri, it)
+                    }
+                },
             )
         }
     }

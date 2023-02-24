@@ -1,12 +1,14 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants
 
 import android.graphics.Bitmap
+import android.net.Uri
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 class PlantsRepositoryImpl @Inject constructor(
@@ -39,6 +41,19 @@ class PlantsRepositoryImpl @Inject constructor(
                 bearerToken = authenticationManager.getToken()
             )
         }
+    }
+
+    override suspend fun uploadPlantImage(
+        plantId: Long,
+        imagePart: MultipartBody.Part
+    ): CommunicationResult<GetPlant> {
+       return processRequest {
+           api.uploadPlantImage(
+               plantId = plantId,
+               image = imagePart,
+               bearerToken = authenticationManager.getToken()
+           )
+       }
     }
 
     override suspend fun postNewPlant(postPlant: PostPlant): CommunicationResult<GetPlant> {

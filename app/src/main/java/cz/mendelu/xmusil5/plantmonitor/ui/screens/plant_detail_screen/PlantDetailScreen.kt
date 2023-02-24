@@ -193,7 +193,7 @@ fun PlantDetailImage(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height(350.dp)
     ) {
         if (plant.titleImageBitmap != null) {
             Image(
