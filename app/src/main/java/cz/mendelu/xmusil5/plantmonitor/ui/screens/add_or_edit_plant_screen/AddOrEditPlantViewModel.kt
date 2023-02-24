@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.ui.screens.add_plant_screen
+package cz.mendelu.xmusil5.plantmonitor.ui.screens.add_or_edit_plant_screen
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -17,7 +17,6 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLi
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
-import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailUiState
 import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -117,6 +116,18 @@ class AddOrEditPlantViewModel @Inject constructor(
                 is CommunicationResult.Error -> {
                     uiState.value = AddOrEditPlantUiState.PlantPostFailed(R.string.couldNotSavePlant)
                 }
+            }
+        }
+    }
+
+    fun deletePlant(plant: GetPlant){
+        viewModelScope.launch {
+            val result = plantsRepository.deletePlant(plantId = plant.id)
+            if (result is CommunicationResult.Success){
+                uiState.value = AddOrEditPlantUiState.PlantDeleted()
+            }
+            else {
+                uiState.value = AddOrEditPlantUiState.PlantPostFailed(R.string.failedToDeletePlant)
             }
         }
     }

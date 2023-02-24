@@ -19,4 +19,6 @@ interface IPlantsRepository {
     suspend fun postNewPlant(postPlant: PostPlant): CommunicationResult<GetPlant>
 
     suspend fun updatePlant(putPlant: PutPlant): CommunicationResult<GetPlant>
+
+    suspend fun deletePlant(plantId: Long): CommunicationResult<Unit>
 }

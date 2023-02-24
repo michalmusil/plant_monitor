@@ -53,7 +53,9 @@ fun LoginScreen(
                 LoadingScreen()
             }
             is LoginUiState.LoginSuccessfull -> {
-                navigation.toPlantsScreen()
+                LaunchedEffect(it){
+                    navigation.toPlantsScreen()
+                }
             }
             is LoginUiState.LoginFailed -> {
                 LaunchedEffect(it){

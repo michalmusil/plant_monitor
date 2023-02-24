@@ -10,7 +10,7 @@ import androidx.navigation.navArgument
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.ScreenSkeleton
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_device_screen.AddDeviceScreen
-import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_plant_screen.AddOrEditPlantScreen
+import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_or_edit_plant_screen.AddOrEditPlantScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.device_detail_screen.DeviceDetailScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.devices_screen.DevicesScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.login_screen.LoginScreen
@@ -81,8 +81,21 @@ fun NavGraph(
                         DeviceDetailScreen(deviceId = deviceId, navigation = navigation)
                     }
 
-                    composable(Destination.AddPlantScreen.route) {
-                        AddOrEditPlantScreen(navigation = navigation)
+                    composable(Destination.AddOrEditPlantScreen.route + "/{plantId}",
+                        arguments = listOf(
+                            navArgument("plantId") {
+                                type = NavType.LongType
+                                defaultValue = -1L
+                            }
+                        )) {
+                        var plantId = it.arguments?.getLong("plantId")
+                        if (plantId == -1L){
+                            plantId = null
+                        }
+                        AddOrEditPlantScreen(
+                            existingPlantId = plantId,
+                            navigation = navigation
+                        )
                     }
 
                     composable(Destination.AddDeviceScreen.route) {

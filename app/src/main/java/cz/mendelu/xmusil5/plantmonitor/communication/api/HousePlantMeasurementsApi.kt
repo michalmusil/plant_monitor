@@ -59,6 +59,13 @@ interface HousePlantMeasurementsApi {
         @Header("Authorization") bearerToken: String
     ): Response<GetPlant>
 
+    @Headers("Content-Type: application/json")
+    @DELETE("plants/{id}")
+    suspend fun deletePlant(
+        @Path("id") id: Long,
+        @Header("Authorization") bearerToken: String
+    ): Response<Unit>
+
     @GET("plants/images/{plantId}")
     suspend fun getPlantImage(
         @Path("plantId")plantId: Long,

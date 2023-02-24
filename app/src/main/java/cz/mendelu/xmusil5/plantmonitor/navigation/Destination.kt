@@ -11,7 +11,8 @@ sealed class Destination(val route: String){
     object PlantDetailScreen: Destination("plant_detail_screen")
 
     object AddDeviceScreen: Destination("add_device_screen")
-    object AddPlantScreen: Destination("add_plant_screen")
+
+    object AddOrEditPlantScreen: Destination("add_or_edit_plant_screen")
 
     object ProfileScreen: Destination("profile_screen")
 }

@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.ui.screens.add_plant_screen
+package cz.mendelu.xmusil5.plantmonitor.ui.screens.add_or_edit_plant_screen
 
 import android.graphics.Bitmap
 import android.net.Uri
@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -27,9 +31,9 @@ import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.TopBarWithBackButton
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
+import cz.mendelu.xmusil5.plantmonitor.ui.components.templates.PopupDialog
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.GalleryLauncherButton
@@ -73,8 +77,21 @@ fun AddOrEditPlantScreen(
                     navigation.toPlantsScreen()
                 }
             }
+            is AddOrEditPlantUiState.PlantDeleted -> {
+                LaunchedEffect(it){
+                    navigation.toPlantsScreen()
+                }
+            }
             is AddOrEditPlantUiState.PlantPostFailed -> {
-                errorString.value = stringResource(id = it.reasonStringCode)
+                val error = stringResource(id = it.reasonStringCode)
+                LaunchedEffect(it){
+                    errorString.value = error
+                }
+                AddPlantScreenContent(
+                    viewModel = viewModel,
+                    navigation = navigation,
+                    error = errorString
+                )
             }
             is AddOrEditPlantUiState.Error -> {
                 ErrorScreen(text = stringResource(id = it.errorStringCode))
@@ -114,6 +131,9 @@ fun AddPlantScreenContent(
     val speciesError = rememberSaveable{
         mutableStateOf(false)
     }
+    val showDeleteDialog = rememberSaveable{
+        mutableStateOf(false)
+    }
 
     // When mode is edit, i fill all the plants info out
     viewModel.mode.value.let {
@@ -137,6 +157,7 @@ fun AddPlantScreenContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
+
         TopBarWithBackButton(
             topBarTitle = stringResource(
                 id = when(viewModel.mode.value){
@@ -144,10 +165,45 @@ fun AddPlantScreenContent(
                     is AddOrEditPlantMode.NewPlant -> R.string.addPlantScreen
                 }
             ),
+            actions = {
+                if (viewModel.mode.value is AddOrEditPlantMode.EditPlant){
+                    IconButton(
+                        onClick = {
+                            showDeleteDialog.value = true
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = stringResource(id = R.string.edit),
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                }
+            },
             onBackClick = {
                 navigation.returnBack()
             }
         )
+
+        if (showDeleteDialog.value) {
+            PopupDialog(
+                showDialog = showDeleteDialog,
+                title = stringResource(id = R.string.deletePlant),
+                text = stringResource(id = R.string.sureToDeletePlant),
+                confirmButtonText = stringResource(id = R.string.yes),
+                cancelButtonText = stringResource(id = R.string.no),
+                onConfirm = {
+                    viewModel.mode.value.let {
+                        if (it is AddOrEditPlantMode.EditPlant) {
+                            viewModel.deletePlant(it.plant)
+                        }
+                    }
+                },
+                onCancel = {
+                    showDeleteDialog.value = false
+                }
+            )
+        }
 
         NewPlantImage(
             selectedImage = selectedImage,
@@ -171,8 +227,15 @@ fun AddPlantScreenContent(
                 speciesError = speciesError,
                 viewModel = viewModel
             )
-            
 
+            SavePlantButton(
+                name = name,
+                species = species,
+                description = description,
+                selectedImage = selectedImage,
+                measurementValueLimits = measurementValueLimits,
+                viewModel = viewModel
+            )
         }
     }
 }

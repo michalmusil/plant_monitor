@@ -74,4 +74,13 @@ class PlantsRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun deletePlant(plantId: Long): CommunicationResult<Unit> {
+        return processRequest {
+            api.deletePlant(
+                id = plantId,
+                bearerToken = authenticationManager.getToken()
+            )
+        }
+    }
 }
