@@ -48,7 +48,13 @@ object DateUtils {
     }
 
 
-
+    fun getDateString(calendar: Calendar): String{
+        if (LanguageUtils.isLanguageCzech()){
+            return SimpleDateFormat(DATE_FORMAT_CS).format(calendar.time)
+        } else {
+            return SimpleDateFormat(DATE_FORMAT_EN).format(calendar.time)
+        }
+    }
 
     fun getLocalizedDateTimeString(calendar: Calendar): String{
         calendar.timeZone = TimeZone.getDefault()
@@ -90,12 +96,17 @@ object DateUtils {
         return subtracted
     }
 
-
-    fun getCurrentUnixTime(): Long{
-        val calendar = Calendar.getInstance()
-        return calendar.timeInMillis
+    fun getCalendarFromDateComponents(
+        year: Int,
+        month: Int,
+        day: Int
+    ): Calendar{
+        val cal = Calendar.getInstance()
+        cal.timeZone = TimeZone.getTimeZone("UTC")
+        cal.set(year, month, day, 0, 0, 0)
+        cal.set(Calendar.MILLISECOND, 0)
+        return cal
     }
-
 
     fun getDayOfTheWeekString(dateTime: Calendar): String{
         val day = dateTime.get(Calendar.DAY_OF_WEEK)

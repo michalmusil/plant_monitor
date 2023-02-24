@@ -47,6 +47,8 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.Measureme
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementsLineChart
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MostRecentMeasurementValuesCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
+import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoPlantMeasurements
+import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.DatePicker
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.ExpandableCard
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
@@ -78,6 +80,15 @@ fun PlantDetailScreen(
     }
     val to = remember {
         mutableStateOf(DateUtils.getCurrentCalendarInUTC0())
+    }
+    LaunchedEffect(from.value, to.value){
+        plant.value?.let {
+            viewModel.fetchPlantMeasurements(
+                plantId = it.id,
+                from = from.value,
+                to = to.value
+            )
+        }
     }
 
     viewModel.uiState.value.let {
@@ -158,7 +169,6 @@ fun PlantDetailScreenContent(
             from = from,
             to = to,
             viewModel = viewModel,
-            navigation = navigation
         )
     }
 }
@@ -210,7 +220,6 @@ fun PlantDetailInfo(
     from: MutableState<Calendar>,
     to: MutableState<Calendar>,
     viewModel: PlantDetailViewModel,
-    navigation: INavigationRouter
 ){
     val topCornerRadius = 30.dp
 
@@ -270,25 +279,36 @@ fun PlantDetailInfo(
             }
         }
 
+        Spacer(modifier = Modifier.height(25.dp))
+
+        Text(
+            text = stringResource(id = R.string.measurementValues),
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Bold,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        MeasurementsDateFilter(
+            from = from,
+            to = to
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
         if (measurements.isNotEmpty()){
-
-            Spacer(modifier = Modifier.height(25.dp))
-
-            Text(
-                text = stringResource(id = R.string.measurementValues),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-            
             MeasurementsTabView(
                 measurements = measurements,
                 viewModel = viewModel
             )
+        }
+        else {
+            Spacer(modifier = Modifier.height(40.dp))
+
+            NoPlantMeasurements(modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -327,6 +347,60 @@ fun PlantDetailDescription(
     )
 }
 
+@Composable
+fun MeasurementsDateFilter(
+    from: MutableState<Calendar>,
+    to: MutableState<Calendar>
+){
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = stringResource(id = R.string.from),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(3.dp))
+            DatePicker(
+                date = from.value,
+                onDatePicked = {
+                    from.value = it
+                }
+            )
+        }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(id = R.string.to),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(3.dp))
+            DatePicker(
+                date = to.value,
+                onDatePicked = {
+                    // Needs to be adjusted to include picked day
+                    val toInclusive = it.apply {
+                        set(Calendar.HOUR, 23)
+                        set(Calendar.MINUTE, 59)
+                        set(Calendar.SECOND, 59)
+                        set(Calendar.MILLISECOND, 999)
+                    }
+                    to.value = toInclusive
+                }
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MeasurementsTabView(
@@ -346,7 +420,7 @@ fun MeasurementsTabView(
     val chartValueSet = remember{
         mutableStateOf(viewModel.getChartValueSetOfType(selectedMeasurementType.value, measurements))
     }
-    LaunchedEffect(selectedMeasurementType.value){
+    LaunchedEffect(selectedMeasurementType.value, measurements.size){
         chartValueSet.value = viewModel.getChartValueSetOfType(selectedMeasurementType.value, measurements)
     }
 

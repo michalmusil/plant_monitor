@@ -109,7 +109,7 @@ class PlantDetailViewModel @Inject constructor(
                     x = index.toFloat(),
                     y = measurementValue.value.toFloat()
                 )
-                val label = DateUtils.getLocalizedDateString(calendar = measurement.datetime.calendarInUTC0)
+                val label = DateUtils.getLocalizedDateTimeString(calendar = measurement.datetime.calendarInUTC0)
 
                 dataPointsAndLabels.add(Pair(dataPoint, label))
             }
