@@ -6,5 +6,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class PostDeviceActivation(
     @Json(name = "deviceId") val deviceId: Long,
-    @Json(name = "isActive") val isActive: Long,
+    @Json(name = "isActive") val isActive: Boolean,
 )

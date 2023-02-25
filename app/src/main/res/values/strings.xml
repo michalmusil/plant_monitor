@@ -11,7 +11,7 @@
     <string name="saveChanges">Save changes</string>
     <string name="errorIcon">Error icon</string>
     <string name="plantImage">Plant image</string>
-    <string name="deviceImage">Device image</string>
+    <string name="deviceImage">Device icon</string>
     <string name="appLogo">App logo</string>
     <string name="user">User</string>
     <string name="icon">Icon</string>
@@ -72,6 +72,17 @@
     <string name="devicesScreen">Devices</string>
 
     <string name="noPlantAssigned">No plant assigned</string>
+
+    <!--  DEVICES DETAIL AND CONTROL SCREEN  -->
+    <string name="deviceDetailAndControlScreen">Measuring device</string>
+    <string name="assignedToPlant">Currently assigned to plant</string>
+    <string name="assignToNewPlant">Assign to a new plant</string>
+
+    <string name="deviceUpdateFailed">Device update failed</string>
+    <string name="deviceIsActivePrimary">Device is activated</string>
+    <string name="deviceIsActiveSecondary">Measurements received from this device will be automatically saved</string>
+    <string name="deviceIsInactivePrimary">Device is deactivated</string>
+    <string name="deviceIsInactiveSecondary">Measurements received from this device will be ignored</string>
 
     <!--  PROFILE SCREEN  -->
     <string name="profileScreen">Profile</string>

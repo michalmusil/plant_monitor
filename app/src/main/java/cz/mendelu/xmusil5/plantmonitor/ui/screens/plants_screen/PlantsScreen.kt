@@ -1,11 +1,9 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.plants_screen
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +15,7 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
-import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItem
+import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItemExpandable
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoDataScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.AddFloatingActionButton
@@ -89,37 +87,39 @@ fun PlantsScreenContent(
                 plants[it].id
             },
             itemContent = { index ->
+                val plant = plants[index]
+
                 val plantImage = remember{
-                    mutableStateOf(plants[index].titleImageBitmap)
+                    mutableStateOf(plant.titleImageBitmap)
                 }
                 val mostRecentMeasurementValues = remember {
                     mutableStateOf<List<MeasurementValue>?>(null)
                 }
-                LaunchedEffect(plants[index]){
+                LaunchedEffect(plant){
                     if (plantImage.value == null) {
                         viewModel.fetchPlantImage(
-                            plant = plants[index],
+                            plant = plant,
                             onSuccess = { image ->
-                                plants[index].titleImageBitmap = image
+                                plant.titleImageBitmap = image
                                 plantImage.value = image
                             }
                         )
                     }
                 }
-                PlantListItem(
-                    plant = plants[index],
+                PlantListItemExpandable(
+                    plant = plant,
                     plantImage = plantImage,
                     measurementValues = mostRecentMeasurementValues,
                     onExpanded = {
                         viewModel.fetchMostRecentValuesOfPlant(
-                            plant = plants[index],
+                            plant = plant,
                             onValuesFetched = {
                                 mostRecentMeasurementValues.value = it
                             }
                         )
                     },
                     onClick = {
-                        navigation.toPlantDetail(plants[index].id)
+                        navigation.toPlantDetail(plant.id)
                     },
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
