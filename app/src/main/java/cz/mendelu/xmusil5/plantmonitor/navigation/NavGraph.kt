@@ -11,7 +11,7 @@ import com.icontio.senscare_peresonal_mobile.ui.components.templates.ScreenSkele
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_device_screen.AddDeviceScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_or_edit_plant_screen.AddOrEditPlantScreen
-import cz.mendelu.xmusil5.plantmonitor.ui.screens.device_detail_screen.DeviceDetailScreen
+import cz.mendelu.xmusil5.plantmonitor.ui.screens.device_detail_and_control_screen.DeviceDetailAndControlScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.devices_screen.DevicesScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.login_screen.LoginScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailScreen
@@ -70,7 +70,7 @@ fun NavGraph(
                         PlantDetailScreen(plantId = plantId, navigation = navigation)
                     }
 
-                    composable(Destination.DeviceDetailScreen.route + "/{deviceId}",
+                    composable(Destination.DeviceDetailAndControlScreen.route + "/{deviceId}",
                         arguments = listOf(
                             navArgument("deviceId") {
                                 type = NavType.LongType
@@ -78,7 +78,7 @@ fun NavGraph(
                             }
                         )) {
                         val deviceId = it.arguments?.getLong("deviceId") ?: -1L
-                        DeviceDetailScreen(deviceId = deviceId, navigation = navigation)
+                        DeviceDetailAndControlScreen(deviceId = deviceId, navigation = navigation)
                     }
 
                     composable(Destination.AddOrEditPlantScreen.route + "/{plantId}",

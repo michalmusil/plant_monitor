@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -271,7 +270,9 @@ fun PlantDetailInfo(
         Spacer(modifier = Modifier.height(10.dp))
 
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
             Text(
@@ -300,7 +301,7 @@ fun PlantDetailInfo(
             DeviceCard(
                 device = it,
                 onClick = {
-                    navigation.toDeviceDetail(it.id)
+                    navigation.toDeviceDetailAndControl(it.id)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

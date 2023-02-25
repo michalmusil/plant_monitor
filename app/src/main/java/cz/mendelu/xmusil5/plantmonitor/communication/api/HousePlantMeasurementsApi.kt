@@ -1,6 +1,9 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api
 
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDeviceActivation
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDevicePlantAssignment
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDeviceRegister
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
@@ -92,6 +95,33 @@ interface HousePlantMeasurementsApi {
         @Header("Authorization") bearerToken: String
     ): Response<List<GetDevice>>
 
+    @Headers("Content-Type: application/json")
+    @GET("devices/{id}")
+    suspend fun getDeviceById(
+        @Path("id")id: Long,
+        @Header("Authorization") bearerToken: String
+    ): Response<GetDevice>
+
+    @Headers("Content-Type: application/json")
+    @POST("devices/register")
+    suspend fun registerDevice(
+        @Body postDeviceRegister: PostDeviceRegister,
+        @Header("Authorization") bearerToken: String
+    ): Response<GetDevice>
+
+    @Headers("Content-Type: application/json")
+    @POST("devices/activation")
+    suspend fun deviceActivation(
+        @Body postDeviceActivation: PostDeviceActivation,
+        @Header("Authorization") bearerToken: String
+    ): Response<GetDevice>
+
+    @Headers("Content-Type: application/json")
+    @POST("devices/assignToPlant")
+    suspend fun devicePlantAssign(
+        @Body postDevicePlantAssignment: PostDevicePlantAssignment,
+        @Header("Authorization") bearerToken: String
+    ): Response<GetDevice>
 
 
 

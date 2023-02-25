@@ -45,7 +45,7 @@ class NavigationRouterImpl: INavigationRouter {
     }
 
     override fun toProfileScreen() {
-        emptyBackstackAndNavigate(Destination.PlantsScreen)
+        emptyBackstackAndNavigate(Destination.ProfileScreen)
     }
 
 
@@ -55,8 +55,8 @@ class NavigationRouterImpl: INavigationRouter {
         navController.navigate("${Destination.PlantDetailScreen.route}/${plantId}")
     }
 
-    override fun toDeviceDetail(deviceId: Long) {
-        navController.navigate("${Destination.DeviceDetailScreen.route}/${deviceId}")
+    override fun toDeviceDetailAndControl(deviceId: Long) {
+        navController.navigate("${Destination.DeviceDetailAndControlScreen.route}/${deviceId}")
     }
 
     override fun toAddPlant() {

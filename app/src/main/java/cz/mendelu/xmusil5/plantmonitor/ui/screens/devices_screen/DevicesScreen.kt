@@ -20,7 +20,6 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.DeviceListItem
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoDataScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.AddFloatingActionButton
-import cz.mendelu.xmusil5.plantmonitor.ui.screens.plants_screen.PlantsViewModel
 
 @Composable
 fun DevicesScreen(
@@ -94,7 +93,7 @@ fun DevicesScreenContent(
                 DeviceListItem(
                     device = devices[index],
                     onClick = {
-                        navigation.toDeviceDetail(
+                        navigation.toDeviceDetailAndControl(
                             deviceId = devices[index].id
                         )
                     }

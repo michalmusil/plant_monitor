@@ -30,8 +30,9 @@ data class BottomNavItem(
     val title: String,
     val icon: ImageVector,
     val iconFocused: ImageVector,
+    val modifier: Modifier = Modifier,
     val destination: Destination,
-    val modifier: Modifier = Modifier
+    val onClick: () -> Unit
 )
 
 @Composable
@@ -45,19 +46,22 @@ fun BottomNavBar(
             title = stringResource(id = R.string.plantsScreen),
             icon = ImageVector.vectorResource(id = R.drawable.ic_plant_root),
             iconFocused = ImageVector.vectorResource(id = R.drawable.ic_plant_root_filled),
-            destination = Destination.PlantsScreen
+            destination = Destination.PlantsScreen,
+            onClick = { navigation.toPlantsScreen() }
         ),
         BottomNavItem(
             title = stringResource(id = R.string.devicesScreen),
             icon = ImageVector.vectorResource(id = R.drawable.ic_measuring_device),
             iconFocused = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
-            destination = Destination.DevicesScreen
+            destination = Destination.DevicesScreen,
+            onClick = { navigation.toDevicesScreen() }
         ),
         BottomNavItem(
             title = stringResource(id = R.string.profileScreen),
             icon = ImageVector.vectorResource(id = R.drawable.ic_person),
             iconFocused = ImageVector.vectorResource(id = R.drawable.ic_person_filled),
-            destination = Destination.ProfileScreen
+            destination = Destination.ProfileScreen,
+            onClick = { navigation.toProfileScreen() }
         ),
     )
 
@@ -73,9 +77,6 @@ fun BottomNavBar(
             BottomNavItemView(
                 item = it,
                 currentBackstackEntry = currentBackStackEntry.value,
-                onItemClick = {
-                    navigation.getNavController().navigate(it.destination.route)
-                }
             )
         }
     }
@@ -85,7 +86,6 @@ fun BottomNavBar(
 fun BottomNavItemView(
     item: BottomNavItem,
     currentBackstackEntry: NavBackStackEntry?,
-    onItemClick: (navItem: BottomNavItem) -> Unit
 ){
     var isSelected = item.destination.route == currentBackstackEntry?.destination?.route
 
@@ -115,7 +115,7 @@ fun BottomNavItemView(
                 .clip(CircleShape)
                 .background(backgroundColor)
                 .clickable {
-                    onItemClick(item)
+                    item.onClick()
                 }
         ){
             Icon(
