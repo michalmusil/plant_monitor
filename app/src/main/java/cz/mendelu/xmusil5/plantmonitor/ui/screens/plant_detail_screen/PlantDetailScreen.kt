@@ -286,7 +286,7 @@ fun PlantDetailInfo(
             Spacer(modifier = Modifier.height(5.dp))
             Text(
                 text = plant.species,
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
@@ -342,7 +342,7 @@ fun PlantDetailInfo(
 
         Text(
             text = stringResource(id = R.string.measurementValues),
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             maxLines = 2,
@@ -423,7 +423,7 @@ fun MeasurementsDateFilter(
 
             Text(
                 text = stringResource(id = R.string.from),
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(3.dp))
@@ -439,7 +439,7 @@ fun MeasurementsDateFilter(
         ) {
             Text(
                 text = stringResource(id = R.string.to),
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(3.dp))

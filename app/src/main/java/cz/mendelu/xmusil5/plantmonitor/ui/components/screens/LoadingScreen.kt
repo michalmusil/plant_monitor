@@ -35,7 +35,7 @@ fun LoadingScreen(){
                 .size(sizeIndicator)
         )
         Image(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_foreground),
+            imageVector = ImageVector.vectorResource(id = R.drawable.app_logo),
             contentDescription = stringResource(id = R.string.appLogo),
             modifier = Modifier
                 .size(sizeLogo)

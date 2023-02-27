@@ -17,6 +17,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.screens.login_screen.LoginScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plants_screen.PlantsScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.profile_screen.ProfileScreen
+import cz.mendelu.xmusil5.plantmonitor.ui.screens.splash_screen.SplashScreen
 
 
 @Composable
@@ -43,6 +44,9 @@ fun NavGraph(
                     navController = navController,
                     startDestination = startDestination
                 ) {
+                    composable(Destination.SplashScreen.route) {
+                        SplashScreen(navigation = navigation)
+                    }
                     composable(Destination.LoginScreen.route) {
                         LoginScreen(navigation = navigation)
                     }

@@ -49,7 +49,7 @@ fun NoDataScreen(
             )
             Text(
                 text = message,
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
             )
@@ -63,7 +63,7 @@ fun NoDataScreen(
         ) {
             Text(
                 text = stringResource(id = R.string.clickHereToAdd),
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.titleSmall,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Icon(

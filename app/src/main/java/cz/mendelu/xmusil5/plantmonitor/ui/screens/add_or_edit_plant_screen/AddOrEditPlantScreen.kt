@@ -325,7 +325,7 @@ fun AddPlantForm(
             Spacer(modifier = Modifier.height(5.dp))
             Text(
                 text = species.value,
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
