@@ -78,7 +78,7 @@ fun DevicesScreenContent(
     devices: List<GetDevice>
 ){
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(120.dp),
+        columns = GridCells.Adaptive(170.dp),
         contentPadding = PaddingValues(vertical = 10.dp),
         modifier = Modifier
             .fillMaxSize()

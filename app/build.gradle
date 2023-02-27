@@ -22,6 +22,18 @@ android {
         }
     }
 
+
+    flavorDimensions "environment"
+    productFlavors {
+        mock {
+            dimension = "environment"
+        }
+        prod {
+            dimension = "environment"
+        }
+    }
+
+
     buildTypes {
         release {
             minifyEnabled false
@@ -112,6 +124,13 @@ dependencies {
     def accompanist_pager_version = "0.28.0"
     implementation "com.google.accompanist:accompanist-pager:$accompanist_pager_version"
     implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_pager_version"
+
+    // Hilt testing
+    testImplementation 'com.google.dagger:hilt-android-testing:2.44'
+    kaptTest 'com.google.dagger:hilt-android-compiler:2.44'
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.44'
+    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.44'
+
 
 
 }

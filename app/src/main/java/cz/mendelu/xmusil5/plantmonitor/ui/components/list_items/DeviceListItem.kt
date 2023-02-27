@@ -35,10 +35,12 @@ fun DeviceListItem(
 ) {
     val cornerRadius = 10.dp
 
-    Column(
+    Box(
+        contentAlignment = Alignment.TopEnd,
         modifier = modifier
-            .width(120.dp)
-            .height(210.dp)
+            .padding(15.dp)
+            .width(170.dp)
+            .height(200.dp)
             .customShadow(
                 color = shadowColor,
                 borderRadius = cornerRadius,
@@ -53,34 +55,21 @@ fun DeviceListItem(
             }
     ) {
         Column(
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 7.dp, horizontal = 12.dp)
+                .padding(12.dp)
         ) {
-            
-            Box(
-                contentAlignment = Alignment.TopEnd
-            ){
-                Image(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
-                    contentDescription = stringResource(id = R.string.deviceImage),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(cornerRadius))
-                )
-                Box(
-                    modifier = Modifier
-                        .size(16.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (device.active) onlineColor else errorColor
-                        )
-                )
-            }
+
+            Image(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
+                contentDescription = stringResource(id = R.string.deviceImage),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(70.dp)
+                    .clip(RoundedCornerShape(cornerRadius))
+            )
 
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -122,7 +111,15 @@ fun DeviceListItem(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }
-
         }
+        Box(
+            modifier = Modifier
+                .padding(10.dp)
+                .size(16.dp)
+                .clip(CircleShape)
+                .background(
+                    if (device.active) onlineColor else errorColor
+                )
+        )
     }
 }
