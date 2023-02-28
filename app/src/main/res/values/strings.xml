@@ -10,6 +10,7 @@
     <string name="edit">Edit</string>
     <string name="saveChanges">Save changes</string>
     <string name="errorIcon">Error icon</string>
+    <string name="refresh">Refresh</string>
     <string name="plantImage">Plant image</string>
     <string name="deviceImage">Device icon</string>
     <string name="appLogo">App logo</string>

@@ -60,7 +60,9 @@ fun DevicesScreen(
                     )
                 }
                 is DevicesUiState.Error -> {
-                    ErrorScreen(text = stringResource(id = it.errorStringCode))
+                    ErrorScreen(text = stringResource(id = it.errorStringCode)){
+                        viewModel.uiState.value = DevicesUiState.Start()
+                    }
                 }
             }
         }

@@ -60,7 +60,9 @@ fun PlantsScreen(
                     )
                 }
                 is PlantsUiState.Error -> {
-                    ErrorScreen(text = stringResource(id = it.errorStringCode))
+                    ErrorScreen(text = stringResource(id = it.errorStringCode)){
+                        viewModel.uiState.value = PlantsUiState.Start()
+                    }
                 }
             }
         }

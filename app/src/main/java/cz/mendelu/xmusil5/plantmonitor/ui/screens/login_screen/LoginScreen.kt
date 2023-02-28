@@ -77,7 +77,9 @@ fun LoginScreen(
                     email.value = ""
                     password.value = ""
                 }
-                ErrorScreen(text = stringResource(id = it.errorStringCode))
+                ErrorScreen(text = stringResource(id = it.errorStringCode)){
+                    viewModel.uiState.value = LoginUiState.Start()
+                }
             }
         }
     }

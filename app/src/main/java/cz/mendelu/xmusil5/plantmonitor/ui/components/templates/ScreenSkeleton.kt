@@ -26,7 +26,8 @@ fun ScreenSkeleton(
     // List of destinations where bottom navigation bar won't be shown
     val noBottomBarDestinations = remember{
         mutableStateListOf(
-            Destination.LoginScreen.route
+            Destination.LoginScreen.route,
+            Destination.SplashScreen.route
         )
     }
 

@@ -114,7 +114,9 @@ fun DeviceDetailAndControlScreen(
                 }
             }
             is DeviceDetailAndControlUiState.Error -> {
-                ErrorScreen(text = stringResource(id = it.errorStringCode))
+                ErrorScreen(text = stringResource(id = it.errorStringCode)){
+                    viewModel.uiState.value = DeviceDetailAndControlUiState.Start()
+                }
             }
         }
     }
