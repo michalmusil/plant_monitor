@@ -2,7 +2,7 @@ package cz.mendelu.xmusil5.plantmonitor.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import cz.mendelu.xmusil5.plantmonitor.communication.CommunicationConstants
+import cz.mendelu.xmusil5.plantmonitor.communication.ApiConstants
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.jsonAdapters.measurement.MeasurementTypeAdapter
 import cz.mendelu.xmusil5.plantmonitor.communication.jsonAdapters.user.RoleAdapter
@@ -38,8 +38,8 @@ class ApiModule {
         val dispatcher = Dispatcher()
 
         httpClient.dispatcher(dispatcher)
-        httpClient.readTimeout(CommunicationConstants.READ_TIMEOUT, TimeUnit.SECONDS)
-        httpClient.connectTimeout(CommunicationConstants.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
+        httpClient.readTimeout(ApiConstants.READ_TIMEOUT, TimeUnit.SECONDS)
+        httpClient.connectTimeout(ApiConstants.CONNECTION_TIMEOUT, TimeUnit.SECONDS)
         return httpClient.addInterceptor(httpLoggingInterceptor).build()
     }
 
@@ -53,7 +53,7 @@ class ApiModule {
             .add(KotlinJsonAdapterFactory())
             .build()
 
-        return Retrofit.Builder().baseUrl(CommunicationConstants.HOUSE_PLANT_MEASUREMENTS_API_BASE_URL)
+        return Retrofit.Builder().baseUrl(ApiConstants.HOUSE_PLANT_MEASUREMENTS_API_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

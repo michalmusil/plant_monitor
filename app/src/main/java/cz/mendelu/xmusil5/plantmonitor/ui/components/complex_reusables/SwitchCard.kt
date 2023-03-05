@@ -95,9 +95,9 @@ fun SwitchCard(
                 Switch(
                     checked = checked.value,
                     colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.primary,
+                        checkedThumbColor = MaterialTheme.colorScheme.secondary,
                         uncheckedThumbColor = MaterialTheme.colorScheme.background,
-                        checkedTrackColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        checkedTrackColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f),
                         uncheckedTrackColor = shadowColor
                     ),
                     onCheckedChange = {

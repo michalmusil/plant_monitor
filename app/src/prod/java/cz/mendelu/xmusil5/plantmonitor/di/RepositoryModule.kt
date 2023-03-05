@@ -2,14 +2,14 @@ package cz.mendelu.xmusil5.plantmonitor.di
 
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.devices.DevicesRepositoryImpl
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.devices.IDevicesRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.measurements.IMeasurementsRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.measurements.MeasurementsRepositoryImpl
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants.IPlantsRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants.PlantsRepositoryImpl
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.user_auth.IUserAuthRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.user_auth.UserAuthRepositoryImpl
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.DevicesRepositoryImpl
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.IDevicesRepository
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements.IMeasurementsRepository
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements.MeasurementsRepositoryImpl
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.PlantsRepositoryImpl
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.IUserAuthRepository
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.UserAuthRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

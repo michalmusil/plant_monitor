@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
-import cz.mendelu.xmusil5.plantmonitor.communication.CommunicationConstants.HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants.IPlantsRepository
+import cz.mendelu.xmusil5.plantmonitor.communication.ApiConstants.HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit

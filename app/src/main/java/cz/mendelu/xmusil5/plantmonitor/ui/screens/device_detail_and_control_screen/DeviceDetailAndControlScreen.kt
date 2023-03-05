@@ -469,7 +469,7 @@ fun AssignNewPlantCard(
                 offsetY = 2.dp
             )
             .clip(RoundedCornerShape(cornerRadius))
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.surface),
         expandedContent = {
             AssignablePlantsList(
                 device = device,
@@ -537,9 +537,7 @@ fun AssignablePlantsList(
                                 deviceId = device.id,
                                 plantId = plant.id
                             )
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
+                        }
                     )
                 }
             )

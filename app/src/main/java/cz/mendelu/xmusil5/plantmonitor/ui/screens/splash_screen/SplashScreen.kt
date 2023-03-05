@@ -1,5 +1,7 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.splash_screen
 
+import android.Manifest
+import android.os.Build
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -18,10 +20,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.*
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SplashScreen(
     navigation: INavigationRouter,
@@ -33,6 +37,10 @@ fun SplashScreen(
     val currentLogoSize = remember {
         Animatable(0f)
     }
+    val notificationPermission = rememberPermissionState(
+        permission = Manifest.permission.POST_NOTIFICATIONS
+    )
+
     LaunchedEffect(true){
         currentLogoSize.animateTo(
             targetValue = targetLogoSize,
@@ -43,6 +51,10 @@ fun SplashScreen(
                 }
             )
         )
+        if (!notificationPermission.status.isGranted &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            notificationPermission.launchPermissionRequest()
+        }
     }
     LaunchedEffect(true){
         delay(screenDuration)

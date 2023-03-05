@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
 
     <application
         android:allowBackup="true"
@@ -16,6 +18,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PlantMonitor"
         tools:targetApi="31">
+
+        <service
+            android:name=".communication.notifications.NotificationService"
+            android:permission="com.google.android.c2dm.permission.SEND"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
+            </intent-filter>
+
+        </service>
 
         <activity
             android:name=".activities.MainActivity"

@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.communication.repositories.measurements
+package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements
 
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement

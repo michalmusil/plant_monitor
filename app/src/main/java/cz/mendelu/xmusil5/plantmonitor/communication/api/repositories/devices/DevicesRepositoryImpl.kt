@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.communication.repositories.devices
+package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices
 
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi

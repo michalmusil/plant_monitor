@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.devices.IDevicesRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants.IPlantsRepository
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.IDevicesRepository
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
 import dagger.hilt.android.lifecycle.HiltViewModel

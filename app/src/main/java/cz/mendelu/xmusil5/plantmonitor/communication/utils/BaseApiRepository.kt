@@ -3,7 +3,7 @@ package cz.mendelu.xmusil5.plantmonitor.communication.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
-import cz.mendelu.xmusil5.plantmonitor.communication.CommunicationConstants
+import cz.mendelu.xmusil5.plantmonitor.communication.ApiConstants
 import okhttp3.ResponseBody
 import retrofit2.Response
 
@@ -78,7 +78,7 @@ abstract class BaseApiRepository(
     }
 
     fun <T: Any> isAuthorized(call: Response<T>): Boolean {
-        return call.code() != CommunicationConstants.HOUSE_PLANT_MEASUREMENTS_API_UNAUTHORIZED_CODE
+        return call.code() != ApiConstants.HOUSE_PLANT_MEASUREMENTS_API_UNAUTHORIZED_CODE
     }
 
     fun logOut(){

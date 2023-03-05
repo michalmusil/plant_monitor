@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "809716055970",
+    "project_id": "plant-monitor-mobile-app",
+    "storage_bucket": "plant-monitor-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:809716055970:android:4a14c0e72b71b42d3d7cfb",
+        "android_client_info": {
+          "package_name": "cz.mendelu.xmusil5.plantmonitor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "809716055970-cuckmbpjb7i8c2vjbjdilcs5klk1b5kq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcV8F11u92O8SD4z8d1N99j1STpp8KFKY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "809716055970-cuckmbpjb7i8c2vjbjdilcs5klk1b5kq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

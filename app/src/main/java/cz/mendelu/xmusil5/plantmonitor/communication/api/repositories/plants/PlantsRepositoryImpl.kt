@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants
+package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants
 
 import android.graphics.Bitmap
 import android.net.Uri
