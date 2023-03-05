@@ -8,4 +8,5 @@ object NotificationConstants {
 
     const val NOTIFICATION_TITLE_KEY = "title"
     const val NOTIFICATION_MESSAGE_KEY = "message"
+    const val NOTIFICATION_PLANT_NAME_KEY = "plant_name"
 }

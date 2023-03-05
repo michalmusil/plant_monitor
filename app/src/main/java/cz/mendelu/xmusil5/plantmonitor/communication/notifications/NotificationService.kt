@@ -4,17 +4,21 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_ONE_SHOT
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.res.stringResource
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.activities.MainActivity
+import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
 import kotlin.random.Random
 
 class NotificationService: FirebaseMessagingService() {
@@ -26,11 +30,13 @@ class NotificationService: FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        val titleString = message.data[NotificationConstants.NOTIFICATION_TITLE_KEY]
-        val messageString = message.data[NotificationConstants.NOTIFICATION_MESSAGE_KEY]
-        if(titleString == null && messageString == null) {
+        val titleString = this.getString(R.string.plantNotFeelingWellTitle)
+        val messageEnding = this.getString(R.string.plantNotFeelingWellMessageEnd)
+        val messagePlantName = message.data[NotificationConstants.NOTIFICATION_PLANT_NAME_KEY]
+        if(messagePlantName.isNullOrBlank()) {
             return
         }
+        val messageString = "${messagePlantName} ${messageEnding}"
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationId = Random.nextInt(from = 1, until = Int.MAX_VALUE)
@@ -42,13 +48,13 @@ class NotificationService: FirebaseMessagingService() {
             .apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_IMMUTABLE)
 
         val notification = NotificationCompat
             .Builder(this, NotificationConstants.CHANNEL_ID)
             .setContentTitle(titleString)
             .setContentText(messageString)
-            .setSmallIcon(R.drawable.app_logo)
+            .setSmallIcon(R.drawable.app_logo_monochrome)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()

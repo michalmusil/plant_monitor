@@ -27,6 +27,10 @@
     <string name="noPlantsYet">You don\'t have any plants on your account yet</string>
     <string name="noDevicesYet">You don\'t have any measuring devices registered on your account yet</string>
 
+    <!--  NOTIFICATIONS  -->
+    <string name="plantNotFeelingWellTitle">Plant is not feeling well</string>
+    <string name="plantNotFeelingWellMessageEnd">has surpassed set measurement limits.</string>
+
     <!--  LOGIN SCREEN  -->
     <string name="loginScreen">Login</string>
 
