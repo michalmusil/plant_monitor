@@ -69,7 +69,7 @@ fun DeviceCard(
                 Spacer(modifier = Modifier.height(5.dp))
 
                 Text(
-                    text = device.uuid,
+                    text = device.communicationId,
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     maxLines = 2,

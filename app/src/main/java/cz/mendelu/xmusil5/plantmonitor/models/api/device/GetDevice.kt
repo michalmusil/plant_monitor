@@ -8,7 +8,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 @JsonClass(generateAdapter = true)
 data class GetDevice(
     @Json(name = "id") val id: Long,
-    @Json(name = "uuid") val uuid: String,
+    @Json(name = "communicationIdentifier") val communicationId: String,
     @Json(name = "isActive") val active: Boolean,
     @Json(name = "userId") val userId: Long?,
     @Json(name = "plantId") val plantId: Long?,

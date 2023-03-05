@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class PostDeviceRegister(
-    @Json(name = "uuid") val uuid: String,
-    @Json(name = "macAddress") val macAddress: String,
+data class PutDeviceActivation(
+    @Json(name = "deviceId") val deviceId: Long,
+    @Json(name = "isActive") val isActive: Boolean,
 )

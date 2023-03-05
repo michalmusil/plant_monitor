@@ -1,13 +1,12 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.repositories.devices
 
 import cz.mendelu.xmusil5.plantmonitor.authentication.AuthenticationManagerMock
-import cz.mendelu.xmusil5.plantmonitor.communication.repositories.user_auth.UserAuthRepositoryMock
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationError
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDeviceActivation
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDevicePlantAssignment
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDeviceRegister
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceRegister
 
 class DevicesRepositoryMock: IDevicesRepository {
 
@@ -15,28 +14,28 @@ class DevicesRepositoryMock: IDevicesRepository {
         val DEVICES = listOf(
             GetDevice(
                 id = 1,
-                uuid = "292fh92ufh923hfde",
+                communicationId = "292fh92ufh923hfde",
                 active = true,
                 userId = AuthenticationManagerMock.MOCKED_USER_ID,
                 plantId = 1
             ),
             GetDevice(
                 id = 2,
-                uuid = "hdh827y387123h8jnvaz",
+                communicationId = "hdh827y387123h8jnvaz",
                 active = false,
                 userId = AuthenticationManagerMock.MOCKED_USER_ID,
                 plantId = null
             ),
             GetDevice(
                 id = 3,
-                uuid = "hdh827adfgiuh34921",
+                communicationId = "hdh827adfgiuh34921",
                 active = true,
                 userId = AuthenticationManagerMock.MOCKED_USER_ID,
                 plantId = 2
             ),
             GetDevice(
                 id = 4,
-                uuid = "1wcbg5vjopfv34921",
+                communicationId = "1wcbg5vjopfv34921",
                 active = false,
                 userId = AuthenticationManagerMock.MOCKED_USER_ID,
                 plantId = 3
@@ -62,11 +61,11 @@ class DevicesRepositoryMock: IDevicesRepository {
         )
     }
 
-    override suspend fun registerDevice(deviceRegister: PostDeviceRegister): CommunicationResult<GetDevice> {
+    override suspend fun registerDevice(deviceRegister: PutDeviceRegister): CommunicationResult<GetDevice> {
         val maxId = DEVICES.maxOf { it.id }
         val newDevice = GetDevice(
             id = maxId,
-            uuid = deviceRegister.uuid,
+            communicationId = deviceRegister.communicationId,
             active = true,
             userId = AuthenticationManagerMock.MOCKED_USER_ID,
             plantId = null
@@ -74,13 +73,13 @@ class DevicesRepositoryMock: IDevicesRepository {
         return CommunicationResult.Success(data = newDevice)
     }
 
-    override suspend fun deviceActivation(postDeviceActivation: PostDeviceActivation): CommunicationResult<GetDevice> {
-        val foundDevice = DEVICES.firstOrNull{ it.id == postDeviceActivation.deviceId }
+    override suspend fun deviceActivation(putDeviceActivation: PutDeviceActivation): CommunicationResult<GetDevice> {
+        val foundDevice = DEVICES.firstOrNull{ it.id == putDeviceActivation.deviceId }
         foundDevice?.let {
             val activatedDevice = GetDevice(
                 id = it.id,
-                uuid = it.uuid,
-                active = postDeviceActivation.isActive,
+                communicationId = it.communicationId,
+                active = putDeviceActivation.isActive,
                 userId = it.userId,
                 plantId = it.plantId
             )
@@ -94,12 +93,12 @@ class DevicesRepositoryMock: IDevicesRepository {
         )
     }
 
-    override suspend fun assignDeviceToPlant(devicePlantAssignment: PostDevicePlantAssignment): CommunicationResult<GetDevice> {
+    override suspend fun assignDeviceToPlant(devicePlantAssignment: PutDevicePlantAssignment): CommunicationResult<GetDevice> {
         val foundDevice = DEVICES.firstOrNull{ it.id == devicePlantAssignment.deviceId }
         foundDevice?.let {
             val assignedDevice = GetDevice(
                 id = it.id,
-                uuid = it.uuid,
+                communicationId = it.communicationId,
                 active = it.active,
                 userId = it.userId,
                 plantId = devicePlantAssignment.plantId

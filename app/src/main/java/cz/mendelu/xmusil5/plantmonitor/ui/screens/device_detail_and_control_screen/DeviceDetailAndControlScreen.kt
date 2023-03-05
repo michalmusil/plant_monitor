@@ -27,23 +27,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.TopBarWithBackButton
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.SwitchCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItem
-import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItemExpandable
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
-import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.ExpandableCard
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.errorColor
-import cz.mendelu.xmusil5.plantmonitor.ui.theme.onErrorColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.onlineColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
@@ -196,7 +191,7 @@ fun DeviceDetailAndControlScreenContent(
             Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                text = device.uuid,
+                text = device.communicationId,
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onBackground

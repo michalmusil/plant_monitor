@@ -5,9 +5,9 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsA
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDeviceActivation
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDevicePlantAssignment
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDeviceRegister
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceRegister
 import javax.inject.Inject
 
 class DevicesRepositoryImpl @Inject constructor(
@@ -33,28 +33,28 @@ class DevicesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun registerDevice(deviceRegister: PostDeviceRegister): CommunicationResult<GetDevice> {
+    override suspend fun registerDevice(deviceRegister: PutDeviceRegister): CommunicationResult<GetDevice> {
         return processRequest {
             api.registerDevice(
-                postDeviceRegister = deviceRegister,
+                putDeviceRegister = deviceRegister,
                 bearerToken = authenticationManager.getToken()
             )
         }
     }
 
-    override suspend fun deviceActivation(postDeviceActivation: PostDeviceActivation): CommunicationResult<GetDevice> {
+    override suspend fun deviceActivation(putDeviceActivation: PutDeviceActivation): CommunicationResult<GetDevice> {
         return processRequest {
             api.deviceActivation(
-                postDeviceActivation = postDeviceActivation,
+                putDeviceActivation = putDeviceActivation,
                 bearerToken = authenticationManager.getToken()
             )
         }
     }
 
-    override suspend fun assignDeviceToPlant(devicePlantAssignment: PostDevicePlantAssignment): CommunicationResult<GetDevice> {
+    override suspend fun assignDeviceToPlant(devicePlantAssignment: PutDevicePlantAssignment): CommunicationResult<GetDevice> {
         return processRequest {
             api.devicePlantAssign(
-                postDevicePlantAssignment = devicePlantAssignment,
+                putDevicePlantAssignment = devicePlantAssignment,
                 bearerToken = authenticationManager.getToken()
             )
         }

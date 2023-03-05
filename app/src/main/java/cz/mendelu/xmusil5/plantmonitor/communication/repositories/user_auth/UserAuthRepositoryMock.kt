@@ -4,6 +4,7 @@ import cz.mendelu.xmusil5.plantmonitor.authentication.AuthenticationManagerMock
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
+import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.Role
 
 class UserAuthRepositoryMock: IUserAuthRepository {
@@ -19,6 +20,10 @@ class UserAuthRepositoryMock: IUserAuthRepository {
     }
 
     override suspend fun register(postAuth: PostAuth): CommunicationResult<Unit> {
+        return CommunicationResult.Success(data = Unit)
+    }
+
+    override suspend fun updateNotificationToken(putNotificationToken: PutNotificationTokenUpdate): CommunicationResult<Unit> {
         return CommunicationResult.Success(data = Unit)
     }
 

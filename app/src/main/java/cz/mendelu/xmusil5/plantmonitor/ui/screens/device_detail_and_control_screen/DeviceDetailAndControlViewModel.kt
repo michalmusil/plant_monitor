@@ -9,9 +9,8 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.communication.repositories.devices.IDevicesRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDeviceActivation
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDevicePlantAssignment
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -95,7 +94,7 @@ class DeviceDetailAndControlViewModel @Inject constructor(
     fun proceedDeviceActivation(active: Boolean, deviceId: Long){
         viewModelScope.launch {
             isLoading.value = true
-            val deviceActivationPost = PostDeviceActivation(
+            val deviceActivationPost = PutDeviceActivation(
                 deviceId = deviceId,
                 isActive = active
             )
@@ -120,7 +119,7 @@ class DeviceDetailAndControlViewModel @Inject constructor(
     fun assignDeviceToPlant(deviceId: Long, plantId: Long){
         viewModelScope.launch {
             isLoading.value = true
-            val deviceAssignmentPost = PostDevicePlantAssignment(
+            val deviceAssignmentPost = PutDevicePlantAssignment(
                 deviceId = deviceId,
                 plantId = plantId
             )

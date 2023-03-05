@@ -6,6 +6,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
+import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
 import javax.inject.Inject
 
 class UserAuthRepositoryImpl @Inject constructor(
@@ -22,6 +23,15 @@ class UserAuthRepositoryImpl @Inject constructor(
     override suspend fun register(postAuth: PostAuth): CommunicationResult<Unit> {
         return processRequest {
             api.register(postAuth)
+        }
+    }
+
+    override suspend fun updateNotificationToken(putNotificationToken: PutNotificationTokenUpdate): CommunicationResult<Unit> {
+        return processRequest {
+            api.updateNotificationToken(
+                putNotificationToken = putNotificationToken,
+                bearerToken = authenticationManager.getToken()
+            )
         }
     }
 

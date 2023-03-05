@@ -104,7 +104,7 @@ fun DeviceListItem(
                 Spacer(modifier = Modifier.height(5.dp))
                 
                 Text(
-                    text = device.uuid,
+                    text = device.communicationId,
                     style = MaterialTheme.typography.labelSmall,
                     textAlign = TextAlign.Center,
                     maxLines = 2,

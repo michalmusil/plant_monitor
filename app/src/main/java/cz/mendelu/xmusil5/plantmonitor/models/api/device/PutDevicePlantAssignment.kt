@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class PostDeviceActivation(
+data class PutDevicePlantAssignment(
     @Json(name = "deviceId") val deviceId: Long,
-    @Json(name = "isActive") val isActive: Boolean,
+    @Json(name = "plantId") val plantId: Long,
 )

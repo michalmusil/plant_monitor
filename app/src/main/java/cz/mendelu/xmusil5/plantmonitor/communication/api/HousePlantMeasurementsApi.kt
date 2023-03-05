@@ -1,18 +1,18 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api
 
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDeviceActivation
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDevicePlantAssignment
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.PostDeviceRegister
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceRegister
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
+import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -28,6 +28,13 @@ interface HousePlantMeasurementsApi {
     @POST("users/register")
     suspend fun register(
         @Body postAuth: PostAuth
+    ): Response<Unit>
+
+    @Headers("Content-Type: application/json")
+    @PUT("users/notificationToken")
+    suspend fun updateNotificationToken(
+        @Body putNotificationToken: PutNotificationTokenUpdate,
+        @Header("Authorization") bearerToken: String
     ): Response<Unit>
 
 
@@ -103,23 +110,23 @@ interface HousePlantMeasurementsApi {
     ): Response<GetDevice>
 
     @Headers("Content-Type: application/json")
-    @POST("devices/register")
+    @PUT("devices/register")
     suspend fun registerDevice(
-        @Body postDeviceRegister: PostDeviceRegister,
+        @Body putDeviceRegister: PutDeviceRegister,
         @Header("Authorization") bearerToken: String
     ): Response<GetDevice>
 
     @Headers("Content-Type: application/json")
-    @POST("devices/activation")
+    @PUT("devices/activation")
     suspend fun deviceActivation(
-        @Body postDeviceActivation: PostDeviceActivation,
+        @Body putDeviceActivation: PutDeviceActivation,
         @Header("Authorization") bearerToken: String
     ): Response<GetDevice>
 
     @Headers("Content-Type: application/json")
-    @POST("devices/assignToPlant")
+    @PUT("devices/assignToPlant")
     suspend fun devicePlantAssign(
-        @Body postDevicePlantAssignment: PostDevicePlantAssignment,
+        @Body putDevicePlantAssignment: PutDevicePlantAssignment,
         @Header("Authorization") bearerToken: String
     ): Response<GetDevice>
 
