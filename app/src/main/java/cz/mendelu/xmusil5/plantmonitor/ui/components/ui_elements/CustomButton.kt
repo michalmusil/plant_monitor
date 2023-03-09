@@ -50,7 +50,6 @@ fun CustomButton(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
-                .padding(horizontal = 8.dp, vertical = 5.dp)
         ) {
             iconId?.let {
                 if (tintIcon) {

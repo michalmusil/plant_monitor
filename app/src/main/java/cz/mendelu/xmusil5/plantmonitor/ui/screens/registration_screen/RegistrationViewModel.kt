@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.ui.screens.login_screen
+package cz.mendelu.xmusil5.plantmonitor.ui.screens.registration_screen
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -20,21 +20,42 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class RegistrationViewModel @Inject constructor(
     private val authenticationManager: IAuthenticationManager,
     private val userAuthRepository: IUserAuthRepository,
     val stringValidator: IStringValidator
 ): ViewModel() {
-    val TAG = "LoginViewModel"
+    val TAG = "RegistrationViewModel"
 
-    val uiState: MutableState<LoginUiState> = mutableStateOf(LoginUiState.Start())
+    val uiState: MutableState<RegistrationUiState> = mutableStateOf(RegistrationUiState.Start())
 
-    fun login(email: String, password: String){
-        uiState.value = LoginUiState.LoggingIn()
+    fun register(email: String, password: String){
+        uiState.value = RegistrationUiState.RegistrationInProcess()
         viewModelScope.launch {
-            val userAuth = PostAuth(
+            val auth = PostAuth(
                 email = email,
                 password = password
+            )
+            val result = userAuthRepository.register(auth)
+            when(result){
+                is CommunicationResult.Success -> {
+                    login(registeredAuth = auth)
+                }
+                is CommunicationResult.Error -> {
+                    uiState.value = RegistrationUiState.RegistrationFailed(messageStringCode = R.string.somethingWentWrong)
+                }
+                is CommunicationResult.Exception -> {
+                    uiState.value = RegistrationUiState.Error(errorStringCode = R.string.connectionError)
+                }
+            }
+        }
+    }
+
+    private fun login(registeredAuth: PostAuth){
+        viewModelScope.launch {
+            val userAuth = PostAuth(
+                email = registeredAuth.email,
+                password = registeredAuth.password
             )
             val result = userAuthRepository.login(userAuth)
             when(result){
@@ -46,13 +67,13 @@ class LoginViewModel @Inject constructor(
                         updateNotificationToken(it)
                     }
 
-                    uiState.value = LoginUiState.LoginSuccessfull(user = result.data)
+                    uiState.value = RegistrationUiState.RegistrationAndLoginSuccessfull(user = result.data)
                 }
                 is CommunicationResult.Exception -> {
-                    uiState.value = LoginUiState.Error(errorStringCode = R.string.connectionError)
+                    uiState.value = RegistrationUiState.Error(errorStringCode = R.string.connectionError)
                 }
                 is CommunicationResult.Error -> {
-                    uiState.value = LoginUiState.LoginFailed(messageStringCode = R.string.invalidCredentials)
+                    uiState.value = RegistrationUiState.LoginFailed()
                 }
             }
         }

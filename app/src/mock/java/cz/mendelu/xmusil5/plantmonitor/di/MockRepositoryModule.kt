@@ -17,7 +17,7 @@ import dagger.hilt.android.scopes.ActivityRetainedScoped
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-class MockRepositoryModule2 {
+class MockRepositoryModule {
 
     @ActivityRetainedScoped
     @Provides

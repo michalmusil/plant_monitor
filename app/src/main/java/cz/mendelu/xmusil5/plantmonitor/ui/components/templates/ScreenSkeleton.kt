@@ -27,6 +27,7 @@ fun ScreenSkeleton(
     val noBottomBarDestinations = remember{
         mutableStateListOf(
             Destination.LoginScreen.route,
+            Destination.RegistrationScreen.route,
             Destination.SplashScreen.route
         )
     }

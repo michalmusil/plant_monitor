@@ -36,6 +36,10 @@ class NavigationRouterImpl: INavigationRouter {
         emptyBackstackAndNavigate(Destination.LoginScreen)
     }
 
+    override fun toRegistration() {
+        emptyBackstackAndNavigate(Destination.RegistrationScreen)
+    }
+
     override fun toPlantsScreen() {
         emptyBackstackAndNavigate(Destination.PlantsScreen)
     }

@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.ui.screens.login_screen
+package cz.mendelu.xmusil5.plantmonitor.ui.screens.registration_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -31,9 +31,9 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.errorColor
 
 @Composable
-fun LoginScreen(
+fun RegistrationScreen(
     navigation: INavigationRouter,
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: RegistrationViewModel = hiltViewModel()
 ){
     val email = rememberSaveable{
         mutableStateOf("")
@@ -44,42 +44,40 @@ fun LoginScreen(
     }
 
     viewModel.uiState.value.let {
-        when(it){
-            is LoginUiState.Start -> {
-                LoginScreenContent(
+        when (it) {
+            is RegistrationUiState.Start -> {
+                RegistrationScreenContent(
                     navigation = navigation,
                     viewModel = viewModel,
                     email = email,
-                    password = password,
+                    password = password
                 )
             }
-            is LoginUiState.LoggingIn -> {
+            is RegistrationUiState.RegistrationInProcess -> {
                 LoadingScreen()
             }
-            is LoginUiState.LoginSuccessfull -> {
+            is RegistrationUiState.RegistrationAndLoginSuccessfull -> {
                 LaunchedEffect(it){
                     navigation.toPlantsScreen()
                 }
             }
-            is LoginUiState.LoginFailed -> {
-                LaunchedEffect(it){
-                    password.value = ""
-                }
-                LoginScreenContent(
+            is RegistrationUiState.RegistrationFailed -> {
+                RegistrationScreenContent(
                     navigation = navigation,
-                    viewModel = viewModel,
+                    viewModel = viewModel, 
                     email = email,
                     password = password,
                     errorMessage = stringResource(id = it.messageStringCode)
                 )
             }
-            is LoginUiState.Error -> {
+            is RegistrationUiState.LoginFailed -> {
                 LaunchedEffect(it){
-                    email.value = ""
-                    password.value = ""
+                    navigation.toLogin()
                 }
+            }
+            is RegistrationUiState.Error -> {
                 ErrorScreen(text = stringResource(id = it.errorStringCode)){
-                    viewModel.uiState.value = LoginUiState.Start()
+                    viewModel.uiState.value = RegistrationUiState.Start()
                 }
             }
         }
@@ -87,9 +85,9 @@ fun LoginScreen(
 }
 
 @Composable
-fun LoginScreenContent(
+fun RegistrationScreenContent(
     navigation: INavigationRouter,
-    viewModel: LoginViewModel,
+    viewModel: RegistrationViewModel,
     email: MutableState<String>,
     password: MutableState<String>,
     errorMessage: String? = null
@@ -123,9 +121,9 @@ fun LoginScreenContent(
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp)
         ) {
-            
+
             Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.app_logo), 
+                imageVector = ImageVector.vectorResource(id = R.drawable.app_logo),
                 contentDescription = stringResource(id = R.string.appLogo),
                 modifier = Modifier
                     .size(220.dp)
@@ -139,7 +137,7 @@ fun LoginScreenContent(
             )
 
             Text(
-                text = stringResource(id = R.string.login),
+                text = stringResource(id = R.string.register),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.secondary,
@@ -186,13 +184,13 @@ fun LoginScreenContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             CustomButton(
-                text = stringResource(id = R.string.login),
+                text = stringResource(id = R.string.register),
                 enabled = viewModel.emailAndPasswordAreValid(
                     email = email.value,
                     password = password.value
                 ),
                 onClick = {
-                    viewModel.login(email.value, password.value)
+                    viewModel.register(email.value, password.value)
                 }
             )
 
@@ -205,20 +203,20 @@ fun LoginScreenContent(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(id = R.string.noAccountYet),
+                    text = stringResource(id = R.string.alreadyHaveAnAccount),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                
+
                 Spacer(modifier = Modifier.width(6.dp))
 
                 CustomButton(
-                    text = stringResource(id = R.string.goToRegister),
+                    text = stringResource(id = R.string.goToLogin),
                     backgroundColor = MaterialTheme.colorScheme.surface,
                     textColor = MaterialTheme.colorScheme.onSurface,
                     textSize = 12.sp,
                     onClick = {
-                        navigation.toRegistration()
+                        navigation.toLogin()
                     }
                 )
             }

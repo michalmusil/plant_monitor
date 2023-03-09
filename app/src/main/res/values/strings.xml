@@ -31,12 +31,19 @@
     <string name="plantNotFeelingWellTitle">Plant is not feeling well</string>
     <string name="plantNotFeelingWellMessageEnd">has surpassed set measurement limits.</string>
 
-    <!--  LOGIN SCREEN  -->
+    <!--  LOGIN AND REGISTRATION SCREEN  -->
     <string name="loginScreen">Login</string>
 
     <string name="email">Email</string>
     <string name="password">Password</string>
+
     <string name="login">Log in</string>
+    <string name="goToLogin">Go to login</string>
+    <string name="register">Register</string>
+    <string name="goToRegister">Go to registration</string>
+
+    <string name="noAccountYet">No account yet?</string>
+    <string name="alreadyHaveAnAccount">Already have an account?</string>
 
     <string name="invalidCredentials">Invalid credentials</string>
     <string name="emailNotInCorrectFormat">Email not in correct format</string>

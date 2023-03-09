@@ -8,6 +8,7 @@ interface INavigationRouter {
     fun returnBack()
 
     fun toLogin()
+    fun toRegistration()
 
     fun toPlantsScreen()
     fun toDevicesScreen()
