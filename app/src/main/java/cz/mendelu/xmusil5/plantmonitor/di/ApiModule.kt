@@ -2,7 +2,7 @@ package cz.mendelu.xmusil5.plantmonitor.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import cz.mendelu.xmusil5.plantmonitor.communication.ApiConstants
+import cz.mendelu.xmusil5.plantmonitor.communication.api.ApiConstants
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.jsonAdapters.measurement.MeasurementTypeAdapter
 import cz.mendelu.xmusil5.plantmonitor.communication.jsonAdapters.user.RoleAdapter

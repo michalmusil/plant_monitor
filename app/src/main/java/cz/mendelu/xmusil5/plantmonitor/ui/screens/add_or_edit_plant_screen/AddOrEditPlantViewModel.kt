@@ -9,11 +9,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
-import cz.mendelu.xmusil5.plantmonitor.communication.ApiConstants.HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME
+import cz.mendelu.xmusil5.plantmonitor.communication.api.ApiConstants.HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimitInEdit
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
@@ -40,16 +42,21 @@ class AddOrEditPlantViewModel @Inject constructor(
         name: String,
         species: String,
         description: String?,
-        measurementValueLimits: List<MeasurementValueLimit>?,
+        measurementValueLimits: List<MeasurementValueLimitInEdit>?,
         plantImageUri: Uri?
     ){
         val userId = authenticationManager.getUserId()
+        val limitsToSave = measurementValueLimits?.filter {
+            it.enabled
+        }?.map {
+            it.limit
+        }
         val newPlant = PostPlant(
             name = name,
             species = species,
             userId = userId,
             description = description,
-            measurementValueLimits = measurementValueLimits
+            measurementValueLimits = limitsToSave
         )
         viewModelScope.launch{
             val result = plantsRepository.postNewPlant(newPlant)
@@ -83,16 +90,21 @@ class AddOrEditPlantViewModel @Inject constructor(
         name: String,
         species: String,
         description: String?,
-        measurementValueLimits: List<MeasurementValueLimit>?,
+        measurementValueLimits: List<MeasurementValueLimitInEdit>?,
         plantImageUri: Uri?
     ){
         val plantId = existingPlant.id
+        val limitsToSave = measurementValueLimits?.filter {
+            it.enabled
+        }?.map {
+            it.limit
+        }
         val updatedPlant = PutPlant(
             id = plantId,
             name = name,
             species = species,
             description = description,
-            measurementValueLimits = measurementValueLimits
+            measurementValueLimits = limitsToSave
         )
         viewModelScope.launch{
             val result = plantsRepository.updatePlant(updatedPlant)
@@ -190,5 +202,35 @@ class AddOrEditPlantViewModel @Inject constructor(
             return result.data
         }
         return null
+    }
+
+    fun getMeasurementValueLimitsForEditing(
+        plantLimits: List<MeasurementValueLimit>
+    ): List<MeasurementValueLimitInEdit>{
+        val limitForms = mutableListOf<MeasurementValueLimitInEdit>()
+        MeasurementType.getValidTypes().forEach { type ->
+            val limit = plantLimits.firstOrNull{ it.type == type }
+            if (limit != null){
+                limitForms.add(
+                    MeasurementValueLimitInEdit(
+                        enabled = true,
+                        limit = limit
+                    )
+                )
+            }
+            else {
+                limitForms.add(
+                    MeasurementValueLimitInEdit(
+                        enabled = false,
+                        limit = MeasurementValueLimit(
+                            type = type,
+                            lowerLimit = type.minLimit,
+                            upperLimit = type.maxLimit
+                        )
+                    )
+                )
+            }
+        }
+        return limitForms
     }
 }

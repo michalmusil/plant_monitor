@@ -3,7 +3,7 @@ package cz.mendelu.xmusil5.plantmonitor.communication.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
-import cz.mendelu.xmusil5.plantmonitor.communication.ApiConstants
+import cz.mendelu.xmusil5.plantmonitor.communication.api.ApiConstants
 import okhttp3.ResponseBody
 import retrofit2.Response
 

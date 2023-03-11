@@ -12,7 +12,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
-import cz.mendelu.xmusil5.plantmonitor.utils.validation.IStringValidator
+import cz.mendelu.xmusil5.plantmonitor.utils.validation.strings.IStringValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

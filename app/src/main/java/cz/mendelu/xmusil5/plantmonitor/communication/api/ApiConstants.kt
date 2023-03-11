@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.communication
+package cz.mendelu.xmusil5.plantmonitor.communication.api
 
 object ApiConstants {
 

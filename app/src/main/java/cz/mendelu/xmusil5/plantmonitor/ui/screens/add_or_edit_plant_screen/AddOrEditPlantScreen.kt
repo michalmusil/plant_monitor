@@ -6,8 +6,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
@@ -30,8 +32,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.TopBarWithBackButton
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimitInEdit
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
+import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementValueLimitPicker
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.templates.PopupDialog
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
@@ -52,7 +55,7 @@ fun AddOrEditPlantScreen(
         when(it){
             is AddOrEditPlantUiState.Start -> {
                 if (existingPlantId == null){
-                    AddPlantScreenContent(
+                    AddOrEditPlantScreenContent(
                         viewModel = viewModel,
                         navigation = navigation,
                         error = errorString
@@ -66,7 +69,7 @@ fun AddOrEditPlantScreen(
                 }
             }
             is AddOrEditPlantUiState.PlantToEditLoaded -> {
-                AddPlantScreenContent(
+                AddOrEditPlantScreenContent(
                     viewModel = viewModel,
                     navigation = navigation,
                     error = errorString
@@ -87,7 +90,7 @@ fun AddOrEditPlantScreen(
                 LaunchedEffect(it){
                     errorString.value = error
                 }
-                AddPlantScreenContent(
+                AddOrEditPlantScreenContent(
                     viewModel = viewModel,
                     navigation = navigation,
                     error = errorString
@@ -103,7 +106,7 @@ fun AddOrEditPlantScreen(
 }
 
 @Composable
-fun AddPlantScreenContent(
+fun AddOrEditPlantScreenContent(
     viewModel: AddOrEditPlantViewModel,
     navigation: INavigationRouter,
     error: MutableState<String?>
@@ -121,7 +124,7 @@ fun AddPlantScreenContent(
         mutableStateOf("")
     }
     val measurementValueLimits = remember{
-        mutableStateListOf<MeasurementValueLimit>()
+        mutableStateListOf<MeasurementValueLimitInEdit>()
     }
     val selectedImage = remember {
         mutableStateOf<Pair<Uri, Bitmap>?>(null)
@@ -144,11 +147,22 @@ fun AddPlantScreenContent(
                 name.value = it.plant.name
                 species.value = it.plant.species
                 description.value = it.plant.description ?: ""
-                measurementValueLimits.clear()
-                measurementValueLimits.addAll(it.plant.valueLimits)
                 it.plant.titleImageBitmap?.let {
                     selectedImage.value = Pair(Uri.EMPTY, it)
                 }
+                measurementValueLimits.clear()
+                measurementValueLimits.addAll(
+                    viewModel.getMeasurementValueLimitsForEditing(it.plant.valueLimits)
+                )
+            }
+        }
+        else {
+            // will fill measurementValueLimits with default limits
+            LaunchedEffect(it){
+                measurementValueLimits.clear()
+                measurementValueLimits.addAll(
+                    viewModel.getMeasurementValueLimitsForEditing(listOf())
+                )
             }
         }
     }
@@ -221,7 +235,7 @@ fun AddPlantScreenContent(
                 .background(MaterialTheme.colorScheme.background)
         ) {
 
-            AddPlantForm(
+            AddOrEditPlantForm(
                 name = name,
                 species = species,
                 description = description,
@@ -229,7 +243,21 @@ fun AddPlantScreenContent(
                 speciesError = speciesError,
                 viewModel = viewModel
             )
+            
+            Divider(
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .clip(CircleShape)
+                    .height(2.dp)
+                    .background(MaterialTheme.colorScheme.surface)
+            )
 
+            PlantValueLimitEditor(
+                plantLimits = measurementValueLimits
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            
             SavePlantButton(
                 name = name,
                 species = species,
@@ -295,7 +323,7 @@ fun NewPlantImage(
 }
 
 @Composable
-fun AddPlantForm(
+fun AddOrEditPlantForm(
     name: MutableState<String>,
     species: MutableState<String>,
     description: MutableState<String>,
@@ -366,12 +394,54 @@ fun AddPlantForm(
 }
 
 @Composable
+fun PlantValueLimitEditor(
+    plantLimits: List<MeasurementValueLimitInEdit>,
+){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    ){
+        Text(
+            text = stringResource(id = R.string.measurementValueLimits),
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onBackground,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+        
+        plantLimits.forEach { measurementValueLimitForm ->
+            val enabled = remember{
+                mutableStateOf(measurementValueLimitForm.enabled)
+            }
+            val limit = remember{
+                mutableStateOf(measurementValueLimitForm.limit)
+            }
+            MeasurementValueLimitPicker(
+                measurementValueLimit = limit,
+                limitEnabled = enabled,
+                onLimitPicked = {
+                    measurementValueLimitForm.limit = it
+                },
+                onEnabledChanged = {
+                    measurementValueLimitForm.enabled = it
+                },
+                title = stringResource(id = measurementValueLimitForm.limit.type.nameId),
+            )
+        }
+    }
+}
+
+@Composable
 fun SavePlantButton(
     name: MutableState<String>,
     species: MutableState<String>,
     description: MutableState<String>,
     selectedImage: MutableState<Pair<Uri, Bitmap>?>,
-    measurementValueLimits: List<MeasurementValueLimit>,
+    measurementValueLimits: List<MeasurementValueLimitInEdit>,
     viewModel: AddOrEditPlantViewModel,
 ){
     val context = LocalContext.current

@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.utils.validation
+package cz.mendelu.xmusil5.plantmonitor.utils.validation.strings
 
 import android.text.TextUtils
 
