@@ -112,6 +112,7 @@ fun PlantsScreenContent(
                     plant = plant,
                     plantImage = plantImage,
                     measurementValues = mostRecentMeasurementValues,
+                    measurementValidator = viewModel.measurementsValidator,
                     onExpanded = {
                         viewModel.fetchMostRecentValuesOfPlant(
                             plant = plant,

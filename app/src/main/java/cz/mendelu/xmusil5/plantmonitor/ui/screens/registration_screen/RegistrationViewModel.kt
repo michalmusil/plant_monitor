@@ -91,8 +91,10 @@ class RegistrationViewModel @Inject constructor(
                     Log.w(TAG, "Fetching FCM registration token failed", task.exception)
                     continuation.resume(null)
                 }
-                val token = task.result
-                continuation.resume(token)
+                else {
+                    val token = task.result
+                    continuation.resume(token)
+                }
             }
         }
         return token

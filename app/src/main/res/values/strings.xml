@@ -2,6 +2,10 @@
     <string name="app_name">Plant monitor</string>
 
     <!--  GENERAL  -->
+    <string name="measurementValid">OK</string>
+    <string name="measurementMinorInvalid">Not good</string>
+    <string name="measurementInvalid">Bad</string>
+
     <string name="back">Back</string>
     <string name="expand">Expand</string>
     <string name="arrow">Arrow</string>

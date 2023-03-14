@@ -21,6 +21,10 @@ val onErrorColor = Color(0xFFECECEC)
 val onlineColor = Color(0xFF56D580)
 val onOnlineColor = Color(0xFF303030)
 
+val valid = Color(0xFF00bfa5)
+val minorInvalid = Color(0xFFFFA66B)
+val invalid = Color(0xFFFF5353)
+
 val primary = Color(0xFF00bfa5)
 val onPrimary = Color(0xFF2B2B2B)
 val secondary = Color(0xFF5c6bc0)

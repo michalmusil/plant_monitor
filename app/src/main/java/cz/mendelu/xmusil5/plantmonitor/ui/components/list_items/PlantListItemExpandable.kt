@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -29,14 +31,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
+import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import kotlin.math.roundToInt
 
 
@@ -45,6 +51,7 @@ fun PlantListItemExpandable(
     plant: GetPlant,
     plantImage: MutableState<Bitmap?>,
     measurementValues: MutableState<List<MeasurementValue>?>,
+    measurementValidator: IMeasurementsValidator? = null,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     onExpanded: () -> Unit
@@ -157,7 +164,9 @@ fun PlantListItemExpandable(
                 if (measurementValues.value != null){
                     if (measurementValues.value!!.size > 0) {
                         PlantListItemValues(
-                            measurementValues = measurementValues.value!!
+                            plant = plant,
+                            measurementValues = measurementValues.value!!,
+                            measurementValidator = measurementValidator
                         )
                     } else {
                         Text(
@@ -181,11 +190,32 @@ fun PlantListItemExpandable(
 
 @Composable
 fun PlantListItemValues(
-    measurementValues: List<MeasurementValue>
+    plant: GetPlant,
+    measurementValues: List<MeasurementValue>,
+    measurementValidator: IMeasurementsValidator? = null,
 ){
+    val valueTextColor = MaterialTheme.colorScheme.onSurface
+    val defaultValueBackgroundColor = Color.Transparent
+
+    val validatedTypeLimits = remember{
+        mutableStateListOf<Pair<MeasurementType, MeasurementLimitValidation>>()
+    }
+
+    LaunchedEffect(measurementValidator){
+        measurementValidator?.let { validator ->
+            validatedTypeLimits.clear()
+            measurementValues.forEach {
+                val validation = validator.validateMeasurementValue(measurementValue = it, plant = plant)
+                val validatedType = Pair(it.measurementType, validation)
+                validatedTypeLimits.add(validatedType)
+            }
+        }
+    }
+
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
     ){
         items(measurementValues){ measurementValue ->
 
@@ -193,28 +223,40 @@ fun PlantListItemValues(
                 mutableStateOf((measurementValue.value * 10.0).roundToInt() / 10.0)
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .padding(horizontal = 10.dp)
+                    .padding(horizontal = 5.dp)
+                    .clip(CircleShape)
+                    .background(
+                        validatedTypeLimits.firstOrNull {
+                            it.first == measurementValue.measurementType
+                        }?.second?.color ?: defaultValueBackgroundColor
+                    )
+                    .padding(horizontal = 15.dp, vertical = 5.dp)
             ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = measurementValue.measurementType.iconId),
-                    contentDescription = stringResource(id = R.string.expand),
-                    tint = measurementValue.measurementType.color,
-                    modifier = Modifier
-                        .height(40.dp)
-                        .aspectRatio(1f)
-                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = measurementValue.measurementType.iconId),
+                        contentDescription = stringResource(id = R.string.expand),
+                        tint = measurementValue.measurementType.color,
+                        modifier = Modifier
+                            .height(40.dp)
+                            .aspectRatio(1f)
+                    )
 
-                Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
 
-                Text(
-                    text = roundedValue.value.toString() + " ${measurementValue.measurementType.unit}",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                    Text(
+                        text = roundedValue.value.toString() + " ${measurementValue.measurementType.unit}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = valueTextColor
+                    )
+                }
             }
         }
     }

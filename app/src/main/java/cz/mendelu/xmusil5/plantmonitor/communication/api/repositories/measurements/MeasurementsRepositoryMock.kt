@@ -1,6 +1,5 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements
 
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationError
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
@@ -18,7 +17,7 @@ class MeasurementsRepositoryMock: IMeasurementsRepository {
                 id = 1,
                 datetime = DateTimeFromApi(
                     originalString = "",
-                    calendarInUTC0 = DateUtils.getCalendarWithSubtractedElements(Calendar.getInstance(), 3, 0, 0)
+                    calendarInUTC0 = Calendar.getInstance()
                 ),
                 plantId = 1,
                 deviceId = 1,
@@ -41,7 +40,7 @@ class MeasurementsRepositoryMock: IMeasurementsRepository {
                 id = 2,
                 datetime = DateTimeFromApi(
                     originalString = "",
-                    calendarInUTC0 = DateUtils.getCalendarWithSubtractedElements(Calendar.getInstance(), 2, 0, 0)
+                    calendarInUTC0 = Calendar.getInstance()
                 ),
                 plantId = 1,
                 deviceId = 1,
@@ -64,7 +63,7 @@ class MeasurementsRepositoryMock: IMeasurementsRepository {
                 id = 3,
                 datetime = DateTimeFromApi(
                     originalString = "",
-                    calendarInUTC0 = DateUtils.getCalendarWithSubtractedElements(Calendar.getInstance(), 1, 0, 0)
+                    calendarInUTC0 = Calendar.getInstance()
                 ),
                 plantId = 1,
                 deviceId = 1,

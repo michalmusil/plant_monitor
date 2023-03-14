@@ -174,12 +174,9 @@ class AddOrEditPlantViewModel @Inject constructor(
         viewModelScope.launch {
             val plantCall = plantsRepository.getPlantById(plantId)
 
-            var resultPlant: GetPlant? = null
-            var resultDevice: GetDevice? = null
-
             when(plantCall){
                 is CommunicationResult.Success -> {
-                    resultPlant = plantCall.data
+                    val resultPlant = plantCall.data
                     if (resultPlant.hasTitleImage){
                         resultPlant.titleImageBitmap = fetchPlantImage(resultPlant)
                     }

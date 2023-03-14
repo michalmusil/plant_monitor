@@ -13,6 +13,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -21,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PlantsViewModel @Inject constructor(
     private val plantsRepository: IPlantsRepository,
-    private val measurementsRepository: IMeasurementsRepository
+    private val measurementsRepository: IMeasurementsRepository,
+    val measurementsValidator: IMeasurementsValidator
 ): ViewModel() {
 
     val uiState: MutableState<PlantsUiState> = mutableStateOf(PlantsUiState.Start())

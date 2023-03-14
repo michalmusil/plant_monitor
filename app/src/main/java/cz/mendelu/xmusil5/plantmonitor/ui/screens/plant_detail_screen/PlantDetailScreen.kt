@@ -326,7 +326,9 @@ fun PlantDetailInfo(
 
             DelayedAnimatedAppear {
                 MostRecentMeasurementValuesCard(
+                    plant = plant,
                     mostRecentValues = mostRecentValues.value,
+                    measurementsValidator = viewModel.measurementsValidator,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
