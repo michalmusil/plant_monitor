@@ -35,7 +35,7 @@ fun NoPlantMeasurements(
             )
 
             Text(
-                text =  stringResource(id = R.string.noMeasurementsYet),
+                text =  stringResource(id = R.string.noMeasurementsWithinRange),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center

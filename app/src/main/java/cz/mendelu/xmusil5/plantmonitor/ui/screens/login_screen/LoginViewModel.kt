@@ -11,6 +11,7 @@ import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.IUserAuthRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.notifications.token_manager.INotificationTokenManager
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.datastore.settings.ISettingsDataStore
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.strings.IStringValidator
@@ -25,6 +26,7 @@ class LoginViewModel @Inject constructor(
     private val authenticationManager: IAuthenticationManager,
     private val userAuthRepository: IUserAuthRepository,
     private val notificationManager: INotificationTokenManager,
+    private val settingsDataStore: ISettingsDataStore,
     val stringValidator: IStringValidator
 ): ViewModel() {
     val TAG = "LoginViewModel"
@@ -43,9 +45,8 @@ class LoginViewModel @Inject constructor(
                 is CommunicationResult.Success -> {
                     authenticationManager.setUser(user = result.data)
 
-                    val notificationToken = notificationManager.getNotificationToken()
-                    notificationToken?.let {
-                        updateNotificationToken(it)
+                    if (settingsDataStore.areNotificationsEnabled(user = result.data)){
+                        updateNotificationToken()
                     }
 
                     uiState.value = LoginUiState.LoginSuccessfull(user = result.data)
@@ -65,14 +66,17 @@ class LoginViewModel @Inject constructor(
                 stringValidator.isPasswordValid(password)
     }
 
-    suspend fun updateNotificationToken(notificationToken: String){
-        val result = userAuthRepository.updateNotificationToken(
-            putNotificationToken = PutNotificationTokenUpdate(
-                notificationToken = notificationToken
+    suspend fun updateNotificationToken(){
+        val notificationToken = notificationManager.getNotificationToken()
+        notificationToken?.let {
+            val result = userAuthRepository.updateNotificationToken(
+                putNotificationToken = PutNotificationTokenUpdate(
+                    notificationToken = notificationToken
+                )
             )
-        )
-        if (result !is CommunicationResult.Success){
-            Log.w(TAG, "Posting FCM registration token to api failed")
+            if (result !is CommunicationResult.Success) {
+                Log.w(TAG, "Posting FCM registration token to api failed")
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.components.list_items
 
 import android.graphics.Bitmap
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -31,7 +32,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
@@ -51,22 +51,59 @@ fun PlantListItemExpandable(
     plant: GetPlant,
     plantImage: MutableState<Bitmap?>,
     measurementValues: MutableState<List<MeasurementValue>?>,
+    expanded: MutableState<Boolean>,
     measurementValidator: IMeasurementsValidator? = null,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    onExpanded: () -> Unit
 ){
-    val animationDuration = 150
+    val expandAnimationDuration = 150
+    val stripColorAnimationDuration = 300
+    val imageSize = 90.dp
 
     val cornerRadius = 30.dp
 
-    val expanded = remember{
-        mutableStateOf(false)
+    val overallValidation = remember{
+        mutableStateOf<MeasurementLimitValidation?>(null)
     }
+
+    val stripColor by animateColorAsState(
+        targetValue = if (overallValidation.value != null) overallValidation.value!!.color else Color.Transparent,
+        animationSpec = tween(stripColorAnimationDuration)
+    )
 
     val rotation by animateFloatAsState(
         targetValue = if (expanded.value) { 180f } else { 0f }
     )
+
+    // Validates the measurement values and determines the color of the plant strip
+    LaunchedEffect(measurementValues.value){
+        if (measurementValues.value != null && measurementValidator != null) {
+            var worstValidation: MeasurementLimitValidation? = null
+            for (value in measurementValues.value!!) {
+                val validation = measurementValidator.validateMeasurementValue(
+                    measurementValue = value,
+                    plant = plant
+                )
+                when(validation){
+                    MeasurementLimitValidation.VALID -> {
+                        if(worstValidation == null){
+                            worstValidation = validation
+                        }
+                    }
+                    MeasurementLimitValidation.MINOR_INVALID -> {
+                        if (worstValidation == null || worstValidation == MeasurementLimitValidation.VALID){
+                            worstValidation = validation
+                        }
+                    }
+                    MeasurementLimitValidation.INVALID -> {
+                        worstValidation = validation
+                        break
+                    }
+                }
+            }
+            overallValidation.value = worstValidation
+        }
+    }
 
     Column(
         modifier = modifier
@@ -86,7 +123,7 @@ fun PlantListItemExpandable(
             }
             .animateContentSize(
                 animationSpec = tween(
-                    durationMillis = animationDuration
+                    durationMillis = expandAnimationDuration
                 )
             )
     ){
@@ -106,9 +143,18 @@ fun PlantListItemExpandable(
                 contentDescription = stringResource(id = R.string.plantImage),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .height(90.dp)
+                    .height(imageSize)
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(cornerRadius))
+            )
+
+            Box(
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .clip(CircleShape)
+                    .width(8.dp)
+                    .height(imageSize)
+                    .background(stripColor)
             )
 
             Column(
@@ -145,9 +191,6 @@ fun PlantListItemExpandable(
                     .aspectRatio(1f)
                     .clickable {
                         expanded.value = !expanded.value
-                        if (expanded.value) {
-                            onExpanded()
-                        }
                     }
                     .rotate(rotation)
             )

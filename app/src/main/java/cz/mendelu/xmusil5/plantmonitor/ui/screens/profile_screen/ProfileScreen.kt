@@ -28,9 +28,12 @@ import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
+import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.SwitchCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.SmallLoadingIndicator
+import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
+import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 
 @Composable
 fun ProfileScreen(
@@ -188,17 +191,72 @@ fun LowerProfileScreenPart(
             .fillMaxSize()
             .clip(RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius))
             .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp, vertical = 30.dp)
     ) {
-        Text("Fill this part out later")
-        Text("Fill this part out later")
-        Text("Fill this part out later")
-        Text("Fill this part out later")
-        Text("Fill this part out later")
-        Text("Fill this part out later")
-        Text("Fill this part out later")
-        Text("Fill this part out later")
-        Text("Fill this part out later")
+        NotificationEnabledSwitch(
+            viewModel = viewModel,
+            user = user
+        )
     }
+}
+
+@Composable
+fun NotificationEnabledSwitch(
+    viewModel: ProfileViewModel,
+    user: GetUser
+){
+    val cornerRadius = 30.dp
+
+    val enabledShort = stringResource(id = R.string.notificationsEnabledShort)
+    val disabledShort = stringResource(id = R.string.notificationsDisabledShort)
+    val enabledLong = stringResource(id = R.string.notificationsEnabledLong)
+    val disabledLong = stringResource(id = R.string.notificationsDisabledLong)
+    val enabled = remember{
+        mutableStateOf(viewModel.notificationsEnabled.value)
+    }
+    val textShort = remember{
+        mutableStateOf("")
+    }
+    val textLong = remember{
+        mutableStateOf("")
+    }
+    viewModel.notificationsEnabled.value.let {
+        LaunchedEffect(it){
+            enabled.value = it
+            when(it){
+                true -> {
+                    textShort.value = enabledShort
+                    textLong.value = enabledLong
+                }
+                false -> {
+                    textShort.value = disabledShort
+                    textLong.value = disabledLong
+                }
+            }
+        }
+    }
+    
+    SwitchCard(
+        checked = enabled,
+        mainText = textShort.value,
+        secondaryText = textLong.value,
+        onValueChange = {
+            viewModel.setNotificationsEnabled(
+                enabled = it,
+                user = user
+            )
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .customShadow(
+                color = shadowColor,
+                borderRadius = cornerRadius,
+                spread = 0.dp,
+                blurRadius = 5.dp,
+                offsetY = 2.dp
+            )
+            .clip(RoundedCornerShape(cornerRadius))
+            .background(MaterialTheme.colorScheme.surface)
+    )
 }
 

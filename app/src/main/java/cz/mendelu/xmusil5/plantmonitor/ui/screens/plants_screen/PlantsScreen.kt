@@ -91,11 +91,14 @@ fun PlantsScreenContent(
             itemContent = { index ->
                 val plant = plants[index]
 
+                val expanded = remember{
+                    mutableStateOf(false)
+                }
                 val plantImage = remember{
                     mutableStateOf(plant.titleImageBitmap)
                 }
                 val mostRecentMeasurementValues = remember {
-                    mutableStateOf<List<MeasurementValue>?>(null)
+                    mutableStateOf(plant.mostRecentValues)
                 }
                 LaunchedEffect(plant){
                     if (plantImage.value == null) {
@@ -107,20 +110,22 @@ fun PlantsScreenContent(
                             }
                         )
                     }
+                    if (mostRecentMeasurementValues.value == null) {
+                        viewModel.fetchMostRecentValuesOfPlant(
+                            plant = plant,
+                            onValuesFetched = {
+                                plant.mostRecentValues = it
+                                mostRecentMeasurementValues.value = it
+                            }
+                        )
+                    }
                 }
                 PlantListItemExpandable(
                     plant = plant,
                     plantImage = plantImage,
+                    expanded = expanded,
                     measurementValues = mostRecentMeasurementValues,
                     measurementValidator = viewModel.measurementsValidator,
-                    onExpanded = {
-                        viewModel.fetchMostRecentValuesOfPlant(
-                            plant = plant,
-                            onValuesFetched = {
-                                mostRecentMeasurementValues.value = it
-                            }
-                        )
-                    },
                     onClick = {
                         navigation.toPlantDetail(plant.id)
                     },

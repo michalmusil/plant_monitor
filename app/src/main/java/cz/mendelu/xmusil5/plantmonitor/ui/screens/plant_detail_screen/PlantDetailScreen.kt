@@ -340,13 +340,13 @@ fun PlantDetailInfo(
             modifier = Modifier
                 .padding(vertical = 25.dp)
                 .clip(CircleShape)
-                .height(2.dp)
-                .background(MaterialTheme.colorScheme.surface)
+                .height(3.dp)
+                .background(MaterialTheme.colorScheme.primary)
         )
 
         Text(
             text = stringResource(id = R.string.measurementValues),
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold,
             maxLines = 2,

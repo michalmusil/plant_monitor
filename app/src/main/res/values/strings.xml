@@ -58,6 +58,7 @@
 
     <string name="latestValues">Latest values</string>
     <string name="noMeasurementsYet">Plant has no measurements yet</string>
+    <string name="noMeasurementsWithinRange">Plant has no measurements in the selected time frame</string>
 
     <!--  ADD OR EDIT PLANT SCREEN  -->
     <string name="addPlantScreen">New plant</string>
@@ -109,6 +110,11 @@
     <string name="admin">Administrator</string>
     <string name="logout">Log out</string>
 
+    <string name="notificationsEnabledShort">Notifications enabled</string>
+    <string name="notificationsDisabledShort">Notifications disabled</string>
+
+    <string name="notificationsEnabledLong">When a value of measurement exceeds limit of the plant, you will be notified.</string>
+    <string name="notificationsDisabledLong">You won\'t receive any notifications from this app.</string>
 
     <!--  MEASUREMENT TYPES  -->
     <string name="temperature">Temperature</string>

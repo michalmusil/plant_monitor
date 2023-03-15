@@ -440,7 +440,7 @@ fun AssignNewPlantCard(
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSecondary
             )
         },
         modifier = Modifier
@@ -454,7 +454,7 @@ fun AssignNewPlantCard(
                 offsetY = 2.dp
             )
             .clip(RoundedCornerShape(cornerRadius))
-            .background(MaterialTheme.colorScheme.surface),
+            .background(MaterialTheme.colorScheme.secondary),
         expandedContent = {
             AssignablePlantsList(
                 device = device,

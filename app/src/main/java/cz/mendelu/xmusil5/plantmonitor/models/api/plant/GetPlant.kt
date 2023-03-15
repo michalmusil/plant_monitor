@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 
 @JsonClass(generateAdapter = true)
@@ -18,6 +19,8 @@ data class GetPlant(
 ){
 
     @Transient var titleImageBitmap: Bitmap? = null
+
+    @Transient var mostRecentValues: List<MeasurementValue>? = null
 
     @Transient var associatedDevice: GetDevice? = null
 }

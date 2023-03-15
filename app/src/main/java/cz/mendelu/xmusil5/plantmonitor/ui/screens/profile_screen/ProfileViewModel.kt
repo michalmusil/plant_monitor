@@ -10,6 +10,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.
 import cz.mendelu.xmusil5.plantmonitor.communication.notifications.token_manager.INotificationTokenManager
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.datastore.settings.ISettingsDataStore
+import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -29,21 +30,20 @@ class ProfileViewModel @Inject constructor(
 
     fun loadData(){
         isLoading.value = true
-        loadNotificationsEnabledState()
-
         val user = authenticationManager.getUser()
         if (user != null){
             uiState.value = ProfileUiState.UserLoaded(user)
+            loadNotificationsEnabledState(user = user)
         } else {
             uiState.value = ProfileUiState.Error(errorStringCode = R.string.somethingWentWrong)
         }
         isLoading.value = false
     }
 
-    private fun loadNotificationsEnabledState(){
+    private fun loadNotificationsEnabledState(user: GetUser){
         isLoading.value = true
         viewModelScope.launch {
-            val enabled = settingsDataStore.areNotificationsEnabled()
+            val enabled = settingsDataStore.areNotificationsEnabled(user = user)
             notificationsEnabled.value = enabled
             isLoading.value = false
         }
@@ -53,7 +53,7 @@ class ProfileViewModel @Inject constructor(
         authenticationManager.logOut()
     }
 
-    fun setNotificationsEnabled(enabled: Boolean){
+    fun setNotificationsEnabled(enabled: Boolean, user: GetUser){
         isLoading.value = true
         if (enabled){
             viewModelScope.launch {
@@ -66,12 +66,12 @@ class ProfileViewModel @Inject constructor(
                     )
                     when(result){
                         is CommunicationResult.Success -> {
-                            settingsDataStore.setNotificationsEnabled(true)
+                            settingsDataStore.setNotificationsEnabled(true, user)
                             notificationsEnabled.value = true
                         }
                     }
                 } else {
-                    settingsDataStore.setNotificationsEnabled(false)
+                    settingsDataStore.setNotificationsEnabled(false, user)
                     notificationsEnabled.value = false
                 }
 
@@ -86,7 +86,7 @@ class ProfileViewModel @Inject constructor(
                 )
                 when(result){
                     is CommunicationResult.Success -> {
-                        settingsDataStore.setNotificationsEnabled(false)
+                        settingsDataStore.setNotificationsEnabled(false, user)
                         notificationsEnabled.value = false
                     }
                     is CommunicationResult.Error -> {
