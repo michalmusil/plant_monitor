@@ -112,9 +112,12 @@
 
     <string name="notificationsEnabledShort">Notifications enabled</string>
     <string name="notificationsDisabledShort">Notifications disabled</string>
-
     <string name="notificationsEnabledLong">When a value of measurement exceeds limit of the plant, you will be notified.</string>
     <string name="notificationsDisabledLong">You won\'t receive any notifications from this app.</string>
+
+    <string name="revertToSystemDefaults">Revert to system defaults</string>
+    <string name="darkModeEnabled">Dark mode is on</string>
+    <string name="darkModeDisabled">Dark mode is off</string>
 
     <!--  MEASUREMENT TYPES  -->
     <string name="temperature">Temperature</string>

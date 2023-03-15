@@ -1,23 +1,24 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
+import cz.mendelu.xmusil5.plantmonitor.ui.theme.disabledColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 
 @Composable
@@ -25,7 +26,10 @@ fun SwitchCard(
     checked: MutableState<Boolean>,
     mainText: String,
     secondaryText: String? = null,
+    additionalContent: @Composable () -> Unit = {},
     iconId: Int? = null,
+    iconEnabledTint: Color = MaterialTheme.colorScheme.primary,
+    iconDisabledTint: Color = disabledColor,
     onValueChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -49,12 +53,12 @@ fun SwitchCard(
                 Spacer(modifier = Modifier.width(5.dp))
 
                 iconId?.let {
-                    Image(
+                    Icon(
                         imageVector = ImageVector.vectorResource(id = it),
-                        contentDescription = stringResource(id = R.string.deviceImage),
-                        contentScale = ContentScale.Crop,
+                        contentDescription = stringResource(id = R.string.icon),
+                        tint = if (checked.value) iconEnabledTint else iconDisabledTint,
                         modifier = Modifier
-                            .height(30.dp)
+                            .height(50.dp)
                             .aspectRatio(1f)
                     )
                     Spacer(modifier = Modifier.width(15.dp))
@@ -82,6 +86,10 @@ fun SwitchCard(
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
+
+                    Box(contentAlignment = Alignment.Center){
+                        additionalContent()
+                    }
                 }
             }
 
@@ -94,9 +102,9 @@ fun SwitchCard(
                     checked = checked.value,
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = MaterialTheme.colorScheme.secondary,
-                        uncheckedThumbColor = MaterialTheme.colorScheme.background,
+                        uncheckedThumbColor = disabledColor,
                         checkedTrackColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.6f),
-                        uncheckedTrackColor = shadowColor
+                        uncheckedTrackColor = disabledColor.copy(0.8f)
                     ),
                     onCheckedChange = {
                         checked.value = it

@@ -13,6 +13,7 @@ import cz.mendelu.xmusil5.plantmonitor.datastore.settings.ISettingsDataStore
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,11 +26,14 @@ class ProfileViewModel @Inject constructor(
 ): ViewModel() {
     val uiState: MutableState<ProfileUiState> = mutableStateOf(ProfileUiState.Start())
     val isLoading: MutableState<Boolean> = mutableStateOf(false)
+    val darkModePreference: MutableState<Boolean?> = mutableStateOf(null)
 
     val notificationsEnabled: MutableState<Boolean> = mutableStateOf(true)
 
     fun loadData(){
         isLoading.value = true
+        subscribeToDarkModeChanges()
+
         val user = authenticationManager.getUser()
         if (user != null){
             uiState.value = ProfileUiState.UserLoaded(user)
@@ -101,5 +105,19 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+
+    fun overrideDarkModePreference(darkMode: Boolean?){
+        viewModelScope.launch {
+            settingsDataStore.setDarkModePreference(darkMode)
+        }
+    }
+
+    private fun subscribeToDarkModeChanges(){
+        viewModelScope.launch {
+            settingsDataStore.darkModePreference.collectLatest {
+                darkModePreference.value = it
+            }
+        }
+    }
 
 }

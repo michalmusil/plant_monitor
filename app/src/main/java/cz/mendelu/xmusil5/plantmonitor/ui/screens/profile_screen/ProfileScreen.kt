@@ -1,12 +1,9 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.profile_screen
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +20,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import cz.mendelu.xmusil5.plantmonitor.R
@@ -193,9 +191,16 @@ fun LowerProfileScreenPart(
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp, vertical = 30.dp)
     ) {
+        
         NotificationEnabledSwitch(
             viewModel = viewModel,
             user = user
+        )
+        
+        Spacer(modifier = Modifier.height(20.dp))
+        
+        DarkModeEnabledSwitch(
+            viewModel = viewModel
         )
     }
 }
@@ -240,11 +245,87 @@ fun NotificationEnabledSwitch(
         checked = enabled,
         mainText = textShort.value,
         secondaryText = textLong.value,
+        iconId = R.drawable.ic_notification,
         onValueChange = {
             viewModel.setNotificationsEnabled(
                 enabled = it,
                 user = user
             )
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .customShadow(
+                color = shadowColor,
+                borderRadius = cornerRadius,
+                spread = 0.dp,
+                blurRadius = 5.dp,
+                offsetY = 2.dp
+            )
+            .clip(RoundedCornerShape(cornerRadius))
+            .background(MaterialTheme.colorScheme.surface)
+    )
+}
+
+@Composable
+fun DarkModeEnabledSwitch(
+    viewModel: ProfileViewModel
+){
+    val darkModeSystemDefault = isSystemInDarkTheme()
+    val cornerRadius = 30.dp
+
+    val enabledString = stringResource(id = R.string.darkModeEnabled)
+    val disabledString = stringResource(id = R.string.darkModeDisabled)
+    val enabled = remember{
+        mutableStateOf(false)
+    }
+    val text = remember{
+        mutableStateOf("")
+    }
+    val isDarkModeManuallyOverriden = remember{
+        mutableStateOf(false)
+    }
+
+    viewModel.darkModePreference.value.let {
+        LaunchedEffect(it){
+            if (it != null){
+                isDarkModeManuallyOverriden.value = true
+                enabled.value = it
+            } else {
+                isDarkModeManuallyOverriden.value = false
+                enabled.value = darkModeSystemDefault
+            }
+            when(enabled.value){
+                true -> {
+                    text.value = enabledString
+                }
+                false -> {
+                    text.value = disabledString
+                }
+            }
+        }
+    }
+
+    SwitchCard(
+        checked = enabled,
+        mainText = text.value,
+        iconId = R.drawable.ic_dark_mode,
+        onValueChange = {
+            viewModel.overrideDarkModePreference(
+                darkMode = it
+            )
+        },
+        additionalContent = {
+            if (isDarkModeManuallyOverriden.value){
+                CustomButton(
+                    text = stringResource(id = R.string.revertToSystemDefaults),
+                    backgroundColor = MaterialTheme.colorScheme.secondary,
+                    textColor = MaterialTheme.colorScheme.onSecondary,
+                    textSize = 12.sp,
+                    onClick = {
+                        viewModel.overrideDarkModePreference(null)
+                    }
+                )
+            }
         },
         modifier = Modifier
             .fillMaxWidth()

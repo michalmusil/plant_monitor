@@ -6,18 +6,32 @@ import androidx.datastore.preferences.core.edit
 import cz.mendelu.xmusil5.plantmonitor.datastore.DataStoreConstants
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.utils.settingsDataStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
 class SettingsDataStoreImpl(
-    private val context: Context
+    private val context: Context,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ): ISettingsDataStore {
-
     companion object {
         private const val defaultNotificationsEnabled: Boolean = true
     }
+    init {
+        coroutineScope.launch {
+            darkModePreference.value = getDarkModePreference()
+        }
+    }
+
+    override val darkModePreference = MutableStateFlow<Boolean?>(null)
 
     private fun getNotificationsEnabledKey(user: GetUser): String{
         return "NotifyUserId:${user.userId}"
+    }
+    private fun getDarkModePreferenceKey(): String{
+        return "PrefersDarkMode"
     }
 
 
@@ -33,5 +47,23 @@ class SettingsDataStoreImpl(
         context.settingsDataStore.edit {
             it[booleanPreferencesKey(key)] = enabled
         }
+    }
+
+    override suspend fun getDarkModePreference(): Boolean? {
+        val preference = context.settingsDataStore.data.firstOrNull()
+        val key = getDarkModePreferenceKey()
+        return preference?.get(booleanPreferencesKey(key))
+    }
+
+    override suspend fun setDarkModePreference(darkMode: Boolean?) {
+        val key = getDarkModePreferenceKey()
+        context.settingsDataStore.edit {
+            if (darkMode != null){
+                it[booleanPreferencesKey(key)] = darkMode
+            } else {
+                it.remove(booleanPreferencesKey(key))
+            }
+        }
+        darkModePreference.value = darkMode
     }
 }
