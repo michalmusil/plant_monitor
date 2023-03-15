@@ -103,6 +103,11 @@
 
     <!--  PROFILE SCREEN  -->
     <string name="profileScreen">Profile</string>
+    <string name="userIcon">User icon</string>
+
+    <string name="commonUser">User</string>
+    <string name="admin">Administrator</string>
+    <string name="logout">Log out</string>
 
 
     <!--  MEASUREMENT TYPES  -->
