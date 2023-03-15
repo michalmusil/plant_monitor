@@ -9,6 +9,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.IUserAuthRepository
+import cz.mendelu.xmusil5.plantmonitor.communication.notifications.token_manager.INotificationTokenManager
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
@@ -23,6 +24,7 @@ import kotlin.coroutines.suspendCoroutine
 class RegistrationViewModel @Inject constructor(
     private val authenticationManager: IAuthenticationManager,
     private val userAuthRepository: IUserAuthRepository,
+    private val notificationTokenManager: INotificationTokenManager,
     val stringValidator: IStringValidator
 ): ViewModel() {
     val TAG = "RegistrationViewModel"
@@ -62,7 +64,7 @@ class RegistrationViewModel @Inject constructor(
                 is CommunicationResult.Success -> {
                     authenticationManager.setUser(user = result.data)
 
-                    val notificationToken = getNotificationToken()
+                    val notificationToken = notificationTokenManager.getNotificationToken()
                     notificationToken?.let {
                         updateNotificationToken(it)
                     }
@@ -82,22 +84,6 @@ class RegistrationViewModel @Inject constructor(
     fun emailAndPasswordAreValid(email: String, password: String): Boolean{
         return stringValidator.isEmailValid(email) &&
                 stringValidator.isPasswordValid(password)
-    }
-
-    suspend fun getNotificationToken(): String?{
-        val token = suspendCoroutine<String?>{ continuation ->
-            FirebaseMessaging.getInstance().token.addOnCompleteListener{ task ->
-                if (!task.isSuccessful) {
-                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                    continuation.resume(null)
-                }
-                else {
-                    val token = task.result
-                    continuation.resume(token)
-                }
-            }
-        }
-        return token
     }
 
     suspend fun updateNotificationToken(notificationToken: String){

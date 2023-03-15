@@ -38,6 +38,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.SwitchCar
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItem
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.ExpandableCard
+import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.SmallLoadingIndicator
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.errorColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.onlineColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
@@ -222,25 +223,9 @@ fun DeviceDetailAndControlLoadingIndicator(
             isShown.value = it
         }
     }
-    val size = 30.dp
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .background(Color.Transparent)
-            .padding(16.dp)
-    ){
-        AnimatedVisibility(
-            visible = isShown.value,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            CircularProgressIndicator(
-                color = MaterialTheme.colorScheme.secondary,
-                modifier = Modifier
-                    .size(size)
-            )
-        }
-    }
+    SmallLoadingIndicator(
+        isShown = isShown
+    )
 }
 
 @Composable

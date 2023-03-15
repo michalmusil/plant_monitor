@@ -7,16 +7,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -24,16 +23,14 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
-import com.icontio.senscare_peresonal_mobile.ui.components.templates.ScreenSkeleton
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
-import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_device_screen.AddDeviceViewModel
+import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.SmallLoadingIndicator
 
 @Composable
 fun ProfileScreen(
@@ -44,7 +41,7 @@ fun ProfileScreen(
         when(it){
             is ProfileUiState.Start -> {
                 LaunchedEffect(it){
-                    viewModel.loadUser()
+                    viewModel.loadData()
                 }
                 LoadingScreen()
             }
@@ -70,22 +67,43 @@ fun ProfileScreenContent(
     viewModel: ProfileViewModel,
     navigation: INavigationRouter
 ){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+    Box(
+        contentAlignment = Alignment.TopEnd,
+        modifier = Modifier.fillMaxSize()
     ) {
-        UpperProfileScreenPart(
-            user = user,
-            viewModel = viewModel
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            UpperProfileScreenPart(
+                user = user,
+                viewModel = viewModel
+            )
 
-        LowerProfileScreenPart(
-            user = user,
-            viewModel = viewModel
-        )
+            LowerProfileScreenPart(
+                user = user,
+                viewModel = viewModel
+            )
+        }
+        ProfileScreenLoadingIndicator(viewModel = viewModel)
     }
+}
+
+@Composable
+fun ProfileScreenLoadingIndicator(
+    viewModel: ProfileViewModel
+){
+    val isShown = remember{
+        mutableStateOf(false)
+    }
+    LaunchedEffect(viewModel.isLoading.value){
+        isShown.value = viewModel.isLoading.value
+    }
+    SmallLoadingIndicator(
+        isShown = isShown
+    )
 }
 
 @Composable
@@ -148,7 +166,6 @@ fun UpperProfileScreenPart(
                 text = stringResource(id = R.string.logout),
                 backgroundColor = MaterialTheme.colorScheme.secondary,
                 textColor = MaterialTheme.colorScheme.onSecondary,
-                textSize = 20.sp,
                 onClick = {
                     viewModel.logOut()
                 }
@@ -171,6 +188,7 @@ fun LowerProfileScreenPart(
             .fillMaxSize()
             .clip(RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius))
             .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 16.dp)
     ) {
         Text("Fill this part out later")
         Text("Fill this part out later")
