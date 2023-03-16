@@ -43,15 +43,22 @@ fun DeviceCard(
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
-                contentDescription = stringResource(id = R.string.deviceImage),
-                contentScale = ContentScale.Crop,
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .height(50.dp)
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(10.dp))
-            )
+                    .size(60.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+            ) {
+                Image(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
+                    contentDescription = stringResource(id = R.string.deviceImage),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(11.dp)
+                )
+            }
             Spacer(modifier = Modifier.width(20.dp))
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally

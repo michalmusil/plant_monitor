@@ -62,14 +62,22 @@ fun DeviceListItem(
                 .padding(12.dp)
         ) {
 
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
-                contentDescription = stringResource(id = R.string.deviceImage),
-                contentScale = ContentScale.Crop,
+            Box(
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(70.dp)
-                    .clip(RoundedCornerShape(cornerRadius))
-            )
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+            ){
+                Image(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
+                    contentDescription = stringResource(id = R.string.deviceImage),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(11.dp)
+                        .fillMaxSize()
+                )
+            }
 
             Column(
                 verticalArrangement = Arrangement.Center,

@@ -40,8 +40,10 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
 import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
+import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import kotlin.math.roundToInt
 
@@ -257,8 +259,14 @@ fun PlantListItemValues(
 
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
+        contentPadding = PaddingValues(horizontal = 12.dp),
         modifier = Modifier
             .fillMaxWidth()
+            .fadeEdges(
+                edges = Edges.HORIZONTAL,
+                backgroundColor = MaterialTheme.colorScheme.secondary,
+                fadeWidth = 80f
+            )
     ){
         items(measurementValues){ measurementValue ->
 

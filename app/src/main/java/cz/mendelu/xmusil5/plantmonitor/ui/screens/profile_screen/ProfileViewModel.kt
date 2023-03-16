@@ -107,8 +107,10 @@ class ProfileViewModel @Inject constructor(
 
 
     fun overrideDarkModePreference(darkMode: Boolean?){
+        isLoading.value = true
         viewModelScope.launch {
             settingsDataStore.setDarkModePreference(darkMode)
+            isLoading.value = false
         }
     }
 

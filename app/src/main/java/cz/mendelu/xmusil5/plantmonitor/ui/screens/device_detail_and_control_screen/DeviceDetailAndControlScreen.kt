@@ -151,17 +151,27 @@ fun DeviceDetailAndControlScreenContent(
             Spacer(modifier = Modifier.height(16.dp))
 
             Box(
-                contentAlignment = Alignment.TopEnd
+                contentAlignment = Alignment.TopEnd,
+                modifier = Modifier
+                    .size(180.dp)
             ) {
-                Image(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
-                    contentDescription = stringResource(id = R.string.deviceImage),
-                    contentScale = ContentScale.Crop,
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .width(100.dp)
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(imageCornerRadius))
-                )
+                        .fillMaxSize()
+                        .padding(10.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary)
+                ) {
+                    Image(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
+                        contentDescription = stringResource(id = R.string.deviceImage),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(23.dp)
+                    )
+                }
                 Box(
                     modifier = Modifier
                         .size(16.dp)

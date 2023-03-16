@@ -1,9 +1,11 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.plants_screen
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +21,8 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItemExp
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoDataScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.AddFloatingActionButton
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
+import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
 
 @Composable
 fun PlantsScreen(
@@ -80,8 +84,19 @@ fun PlantsScreenContent(
     plants: List<GetPlant>
 ){
     LazyColumn(
+        contentPadding = PaddingValues(
+            top = 16.dp,
+            bottom = 50.dp,
+            start = 16.dp,
+            end = 16.dp
+        ),
         modifier = Modifier
             .fillMaxSize()
+            .fadeEdges(
+                edges = Edges.VERTICAL,
+                backgroundColor = MaterialTheme.colorScheme.background,
+                fadeWidth = 100f
+            )
     ){
         items(
             count = plants.count(),
@@ -128,9 +143,7 @@ fun PlantsScreenContent(
                     measurementValidator = viewModel.measurementsValidator,
                     onClick = {
                         navigation.toPlantDetail(plant.id)
-                    },
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
+                    }
                 )
             }
         )
