@@ -190,7 +190,7 @@ fun AddOrEditPlantScreenContent(
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Delete,
-                            contentDescription = stringResource(id = R.string.edit),
+                            contentDescription = stringResource(id = R.string.delete),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }

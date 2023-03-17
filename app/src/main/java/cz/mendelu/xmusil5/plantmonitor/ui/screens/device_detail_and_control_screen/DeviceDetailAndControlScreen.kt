@@ -1,22 +1,22 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.device_detail_and_control_screen
 
 import android.graphics.Bitmap
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -37,8 +37,10 @@ import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.SwitchCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItem
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
+import cz.mendelu.xmusil5.plantmonitor.ui.components.templates.PopupDialog
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.ExpandableCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.SmallLoadingIndicator
+import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_or_edit_plant_screen.AddOrEditPlantMode
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.errorColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.onlineColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
@@ -109,6 +111,11 @@ fun DeviceDetailAndControlScreen(
                     )
                 }
             }
+            is DeviceDetailAndControlUiState.DeviceUnregistered -> {
+                LaunchedEffect(it){
+                    navigation.toDevicesScreen()
+                }
+            }
             is DeviceDetailAndControlUiState.Error -> {
                 ErrorScreen(text = stringResource(id = it.errorStringCode)){
                     viewModel.uiState.value = DeviceDetailAndControlUiState.Start()
@@ -125,99 +132,148 @@ fun DeviceDetailAndControlScreenContent(
     viewModel: DeviceDetailAndControlViewModel,
     navigation: INavigationRouter
 ){
-    val imageCornerRadius = 10.dp
+    val showUnregisterDialog = rememberSaveable{
+        mutableStateOf(false)
+    }
 
-    Box(
-        contentAlignment = Alignment.TopEnd,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
 
-            TopBarWithBackButton(
-                topBarTitle = stringResource(
-                    id = R.string.deviceDetailAndControlScreen
-                ),
-                onBackClick = {
-                    navigation.returnBack()
-                }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Box(
-                contentAlignment = Alignment.TopEnd,
-                modifier = Modifier
-                    .size(180.dp)
-            ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(10.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary)
+        TopBarWithBackButton(
+            topBarTitle = stringResource(R.string.deviceDetailAndControlScreen),
+            actions = {
+                IconButton(
+                    onClick = {
+                        showUnregisterDialog.value = true
+                    }
                 ) {
-                    Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
-                        contentDescription = stringResource(id = R.string.deviceImage),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(23.dp)
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = stringResource(id = R.string.unregister),
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
+            },
+            onBackClick = {
+                navigation.returnBack()
+            }
+        )
+
+        DeviceUnregisterDialog(
+            device = device,
+            showDialog = showUnregisterDialog,
+            viewModel = viewModel
+        )
+
+        Box(
+            contentAlignment = Alignment.TopEnd,
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Box(
+                    contentAlignment = Alignment.TopEnd,
                     modifier = Modifier
-                        .size(16.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (device.active) onlineColor else errorColor
+                        .size(180.dp)
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(10.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary)
+                    ) {
+                        Image(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
+                            contentDescription = stringResource(id = R.string.deviceImage),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(23.dp)
                         )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (device.active) onlineColor else errorColor
+                            )
+                    )
+                }
+
+                errorMessage?.let {
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = errorColor
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = device.communicationId,
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                DeviceDetailAndControlInfo(
+                    device = device,
+                    viewModel = viewModel,
+                    navigation = navigation
                 )
             }
 
-            errorMessage?.let {
-                Spacer(modifier = Modifier.height(10.dp))
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                ) {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = errorColor
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = device.communicationId,
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            DeviceDetailAndControlInfo(
-                device = device,
-                viewModel = viewModel,
-                navigation = navigation
-            )
+            DeviceDetailAndControlLoadingIndicator(viewModel = viewModel)
         }
+    }
+}
 
-        DeviceDetailAndControlLoadingIndicator(viewModel = viewModel)
+@Composable
+fun DeviceUnregisterDialog(
+    device: GetDevice,
+    showDialog: MutableState<Boolean>,
+    viewModel: DeviceDetailAndControlViewModel
+){
+    if(showDialog.value) {
+        PopupDialog(
+            showDialog = showDialog,
+            title = stringResource(id = R.string.unregisterDevice),
+            text = stringResource(id = R.string.sureToUnregisterDevice),
+            confirmButtonText = stringResource(id = R.string.yes),
+            cancelButtonText = stringResource(id = R.string.no),
+            onConfirm = {
+                viewModel.unregisterDevice(deviceId = device.id)
+                showDialog.value = false
+            },
+            onCancel = {
+                showDialog.value = false
+            }
+        )
     }
 }
 

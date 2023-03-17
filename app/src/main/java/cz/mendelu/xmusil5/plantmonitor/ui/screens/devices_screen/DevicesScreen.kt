@@ -107,6 +107,11 @@ fun DevicesScreen(
         AddFloatingActionButton {
             showAddDialog.value = true
         }
+
+        NewDeviceDialog(
+            showDialog = showAddDialog,
+            viewModel = viewModel
+        )
     }
 }
 
@@ -117,8 +122,14 @@ fun DevicesScreenContent(
     devices: List<GetDevice>,
     showAddDialog: MutableState<Boolean>
 ){
-    Box(
-        contentAlignment = Alignment.Center,
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(170.dp),
+        contentPadding = PaddingValues(
+            top = 16.dp,
+            bottom = 50.dp,
+            start = 16.dp,
+            end = 16.dp
+        ),
         modifier = Modifier
             .fillMaxSize()
             .fadeEdges(
@@ -127,37 +138,21 @@ fun DevicesScreenContent(
                 fadeWidth = 100f
             )
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(170.dp),
-            contentPadding = PaddingValues(
-                top = 16.dp,
-                bottom = 50.dp,
-                start = 16.dp,
-                end = 16.dp
-            ),
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            items(
-                count = devices.size,
-                key = {
-                    devices[it].id
-                },
-                itemContent = { index ->
-                    DeviceListItem(
-                        device = devices[index],
-                        onClick = {
-                            navigation.toDeviceDetailAndControl(
-                                deviceId = devices[index].id
-                            )
-                        }
-                    )
-                }
-            )
-        }
-        NewDeviceDialog(
-            showDialog = showAddDialog,
-            viewModel = viewModel
+        items(
+            count = devices.size,
+            key = {
+                devices[it].id
+            },
+            itemContent = { index ->
+                DeviceListItem(
+                    device = devices[index],
+                    onClick = {
+                        navigation.toDeviceDetailAndControl(
+                            deviceId = devices[index].id
+                        )
+                    }
+                )
+            }
         )
     }
 }
@@ -193,7 +188,6 @@ fun NewDeviceDialog(
         communicationIdentifierError.value = false
         macAddressError.value = false
     }
-
     AnimatedVisibility(
         visible = showDialog.value,
         enter = fadeIn(animationSpec = tween(animationDuration)),
@@ -259,7 +253,7 @@ fun NewDeviceDialog(
                 CustomTextField(
                     labelTitle = stringResource(id = R.string.newDeviceIdentifier),
                     value = communicationIdentifier,
-                    maxChars = 50,
+                    maxChars = 15,
                     singleLine = true,
                     isError = communicationIdentifierError.value,
                     errorMessage = stringResource(id = R.string.emailNotInCorrectFormat),

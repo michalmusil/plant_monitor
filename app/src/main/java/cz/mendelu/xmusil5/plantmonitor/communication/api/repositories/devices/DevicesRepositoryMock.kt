@@ -11,7 +11,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceRegister
 class DevicesRepositoryMock: IDevicesRepository {
 
     companion object{
-        val DEVICES = listOf(
+        val DEVICES = mutableListOf(
             GetDevice(
                 id = 1,
                 communicationId = "292fh92ufh923hfde",
@@ -71,6 +71,13 @@ class DevicesRepositoryMock: IDevicesRepository {
             plantId = null
         )
         return CommunicationResult.Success(data = newDevice)
+    }
+
+    override suspend fun unregisterDevice(deviceId: Long): CommunicationResult<Unit> {
+        DEVICES.removeIf {
+            it.id == deviceId
+        }
+        return CommunicationResult.Success(Unit)
     }
 
     override suspend fun deviceActivation(putDeviceActivation: PutDeviceActivation): CommunicationResult<GetDevice> {

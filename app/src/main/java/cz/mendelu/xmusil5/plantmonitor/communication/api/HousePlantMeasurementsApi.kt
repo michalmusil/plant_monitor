@@ -117,6 +117,13 @@ interface HousePlantMeasurementsApi {
     ): Response<GetDevice>
 
     @Headers("Content-Type: application/json")
+    @PUT("devices/unregister/{id}")
+    suspend fun unregisterDevice(
+        @Path("id")deviceId: Long,
+        @Header("Authorization") bearerToken: String
+    ): Response<Unit>
+
+    @Headers("Content-Type: application/json")
     @PUT("devices/activation")
     suspend fun deviceActivation(
         @Body putDeviceActivation: PutDeviceActivation,
@@ -129,6 +136,7 @@ interface HousePlantMeasurementsApi {
         @Body putDevicePlantAssignment: PutDevicePlantAssignment,
         @Header("Authorization") bearerToken: String
     ): Response<GetDevice>
+
 
 
 

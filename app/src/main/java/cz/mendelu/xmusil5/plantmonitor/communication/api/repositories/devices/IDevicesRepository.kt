@@ -14,6 +14,8 @@ interface IDevicesRepository {
 
     suspend fun registerDevice(deviceRegister: PutDeviceRegister): CommunicationResult<GetDevice>
 
+    suspend fun unregisterDevice(deviceId: Long): CommunicationResult<Unit>
+
     suspend fun deviceActivation(putDeviceActivation: PutDeviceActivation): CommunicationResult<GetDevice>
 
     suspend fun assignDeviceToPlant(devicePlantAssignment: PutDevicePlantAssignment): CommunicationResult<GetDevice>

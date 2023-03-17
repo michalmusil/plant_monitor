@@ -7,5 +7,6 @@ sealed class DeviceDetailAndControlUiState{
     class DeviceLoaded(val device: GetDevice): DeviceDetailAndControlUiState()
     class DeviceUpdated(val device: GetDevice): DeviceDetailAndControlUiState()
     class DeviceUpdateFailed(val errorMessageCode: Int): DeviceDetailAndControlUiState()
+    class DeviceUnregistered(): DeviceDetailAndControlUiState()
     class Error(val errorStringCode: Int): DeviceDetailAndControlUiState()
 }

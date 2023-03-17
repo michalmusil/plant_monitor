@@ -42,6 +42,15 @@ class DevicesRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun unregisterDevice(deviceId: Long): CommunicationResult<Unit> {
+        return processRequest {
+            api.unregisterDevice(
+                deviceId = deviceId,
+                bearerToken = authenticationManager.getToken()
+            )
+        }
+    }
+
     override suspend fun deviceActivation(putDeviceActivation: PutDeviceActivation): CommunicationResult<GetDevice> {
         return processRequest {
             api.deviceActivation(

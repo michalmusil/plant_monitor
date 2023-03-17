@@ -16,7 +16,7 @@ class StringValidatorImpl: IStringValidator {
     }
 
     override fun isCommunicationIdentifierValid(communicationIdentifier: String): Boolean {
-        return communicationIdentifier.length >= 30
+        return communicationIdentifier.length == 15
     }
 
     override fun isMacAddressValid(macAddress: String): Boolean {

@@ -12,6 +12,8 @@
     <string name="unknown">Unknown</string>
     <string name="add">Add</string>
     <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="unregister">Unregister</string>
     <string name="saveChanges">Save changes</string>
     <string name="errorIcon">Error icon</string>
     <string name="refresh">Refresh</string>
@@ -102,6 +104,9 @@
     <string name="deviceDetailAndControlScreen">Measuring device</string>
     <string name="assignedToPlant">Currently assigned to plant</string>
     <string name="assignToNewPlant">Assign to a new plant</string>
+
+    <string name="unregisterDevice">Unregister measuring device</string>
+    <string name="sureToUnregisterDevice">Are you sure you want to unregister this device? You will be able to register it again.</string>
 
     <string name="deviceUpdateFailed">Device update failed</string>
     <string name="deviceIsActivePrimary">Device is activated</string>

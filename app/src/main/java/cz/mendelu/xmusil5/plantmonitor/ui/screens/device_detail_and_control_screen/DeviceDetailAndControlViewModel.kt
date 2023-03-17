@@ -140,4 +140,21 @@ class DeviceDetailAndControlViewModel @Inject constructor(
             }
         }
     }
+
+    fun unregisterDevice(deviceId: Long){
+        viewModelScope.launch {
+            val result = devicesRepository.unregisterDevice(deviceId = deviceId)
+            when(result){
+                is CommunicationResult.Success -> {
+                    uiState.value = DeviceDetailAndControlUiState.DeviceUnregistered()
+                }
+                is CommunicationResult.Error -> {
+                    uiState.value = DeviceDetailAndControlUiState.DeviceUpdateFailed(errorMessageCode = R.string.somethingWentWrong)
+                }
+                is CommunicationResult.Exception -> {
+                    uiState.value = DeviceDetailAndControlUiState.Error(errorStringCode = R.string.connectionError)
+                }
+            }
+        }
+    }
 }
