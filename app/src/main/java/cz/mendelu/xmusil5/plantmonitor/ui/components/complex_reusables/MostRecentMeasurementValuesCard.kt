@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
@@ -31,7 +32,7 @@ import kotlin.math.roundToInt
 @Composable
 fun MostRecentMeasurementValuesCard(
     plant: GetPlant,
-    mostRecentValues: List<MeasurementValue>,
+    mostRecentValues: List<LatestMeasurementValueOfPlant>,
     measurementsValidator: IMeasurementsValidator,
     modifier: Modifier = Modifier
 ){
@@ -43,7 +44,10 @@ fun MostRecentMeasurementValuesCard(
     LaunchedEffect(measurementsValidator){
         validatedTypeLimits.clear()
         mostRecentValues.forEach {
-            val validation = measurementsValidator.validateMeasurementValue(measurementValue = it, plant = plant)
+            val validation = measurementsValidator.validateMeasurementValue(
+                value = it.value,
+                type = it.measurementType,
+                plant = plant)
             val validatedType = Pair(it.measurementType, validation)
             validatedTypeLimits.add(validatedType)
         }
@@ -90,7 +94,7 @@ fun MostRecentMeasurementValuesCard(
 
 @Composable
 fun LatestValueItem(
-    measurementValue: MeasurementValue,
+    measurementValue: LatestMeasurementValueOfPlant,
     measurementValidation: MeasurementLimitValidation,
     textColor: Color = MaterialTheme.colorScheme.onSurface
 ){
@@ -139,7 +143,7 @@ fun LatestValueItem(
                 modifier = Modifier
                     .weight(1f)
             ) {
-                measurementValue.measurementDate?.calendarInUTC0?.let {
+                measurementValue.datetime?.calendarInUTC0?.let {
                     Text(
                         text = DateUtils.getLocalizedDateTimeString(it),
                         style = MaterialTheme.typography.labelSmall,

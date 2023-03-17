@@ -5,6 +5,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceRegister
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
@@ -152,12 +153,11 @@ interface HousePlantMeasurementsApi {
     ): Response<List<GetMeasurement>>
 
     @Headers("Content-Type: application/json")
-    @GET("measurements/plant/latest/{id}")
-    suspend fun getLatestPlantMeasurementOfType(
+    @GET("measurements/plant/latestValues/{id}")
+    suspend fun getLatestPlantMeasurementValues(
         @Path("id")plantId: Long,
-        @Query("measurementType")measurementTypeNumber: Int,
         @Header("Authorization") bearerToken: String
-    ): Response<GetMeasurement>
+    ): Response<List<LatestMeasurementValueOfPlant>>
 
 
 }

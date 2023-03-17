@@ -40,6 +40,7 @@ import com.icontio.senscare_peresonal_mobile.ui.components.templates.TopBarWithB
 import com.madrapps.plot.line.DataPoint
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
@@ -250,7 +251,7 @@ fun PlantDetailInfo(
     val cornerRadius = 30.dp
 
     val mostRecentValues = remember{
-        mutableStateOf<List<MeasurementValue>>(listOf())
+        mutableStateOf<List<LatestMeasurementValueOfPlant>>(listOf())
     }
     LaunchedEffect(plant, measurements){
         viewModel.fetchMostRecentValuesOfPlant(

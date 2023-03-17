@@ -35,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
@@ -52,7 +53,7 @@ import kotlin.math.roundToInt
 fun PlantListItemExpandable(
     plant: GetPlant,
     plantImage: MutableState<Bitmap?>,
-    measurementValues: MutableState<List<MeasurementValue>?>,
+    latestValues: MutableState<List<LatestMeasurementValueOfPlant>?>,
     expanded: MutableState<Boolean>,
     measurementValidator: IMeasurementsValidator? = null,
     modifier: Modifier = Modifier,
@@ -78,12 +79,13 @@ fun PlantListItemExpandable(
     )
 
     // Validates the measurement values and determines the color of the plant strip
-    LaunchedEffect(measurementValues.value){
-        if (measurementValues.value != null && measurementValidator != null) {
+    LaunchedEffect(latestValues.value){
+        if (latestValues.value != null && measurementValidator != null) {
             var worstValidation: MeasurementLimitValidation? = null
-            for (value in measurementValues.value!!) {
+            for (value in latestValues.value!!) {
                 val validation = measurementValidator.validateMeasurementValue(
-                    measurementValue = value,
+                    value = value.value,
+                    type = value.measurementType,
                     plant = plant
                 )
                 when(validation){
@@ -206,11 +208,11 @@ fun PlantListItemExpandable(
                     .padding(bottom = 16.dp, top = 5.dp)
                     .fillMaxWidth()
             ){
-                if (measurementValues.value != null){
-                    if (measurementValues.value!!.size > 0) {
+                if (latestValues.value != null){
+                    if (latestValues.value!!.size > 0) {
                         PlantListItemValues(
                             plant = plant,
-                            measurementValues = measurementValues.value!!,
+                            measurementValues = latestValues.value!!,
                             measurementValidator = measurementValidator
                         )
                     } else {
@@ -236,7 +238,7 @@ fun PlantListItemExpandable(
 @Composable
 fun PlantListItemValues(
     plant: GetPlant,
-    measurementValues: List<MeasurementValue>,
+    measurementValues: List<LatestMeasurementValueOfPlant>,
     measurementValidator: IMeasurementsValidator? = null,
 ){
     val valueTextColor = MaterialTheme.colorScheme.onSurface
@@ -250,7 +252,11 @@ fun PlantListItemValues(
         measurementValidator?.let { validator ->
             validatedTypeLimits.clear()
             measurementValues.forEach {
-                val validation = validator.validateMeasurementValue(measurementValue = it, plant = plant)
+                val validation = validator.validateMeasurementValue(
+                    value = it.value,
+                    type = it.measurementType,
+                    plant = plant
+                )
                 val validatedType = Pair(it.measurementType, validation)
                 validatedTypeLimits.add(validatedType)
             }

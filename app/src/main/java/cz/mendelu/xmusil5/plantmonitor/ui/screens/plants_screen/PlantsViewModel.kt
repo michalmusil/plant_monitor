@@ -10,6 +10,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measuremen
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
@@ -52,9 +53,9 @@ class PlantsViewModel @Inject constructor(
         }
     }
 
-    fun fetchMostRecentValuesOfPlant(plant: GetPlant, onValuesFetched: (List<MeasurementValue>) -> Unit){
+    fun fetchMostRecentValuesOfPlant(plant: GetPlant, onValuesFetched: (List<LatestMeasurementValueOfPlant>) -> Unit){
         viewModelScope.launch {
-            val result = measurementsRepository.getMostRecentPlantMeasurementValues(
+            val result = measurementsRepository.getLatestPlantMeasurementValues(
                 plantId = plant.id,
             )
             if (result is CommunicationResult.Success){

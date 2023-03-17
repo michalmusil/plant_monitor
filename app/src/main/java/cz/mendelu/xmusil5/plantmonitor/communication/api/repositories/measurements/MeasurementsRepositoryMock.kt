@@ -1,12 +1,11 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements
 
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationError
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.utils.DateTimeFromApi
-import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import java.util.*
 
 class MeasurementsRepositoryMock: IMeasurementsRepository {
@@ -92,43 +91,25 @@ class MeasurementsRepositoryMock: IMeasurementsRepository {
         return CommunicationResult.Success(data = matchingMeasurements)
     }
 
-    override suspend fun getLatestPlantMeasurementOfType(
-        plantId: Long,
-        measurementType: MeasurementType
-    ): CommunicationResult<GetMeasurement> {
-        val found = MEASUREMENTS.filter {
+    override suspend fun getLatestPlantMeasurementValues(plantId: Long): CommunicationResult<List<LatestMeasurementValueOfPlant>> {
+        val matchingMeasurement = MEASUREMENTS.filter {
             it.plantId == plantId
-        }.sortedByDescending {
-            it.datetime?.calendarInUTC0?.timeInMillis
-        }.firstOrNull()
-
-        found?.let {
-            return CommunicationResult.Success(data = it)
+        }.maxByOrNull {
+            it.id
         }
-        return CommunicationResult.Error(
-            error = CommunicationError(
-                code = 404,
-                message = "Measurement not found"
-            )
-        )
-    }
-
-    override suspend fun getMostRecentPlantMeasurementValues(plantId: Long): CommunicationResult<List<MeasurementValue>> {
-        val mostRecentMeasurement = MEASUREMENTS.filter {
-            it.plantId == plantId
-        }.sortedByDescending {
-            it.datetime?.calendarInUTC0?.timeInMillis
-        }.firstOrNull()
-
-        mostRecentMeasurement?.let {
-            return CommunicationResult.Success(data = it.values)
+        val latestMeasurementValues = mutableListOf<LatestMeasurementValueOfPlant>()
+        matchingMeasurement?.let { measurement ->
+            measurement.values.forEach {
+                val latestValue = LatestMeasurementValueOfPlant(
+                    measurementType = it.measurementType,
+                    value = it.value,
+                    measurementId = measurement.id,
+                    datetime = measurement.datetime
+                )
+                latestMeasurementValues.add(latestValue)
+            }
         }
-        return CommunicationResult.Error(
-            error = CommunicationError(
-                code = 404,
-                message = "Measurement not found"
-            )
-        )
+        return CommunicationResult.Success(latestMeasurementValues)
     }
 
 

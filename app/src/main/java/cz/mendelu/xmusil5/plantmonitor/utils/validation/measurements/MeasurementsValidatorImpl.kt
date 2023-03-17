@@ -2,6 +2,7 @@ package cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements
 
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 
@@ -13,7 +14,11 @@ class MeasurementsValidatorImpl: IMeasurementsValidator {
     override fun isMeasurementValid(measurement: GetMeasurement, plant: GetPlant): MeasurementLimitValidation {
         var result = MeasurementLimitValidation.VALID
         for (measurementValue in measurement.values) {
-            validateMeasurementValue(measurementValue = measurementValue, plant = plant).let {
+            validateMeasurementValue(
+                value = measurementValue.value,
+                type = measurementValue.measurementType,
+                plant = plant
+            ).let {
                 when(it){
                     MeasurementLimitValidation.MINOR_INVALID -> {
                         result = MeasurementLimitValidation.MINOR_INVALID
@@ -29,13 +34,14 @@ class MeasurementsValidatorImpl: IMeasurementsValidator {
     }
 
     override fun validateMeasurementValue(
-        measurementValue: MeasurementValue,
+        value: Double,
+        type: MeasurementType,
         plant: GetPlant
     ): MeasurementLimitValidation {
         val minorInvalidPercentage = 0.1
 
         val suitableLimit = plant.valueLimits.firstOrNull{
-            it.type == measurementValue.measurementType
+            it.type == type
         }
         suitableLimit?.let {
             val range = it.upperLimit - it.lowerLimit
@@ -44,10 +50,10 @@ class MeasurementsValidatorImpl: IMeasurementsValidator {
             val minorInvalidHigh = it.upperLimit + minorInvalidRange
             when {
                 // Measurement is completely valid - between set limits
-                it.lowerLimit <= measurementValue.value && it.upperLimit >= measurementValue.value -> {
+                it.lowerLimit <= value && it.upperLimit >= value -> {
                     return MeasurementLimitValidation.VALID
                 }
-                minorInvalidLow <= measurementValue.value && minorInvalidHigh >= measurementValue.value -> {
+                minorInvalidLow <= value && minorInvalidHigh >= value -> {
                     return MeasurementLimitValidation.MINOR_INVALID
                 }
                 else -> {
