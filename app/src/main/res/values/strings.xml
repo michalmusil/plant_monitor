@@ -88,8 +88,15 @@
 
     <!--  DEVICES SCREEN  -->
     <string name="devicesScreen">Devices</string>
+    <string name="addNewDevice">Add new measuring device</string>
+
+    <string name="newDeviceIdentifier">Communication identifier</string>
+    <string name="newDeviceMacAddress">Mac address</string>
 
     <string name="noPlantAssigned">No plant assigned</string>
+    <string name="communicationIdentifierNotInCorrectFormat">Communication identifier not in correct format</string>
+    <string name="macAddressNotInCorrectFormat">Mac address not in correct format</string>
+    <string name="deviceRegistrationFailed">Device information are not correct</string>
 
     <!--  DEVICES DETAIL AND CONTROL SCREEN  -->
     <string name="deviceDetailAndControlScreen">Measuring device</string>

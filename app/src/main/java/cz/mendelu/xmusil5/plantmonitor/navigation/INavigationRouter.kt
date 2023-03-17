@@ -19,6 +19,4 @@ interface INavigationRouter {
 
     fun toAddPlant()
     fun toEditPlant(plantId: Long)
-
-    fun toAddDevice()
 }

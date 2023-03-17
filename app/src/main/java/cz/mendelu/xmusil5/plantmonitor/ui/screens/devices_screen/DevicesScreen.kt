@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +22,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +37,9 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.DeviceListItem
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoDataScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.AddFloatingActionButton
+import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
+import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
+import cz.mendelu.xmusil5.plantmonitor.ui.theme.errorColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
@@ -45,6 +53,10 @@ fun DevicesScreen(
     val devices = remember{
         mutableStateListOf<GetDevice>()
     }
+
+    val showAddDialog = remember{
+        mutableStateOf(false)
+    }
     Box(
         contentAlignment = Alignment.BottomEnd,
         modifier = Modifier
@@ -55,10 +67,14 @@ fun DevicesScreen(
                 is DevicesUiState.Start -> {
                     LoadingScreen()
                     LaunchedEffect(it) {
+                        showAddDialog.value = false
                         viewModel.fetchDevices()
                     }
                 }
                 is DevicesUiState.NoDevicesYet -> {
+                    LaunchedEffect(it){
+                        showAddDialog.value = false
+                    }
                     NoDataScreen(
                         message = stringResource(id = R.string.noDevicesYet),
                         iconId = R.drawable.ic_questionmark
@@ -66,16 +82,21 @@ fun DevicesScreen(
                 }
                 is DevicesUiState.DevicesLoaded -> {
                     LaunchedEffect(it) {
+                        showAddDialog.value = false
                         devices.clear()
                         devices.addAll(it.devices)
                     }
                     DevicesScreenContent(
                         navigation = navigation,
                         viewModel = viewModel,
-                        devices = devices
+                        devices = devices,
+                        showAddDialog = showAddDialog
                     )
                 }
                 is DevicesUiState.Error -> {
+                    LaunchedEffect(it){
+                        showAddDialog.value = false
+                    }
                     ErrorScreen(text = stringResource(id = it.errorStringCode)){
                         viewModel.uiState.value = DevicesUiState.Start()
                     }
@@ -84,7 +105,7 @@ fun DevicesScreen(
         }
 
         AddFloatingActionButton {
-            navigation.toAddDevice()
+            showAddDialog.value = true
         }
     }
 }
@@ -93,16 +114,11 @@ fun DevicesScreen(
 fun DevicesScreenContent(
     navigation: INavigationRouter,
     viewModel: DevicesViewModel,
-    devices: List<GetDevice>
+    devices: List<GetDevice>,
+    showAddDialog: MutableState<Boolean>
 ){
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(170.dp),
-        contentPadding = PaddingValues(
-            top = 16.dp,
-            bottom = 50.dp,
-            start = 16.dp,
-            end = 16.dp
-        ),
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
             .fadeEdges(
@@ -111,21 +127,37 @@ fun DevicesScreenContent(
                 fadeWidth = 100f
             )
     ) {
-        items(
-            count = devices.size,
-            key = {
-                devices[it].id
-            },
-            itemContent = { index ->
-                DeviceListItem(
-                    device = devices[index],
-                    onClick = {
-                        navigation.toDeviceDetailAndControl(
-                            deviceId = devices[index].id
-                        )
-                    }
-                )
-            }
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(170.dp),
+            contentPadding = PaddingValues(
+                top = 16.dp,
+                bottom = 50.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            items(
+                count = devices.size,
+                key = {
+                    devices[it].id
+                },
+                itemContent = { index ->
+                    DeviceListItem(
+                        device = devices[index],
+                        onClick = {
+                            navigation.toDeviceDetailAndControl(
+                                deviceId = devices[index].id
+                            )
+                        }
+                    )
+                }
+            )
+        }
+        NewDeviceDialog(
+            showDialog = showAddDialog,
+            viewModel = viewModel
         )
     }
 }
@@ -137,6 +169,7 @@ fun NewDeviceDialog(
 ){
     val animationDuration = 150
     val cornerRadius = 30.dp
+    val errorTextDefault = stringResource(id = R.string.deviceRegistrationFailed)
 
     val communicationIdentifier = remember{
         mutableStateOf("")
@@ -150,9 +183,13 @@ fun NewDeviceDialog(
     val macAddressError = remember{
         mutableStateOf(false)
     }
+    val displayedError = remember{
+        mutableStateOf<String?>(null)
+    }
     LaunchedEffect(showDialog.value){
         communicationIdentifier.value = ""
         macAddress.value = ""
+        displayedError.value = null
         communicationIdentifierError.value = false
         macAddressError.value = false
     }
@@ -171,7 +208,6 @@ fun NewDeviceDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
                     .clip(RoundedCornerShape(cornerRadius))
                     .customShadow(
                         color = shadowColor,
@@ -180,6 +216,8 @@ fun NewDeviceDialog(
                         blurRadius = 5.dp,
                         offsetY = 2.dp
                     )
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(16.dp)
             ){
                 Box(
                     contentAlignment = Alignment.Center,
@@ -189,13 +227,6 @@ fun NewDeviceDialog(
                         .background(MaterialTheme.colorScheme.primary)
                 ){
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
-                            contentDescription = stringResource(id = R.string.deviceImage),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(40.dp)
-                        )
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.ic_plus),
                             contentDescription = stringResource(id = R.string.icon),
@@ -203,11 +234,90 @@ fun NewDeviceDialog(
                             modifier = Modifier
                                 .size(30.dp)
                         )
+                        Image(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
+                            contentDescription = stringResource(id = R.string.deviceImage),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(40.dp)
+                        )
                     }
                 }
 
+                Text(
+                    text = stringResource(id = R.string.addNewDevice),
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    maxLines = 2,
+                    textAlign = TextAlign.Center,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .padding(vertical = 10.dp)
+                )
 
+                CustomTextField(
+                    labelTitle = stringResource(id = R.string.newDeviceIdentifier),
+                    value = communicationIdentifier,
+                    maxChars = 50,
+                    singleLine = true,
+                    isError = communicationIdentifierError.value,
+                    errorMessage = stringResource(id = R.string.emailNotInCorrectFormat),
+                    onTextChanged = {
+                        communicationIdentifierError.value = !viewModel.stringValidator.isCommunicationIdentifierValid(
+                            communicationIdentifier = it
+                        )
+                        displayedError.value = null
+                    }
+                )
 
+                CustomTextField(
+                    labelTitle = stringResource(id = R.string.newDeviceMacAddress),
+                    value = macAddress,
+                    maxChars = 17,
+                    singleLine = true,
+                    isError = macAddressError.value,
+                    errorMessage = stringResource(id = R.string.macAddressNotInCorrectFormat),
+                    onTextChanged = {
+                        macAddressError.value = !viewModel.stringValidator.isMacAddressValid(
+                            macAddress = it
+                        )
+                        displayedError.value = null
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                displayedError.value?.let {
+                    Text(
+                        text = it,
+                        color = errorColor,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(5.dp))
+
+                val buttonEnabled = !communicationIdentifierError.value && !macAddressError.value
+                        && communicationIdentifier.value.isNotBlank() && macAddress.value.isNotBlank()
+                CustomButton(
+                    text = stringResource(id = R.string.add),
+                    backgroundColor = MaterialTheme.colorScheme.secondary,
+                    iconId = R.drawable.ic_plus,
+                    enabled = buttonEnabled,
+                    onClick = {
+                        viewModel.addNewDevice(
+                            communicationIdentifier = communicationIdentifier.value,
+                            macAddress = macAddress.value,
+                            onError = {
+                                displayedError.value = errorTextDefault
+                            }
+                        )
+                    }
+                )
+
+                Spacer(modifier = Modifier.height(35.dp))
             }
         }
     }

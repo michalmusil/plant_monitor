@@ -14,4 +14,13 @@ class StringValidatorImpl: IStringValidator {
     override fun isPasswordValid(password: String): Boolean {
         return password.length >= 7
     }
+
+    override fun isCommunicationIdentifierValid(communicationIdentifier: String): Boolean {
+        return communicationIdentifier.length >= 30
+    }
+
+    override fun isMacAddressValid(macAddress: String): Boolean {
+        val regex = Regex("([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}")
+        return macAddress.matches(regex)
+    }
 }

@@ -70,8 +70,4 @@ class NavigationRouterImpl: INavigationRouter {
     override fun toEditPlant(plantId: Long) {
         navController.navigate("${Destination.AddOrEditPlantScreen.route}/${plantId}")
     }
-
-    override fun toAddDevice() {
-        navController.navigate(Destination.AddDeviceScreen.route)
-    }
 }
