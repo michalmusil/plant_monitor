@@ -43,6 +43,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.P
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.PlantDetailCharts
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.PlantInfoContentMode
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.measurements.PlantDetailMeasurements
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -244,7 +245,7 @@ fun PlantDetailInfo(
     viewModel: PlantDetailViewModel,
     navigation: INavigationRouter
 ){
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

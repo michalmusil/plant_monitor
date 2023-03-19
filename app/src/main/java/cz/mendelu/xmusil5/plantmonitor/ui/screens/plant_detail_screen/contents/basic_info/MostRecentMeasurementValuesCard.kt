@@ -23,8 +23,8 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import kotlin.math.roundToInt
@@ -36,7 +36,7 @@ fun MostRecentMeasurementValuesCard(
     measurementsValidator: IMeasurementsValidator,
     modifier: Modifier = Modifier
 ){
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
     val validatedTypeLimits = remember{
         mutableStateListOf<Pair<MeasurementType, MeasurementLimitValidation>>()
     }

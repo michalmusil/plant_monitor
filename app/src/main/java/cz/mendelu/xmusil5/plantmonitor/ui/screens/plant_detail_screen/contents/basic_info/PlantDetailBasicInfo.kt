@@ -4,13 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
@@ -19,9 +17,9 @@ import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.DeviceCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MostRecentMeasurementValuesCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.DetailCard
-import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.ExpandableCard
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailViewModel
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 import java.util.*
@@ -33,7 +31,7 @@ fun PlantDetailBasicInfo(
     navigation: INavigationRouter,
     viewModel: PlantDetailViewModel
 ){
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -23,7 +23,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -42,6 +41,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.errorColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
 
@@ -163,7 +163,7 @@ fun NewDeviceDialog(
     viewModel: DevicesViewModel
 ){
     val animationDuration = 150
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
     val errorTextDefault = stringResource(id = R.string.deviceRegistrationFailed)
 
     val communicationIdentifier = remember{

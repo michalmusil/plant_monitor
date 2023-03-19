@@ -40,6 +40,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.templates.PopupDialog
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.GalleryLauncherButton
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 
 @Composable
 fun AddOrEditPlantScreen(
@@ -111,7 +112,7 @@ fun AddOrEditPlantScreenContent(
     navigation: INavigationRouter,
     error: MutableState<String?>
 ){
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
     val context = LocalContext.current
 
     val name = rememberSaveable{

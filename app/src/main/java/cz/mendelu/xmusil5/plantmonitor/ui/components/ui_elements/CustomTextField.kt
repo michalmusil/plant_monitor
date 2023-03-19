@@ -1,12 +1,9 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -28,7 +25,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
+import cz.mendelu.xmusil5.plantmonitor.utils.customShadowPercentage
 
 @Composable
 fun CustomTextField(
@@ -43,15 +42,15 @@ fun CustomTextField(
     modifierTextField: Modifier = Modifier
 ){
     val localFocusManager = LocalFocusManager.current
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_CAPSULE_PERCENTAGE
 
     Column(
         modifier = Modifier
             .padding(vertical = 10.dp)
             .fillMaxWidth()
-            .customShadow(
+            .customShadowPercentage(
                 color = shadowColor,
-                borderRadius = cornerRadius,
+                borderRadiusPercentage = cornerRadius,
                 spread = 0.dp,
                 blurRadius = 5.dp,
                 offsetY = 2.dp

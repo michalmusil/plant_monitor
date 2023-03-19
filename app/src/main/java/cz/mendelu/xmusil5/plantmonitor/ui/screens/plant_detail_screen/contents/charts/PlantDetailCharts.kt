@@ -28,13 +28,13 @@ import com.google.accompanist.pager.rememberPagerState
 import com.madrapps.plot.line.DataPoint
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementChartValuePopup
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementsLineChart
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoPlantMeasurements
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.MeasurementsDateFilter
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailViewModel
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -97,7 +97,7 @@ fun MeasurementsTabView(
 
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
-    val tabRowCornerRadius = 30.dp
+    val tabRowCornerRadius = UiConstants.RADIUS_LARGE
     LaunchedEffect(pagerState.currentPage){
         selectedMeasurementType.value = measurementTypes[pagerState.currentPage]
     }

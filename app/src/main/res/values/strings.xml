@@ -97,24 +97,24 @@
     <string name="addNewDevice">Add new measuring device</string>
 
     <string name="newDeviceIdentifier">Communication identifier</string>
-    <string name="newDeviceMacAddress">Mac address</string>
+    <string name="newDeviceMacAddress">MAC address</string>
 
     <string name="noPlantAssigned">No plant assigned</string>
     <string name="communicationIdentifierNotInCorrectFormat">Communication identifier not in correct format</string>
-    <string name="macAddressNotInCorrectFormat">Mac address not in correct format</string>
+    <string name="macAddressNotInCorrectFormat">MAC address not in correct format</string>
     <string name="deviceRegistrationFailed">Device information are not correct</string>
 
     <!--  DEVICES DETAIL AND CONTROL SCREEN  -->
     <string name="deviceDetailAndControlScreen">Measuring device</string>
     <string name="assignedToPlant">Currently assigned to plant</string>
-    <string name="assignToNewPlant">Assign to a new plant</string>
+    <string name="assignToNewPlant">Assign to a another plant</string>
 
     <string name="unregisterDevice">Unregister measuring device</string>
     <string name="sureToUnregisterDevice">Are you sure you want to unregister this device? You will be able to register it again.</string>
 
     <string name="deviceUpdateFailed">Device update failed</string>
     <string name="deviceIsActivePrimary">Device is activated</string>
-    <string name="deviceIsActiveSecondary">Measurements received from this device will be automatically saved</string>
+    <string name="deviceIsActiveSecondary">Measurements received from this device will be automatically saved for the assigned plant</string>
     <string name="deviceIsInactivePrimary">Device is deactivated</string>
     <string name="deviceIsInactiveSecondary">Measurements received from this device will be ignored</string>
 

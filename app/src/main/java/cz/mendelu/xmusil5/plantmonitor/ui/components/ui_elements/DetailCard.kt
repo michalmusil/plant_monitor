@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 
 @Composable
 fun DetailCard(
@@ -23,7 +24,7 @@ fun DetailCard(
     textColor: Color = MaterialTheme.colorScheme.onSurface,
     modifier: Modifier = Modifier
 ){
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier

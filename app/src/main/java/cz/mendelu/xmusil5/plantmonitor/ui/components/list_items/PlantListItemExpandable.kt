@@ -39,6 +39,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
@@ -59,7 +60,7 @@ fun PlantListItemExpandable(
     val stripColorAnimationDuration = 300
     val imageSize = 90.dp
 
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
 
     val overallValidation = remember{
         mutableStateOf<MeasurementLimitValidation?>(null)

@@ -25,6 +25,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.errorColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.onlineColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 
 @Composable
@@ -33,7 +34,7 @@ fun DeviceListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val cornerRadius = 10.dp
+    val cornerRadius = UiConstants.RADIUS_SMALL
 
     Box(
         contentAlignment = Alignment.TopEnd,

@@ -40,10 +40,10 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.templates.PopupDialog
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.ExpandableCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.SmallLoadingIndicator
-import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_or_edit_plant_screen.AddOrEditPlantMode
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.errorColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.onlineColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 
@@ -338,7 +338,7 @@ fun DeviceActivationSwitch(
     device: GetDevice,
     viewModel: DeviceDetailAndControlViewModel
 ){
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
     val mainActive = stringResource(id = R.string.deviceIsActivePrimary)
     val secondaryActive = stringResource(id = R.string.deviceIsActiveSecondary)
     val mainInactive = stringResource(id = R.string.deviceIsInactivePrimary)
@@ -405,7 +405,7 @@ fun CurrentlyAssignedPlantCard(
     viewModel: DeviceDetailAndControlViewModel,
     navigation: INavigationRouter
 ){
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
 
     val plantImage = remember{
         mutableStateOf<Bitmap?>(null)
@@ -496,7 +496,7 @@ fun AssignNewPlantCard(
     device: GetDevice,
     viewModel: DeviceDetailAndControlViewModel
 ){
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
 
     ExpandableCard(
         headlineContent = {

@@ -25,6 +25,7 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.*
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
@@ -36,7 +37,7 @@ fun MeasurementListItem(
     measurement: GetMeasurement,
     measurementValidator: IMeasurementsValidator? = null,
 ){
-    val cornerRadius = 20.dp
+    val cornerRadius = UiConstants.RADIUS_MEDIUM
     val validatedTypeLimits = remember{
         mutableStateListOf<Pair<MeasurementType, MeasurementLimitValidation>>()
     }

@@ -1,14 +1,13 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.components.templates
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 
 @Composable
 fun PopupDialog(
@@ -20,7 +19,7 @@ fun PopupDialog(
     onConfirm: () -> Unit,
     onCancel: () -> Unit = {}){
 
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_MEDIUM
 
     AlertDialog(
         onDismissRequest = {

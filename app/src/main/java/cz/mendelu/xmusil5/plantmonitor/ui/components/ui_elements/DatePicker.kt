@@ -25,8 +25,11 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
+import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.surface
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
+import cz.mendelu.xmusil5.plantmonitor.utils.customShadowPercentage
 import java.util.Calendar
 
 @Composable
@@ -36,7 +39,7 @@ fun DatePicker(
     modifier: Modifier = Modifier
 ){
     val context = LocalContext.current
-    val cornerRadiusPercentage = 50
+    val cornerRadius = UiConstants.RADIUS_CAPSULE_PERCENTAGE
 
     val year = date.get(Calendar.YEAR)
     val month = date.get(Calendar.MONTH)
@@ -62,7 +65,14 @@ fun DatePicker(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .clip(RoundedCornerShape(cornerRadiusPercentage))
+            .customShadowPercentage(
+                color = shadowColor,
+                borderRadiusPercentage = cornerRadius,
+                spread = 0.dp,
+                blurRadius = 5.dp,
+                offsetY = 2.dp
+            )
+            .clip(RoundedCornerShape(cornerRadius))
             .background(MaterialTheme.colorScheme.primary)
             .clickable {
                 datePickerDialog.show()

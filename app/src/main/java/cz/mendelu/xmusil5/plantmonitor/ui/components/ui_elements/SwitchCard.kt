@@ -82,7 +82,7 @@ fun SwitchCard(
                         Text(
                             text = secondaryText,
                             style = MaterialTheme.typography.labelSmall,
-                            maxLines = 2,
+                            maxLines = 3,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                     }

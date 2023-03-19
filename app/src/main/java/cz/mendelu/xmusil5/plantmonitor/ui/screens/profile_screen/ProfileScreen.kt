@@ -31,6 +31,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.SmallLoadingIndicator
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 
 @Composable
@@ -180,7 +181,7 @@ fun LowerProfileScreenPart(
     user: GetUser,
     viewModel: ProfileViewModel
 ){
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -210,7 +211,7 @@ fun NotificationEnabledSwitch(
     viewModel: ProfileViewModel,
     user: GetUser
 ){
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
 
     val enabledShort = stringResource(id = R.string.notificationsEnabledShort)
     val disabledShort = stringResource(id = R.string.notificationsDisabledShort)
@@ -271,7 +272,7 @@ fun DarkModeEnabledSwitch(
     viewModel: ProfileViewModel
 ){
     val darkModeSystemDefault = isSystemInDarkTheme()
-    val cornerRadius = 30.dp
+    val cornerRadius = UiConstants.RADIUS_LARGE
 
     val enabledString = stringResource(id = R.string.darkModeEnabled)
     val disabledString = stringResource(id = R.string.darkModeDisabled)
