@@ -1,7 +1,9 @@
-package cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables
+package cz.mendelu.xmusil5.plantmonitor.ui.components.list_items
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -20,84 +22,100 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.*
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
+import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import kotlin.math.roundToInt
 
 @Composable
-fun MostRecentMeasurementValuesCard(
+fun MeasurementListItem(
     plant: GetPlant,
-    mostRecentValues: List<LatestMeasurementValueOfPlant>,
-    measurementsValidator: IMeasurementsValidator,
-    modifier: Modifier = Modifier
+    measurement: GetMeasurement,
+    measurementValidator: IMeasurementsValidator? = null,
 ){
-    val cornerRadius = 30.dp
+    val cornerRadius = 20.dp
     val validatedTypeLimits = remember{
         mutableStateListOf<Pair<MeasurementType, MeasurementLimitValidation>>()
     }
 
-    LaunchedEffect(measurementsValidator){
-        validatedTypeLimits.clear()
-        mostRecentValues.forEach {
-            val validation = measurementsValidator.validateMeasurementValue(
-                value = it.value,
-                type = it.measurementType,
-                plant = plant)
-            val validatedType = Pair(it.measurementType, validation)
-            validatedTypeLimits.add(validatedType)
+    LaunchedEffect(measurementValidator, measurement){
+        measurementValidator?.let { validator ->
+            validatedTypeLimits.clear()
+            measurement.values.forEach {
+                val validation = validator.validateMeasurementValue(
+                    value = it.value,
+                    type = it.measurementType,
+                    plant = plant
+                )
+                val validatedType = Pair(it.measurementType, validation)
+                validatedTypeLimits.add(validatedType)
+            }
         }
     }
 
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 10.dp)
             .clip(RoundedCornerShape(cornerRadius))
             .background(MaterialTheme.colorScheme.surface)
-    ){
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-        ) {
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = stringResource(id = R.string.latestValues),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            mostRecentValues.forEach { measurementValue ->
-                LatestValueItem(
-                    measurementValue = measurementValue,
-                    measurementValidation = validatedTypeLimits.firstOrNull{
-                        it.first == measurementValue.measurementType
-                    }?.second ?: MeasurementLimitValidation.VALID
+            .padding(10.dp)
+    ) {
+        measurement.datetime?.let {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
+                Text(
+                    text = DateUtils.getLocalizedDateString(it.calendarInUTC0),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = DateUtils.getLocalizedTimeString(it.calendarInUTC0),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(3.dp))
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ){
+                measurement.values.forEach { measurementValue ->
+                    ValueOfMeasurementListItem(
+                        measurementValue = measurementValue,
+                        measurementValidation = validatedTypeLimits.firstOrNull{
+                            it.first == measurementValue.measurementType
+                        }?.second ?: MeasurementLimitValidation.VALID
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-fun LatestValueItem(
-    measurementValue: LatestMeasurementValueOfPlant,
-    measurementValidation: MeasurementLimitValidation,
-    textColor: Color = MaterialTheme.colorScheme.onSurface
+fun ValueOfMeasurementListItem(
+    measurementValue: MeasurementValue,
+    measurementValidation: MeasurementLimitValidation
 ){
+    val textColor = MaterialTheme.colorScheme.onSurface
     val roundedValue = remember{
         mutableStateOf((measurementValue.value * 10.0).roundToInt() / 10.0)
     }
@@ -105,11 +123,11 @@ fun LatestValueItem(
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .padding(vertical = 3.dp, horizontal = 10.dp)
+            .padding(vertical = 3.dp)
             .clip(CircleShape)
             .fillMaxWidth()
             .background(measurementValidation.color)
-            .padding(vertical = 10.dp, horizontal = 16.dp)
+            .padding(5.dp)
     ){
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -118,7 +136,7 @@ fun LatestValueItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .weight(2.5f)
+                    .weight(2f)
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = measurementValue.measurementType.iconId),
@@ -140,6 +158,7 @@ fun LatestValueItem(
                         style = MaterialTheme.typography.bodyMedium,
                         color = textColor
                     )
+
                     Text(
                         text = roundedValue.value.toString() + " ${measurementValue.measurementType.unit}",
                         style = MaterialTheme.typography.titleMedium,
@@ -148,22 +167,6 @@ fun LatestValueItem(
                     )
                 }
             }
-            
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                measurementValue.datetime?.calendarInUTC0?.let {
-                    Text(
-                        text = DateUtils.getLocalizedDateTimeString(it),
-                        style = MaterialTheme.typography.labelSmall,
-                        textAlign = TextAlign.Center,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
-
             Text(
                 text = stringResource(id = measurementValidation.nameId),
                 style = MaterialTheme.typography.titleMedium,
@@ -173,8 +176,6 @@ fun LatestValueItem(
                 modifier = Modifier
                     .weight(1f)
             )
-
-
         }
     }
 }

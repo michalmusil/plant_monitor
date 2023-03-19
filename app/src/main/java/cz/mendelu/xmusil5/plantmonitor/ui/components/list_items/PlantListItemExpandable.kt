@@ -10,7 +10,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
@@ -26,11 +25,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -46,7 +43,6 @@ import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
-import kotlin.math.roundToInt
 
 
 @Composable
@@ -271,16 +267,25 @@ fun ExpandableLastPlantValues(
                 fadeWidth = 80f
             )
     ){
-        items(measurementValues){ latestPlantValue ->
-            MeasurementValueListItem(
-                measurementValue = MeasurementValue(
-                    latestPlantValue.measurementType,
-                    value = latestPlantValue.value
-                ),
-                validation = validatedTypeLimits.firstOrNull {
-                    it.first == latestPlantValue.measurementType
-                }?.second
-            )
-        }
+        items(
+            count = measurementValues.count(),
+            key = {
+                measurementValues[it].measurementType
+            },
+            itemContent = { index ->
+                val latestPlantValue = measurementValues.getOrNull(index)
+                latestPlantValue?.let {
+                    MeasurementValueListItem(
+                        measurementValue = MeasurementValue(
+                            it.measurementType,
+                            value = it.value
+                        ),
+                        validation = validatedTypeLimits.firstOrNull {
+                            it.first == latestPlantValue.measurementType
+                        }?.second
+                    )
+                }
+            }
+        )
     }
 }

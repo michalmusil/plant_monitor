@@ -1,12 +1,9 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -35,30 +32,18 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
-import com.icontio.senscare_peresonal_mobile.ui.components.templates.DelayedAnimatedAppear
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.TopBarWithBackButton
-import com.madrapps.plot.line.DataPoint
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
-import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
-import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.DeviceCard
-import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementChartValuePopup
-import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementsLineChart
-import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MostRecentMeasurementValuesCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
-import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoPlantMeasurements
-import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.DatePicker
-import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.ExpandableCard
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.PlantDetailBasicInfo
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.PlantDetailCharts
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.PlantInfoContentMode
-import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
+import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.measurements.PlantDetailMeasurements
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
-import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -88,10 +73,19 @@ fun PlantDetailScreen(
     }
     LaunchedEffect(from.value, to.value){
         plant.value?.let {
+            // Have to adjust TO value here (otherwise the default Date picker rounds the date up incorrectly)
+            val fromInclusive = viewModel.getInclusiveDate(
+                originalCalendar = from.value,
+                endInclusive = false
+            )
+            val toInclusive = viewModel.getInclusiveDate(
+                originalCalendar = to.value,
+                endInclusive = true
+            )
             viewModel.fetchPlantMeasurements(
                 plantId = it.id,
-                from = from.value,
-                to = to.value
+                from = fromInclusive,
+                to = toInclusive
             )
         }
     }
@@ -386,7 +380,13 @@ fun PlantInfoContentTab(
                     )
                 }
                 PlantInfoContentMode.MEASUREMENTS -> {
-                    Box(modifier = Modifier.fillMaxSize())
+                    PlantDetailMeasurements(
+                        plant = plant,
+                        measurements = measurements,
+                        from = from,
+                        to = to,
+                        viewModel = viewModel
+                    )
                 }
                 PlantInfoContentMode.CHARTS -> {
                     PlantDetailCharts(

@@ -84,6 +84,35 @@ class PlantDetailViewModel @Inject constructor(
         return null
     }
 
+    fun getInclusiveDate(
+        originalCalendar: Calendar,
+        endInclusive: Boolean
+    ): Calendar{
+        val inclusiveDate = DateUtils.getCalendarFromDateComponents(
+            year = originalCalendar.get(Calendar.YEAR),
+            month = originalCalendar.get(Calendar.MONTH),
+            day = originalCalendar.get(Calendar.DAY_OF_MONTH)
+        )
+        if (endInclusive) {
+            inclusiveDate.apply {
+                set(Calendar.DAY_OF_MONTH, get(Calendar.DAY_OF_MONTH))
+                set(Calendar.HOUR, 23)
+                set(Calendar.MINUTE, 59)
+                set(Calendar.SECOND, 59)
+                set(Calendar.MILLISECOND, 999)
+            }
+        } else {
+            inclusiveDate.apply {
+                set(Calendar.DAY_OF_MONTH, get(Calendar.DAY_OF_MONTH))
+                set(Calendar.HOUR, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+        }
+        return inclusiveDate
+    }
+
     fun fetchPlantMeasurements(plantId: Long, from: Calendar, to: Calendar){
         viewModelScope.launch {
             val result = measurementsRepository.getMeasurementsOfPlant(
@@ -150,5 +179,11 @@ class PlantDetailViewModel @Inject constructor(
             set = dataPoints,
             labels = labels
         )
+    }
+
+    fun getMeasurementsOrderedForDisplay(measurements: List<GetMeasurement>): List<GetMeasurement>{
+        return measurements.sortedByDescending {
+            it.datetime?.calendarInUTC0?.timeInMillis ?: it.id
+        }
     }
 }
