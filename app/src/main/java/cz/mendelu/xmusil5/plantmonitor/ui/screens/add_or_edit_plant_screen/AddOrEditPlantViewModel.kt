@@ -41,7 +41,7 @@ class AddOrEditPlantViewModel @Inject constructor(
         context: Context,
         name: String,
         species: String,
-        description: String?,
+        description: String,
         measurementValueLimits: List<MeasurementValueLimitInEdit>?,
         plantImageUri: Uri?
     ){
@@ -89,7 +89,7 @@ class AddOrEditPlantViewModel @Inject constructor(
         existingPlant: GetPlant,
         name: String,
         species: String,
-        description: String?,
+        description: String,
         measurementValueLimits: List<MeasurementValueLimitInEdit>?,
         plantImageUri: Uri?
     ){

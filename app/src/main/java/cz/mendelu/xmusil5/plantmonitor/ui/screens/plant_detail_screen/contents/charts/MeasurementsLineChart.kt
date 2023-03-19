@@ -63,7 +63,7 @@ fun MeasurementsLineChart(
                                     )
                                 }
                             ),
-                            LinePlot.Highlight(androidx.compose.material3.MaterialTheme.colorScheme.secondary, 8.dp),
+                            LinePlot.Highlight(MaterialTheme.colorScheme.secondary, 8.dp),
                             LinePlot.AreaUnderLine(measurementType.value.color, 0.2f)
                         )
                     ),

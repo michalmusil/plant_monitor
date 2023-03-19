@@ -66,7 +66,7 @@ fun DeviceCard(
                 
                 Text(
                     text = stringResource(id = R.string.currentMeasuringDevice),
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

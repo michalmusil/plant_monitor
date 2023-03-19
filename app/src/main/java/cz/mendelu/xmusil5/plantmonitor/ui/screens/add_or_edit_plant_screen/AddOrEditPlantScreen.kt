@@ -465,7 +465,7 @@ fun SavePlantButton(
                                 context = context,
                                 name = name.value,
                                 species = species.value,
-                                description = if (description.value.isNotEmpty()) description.value else null,
+                                description = description.value,
                                 measurementValueLimits = if (measurementValueLimits.isNotEmpty()) measurementValueLimits else null,
                                 plantImageUri = selectedImage.value?.first
                             )
@@ -476,7 +476,7 @@ fun SavePlantButton(
                                 existingPlant = it.plant,
                                 name = name.value,
                                 species = species.value,
-                                description = if (description.value.isNotEmpty()) description.value else null,
+                                description = description.value,
                                 measurementValueLimits = if (measurementValueLimits.isNotEmpty()) measurementValueLimits else null,
                                 plantImageUri = selectedImage.value?.first
                             )

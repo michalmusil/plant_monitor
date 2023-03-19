@@ -7,6 +7,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
+import cz.mendelu.xmusil5.plantmonitor.models.api.utils.DateTimeFromApi
 
 @JsonClass(generateAdapter = true)
 data class GetPlant(
@@ -16,6 +17,7 @@ data class GetPlant(
     @Json(name = "species") val species: String,
     @Json(name = "description") val description: String?,
     @Json(name = "hasTitleImage") val hasTitleImage: Boolean,
+    @Json(name = "created") val created: DateTimeFromApi?,
     @Json(name = "measurementValueLimits") val valueLimits: List<MeasurementValueLimit>
 ){
 

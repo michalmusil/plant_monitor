@@ -22,6 +22,7 @@
     <string name="appLogo">App logo</string>
     <string name="user">User</string>
     <string name="icon">Icon</string>
+    <string name="created">Created</string>
     <string name="from">From</string>
     <string name="to">To</string>
     <string name="yes">Yes</string>
@@ -84,6 +85,9 @@
 
     <!--  PLANT DETAIL SCREEN  -->
     <string name="plantDetailScreen">Plant detail</string>
+    <string name="basicInfo">Information</string>
+    <string name="measurements">Measurements</string>
+    <string name="charts">Charts</string>
 
     <string name="currentMeasuringDevice">Current measuring device</string>
     <string name="measurementValues">Measurements</string>

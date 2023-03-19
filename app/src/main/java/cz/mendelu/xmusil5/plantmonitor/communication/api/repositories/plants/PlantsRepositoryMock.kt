@@ -9,7 +9,9 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLi
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.utils.DateTimeFromApi
 import okhttp3.MultipartBody
+import java.util.*
 import kotlin.math.max
 
 class PlantsRepositoryMock: IPlantsRepository {
@@ -23,6 +25,10 @@ class PlantsRepositoryMock: IPlantsRepository {
                 species = "Succulent",
                 description = "Had this plant since 2018",
                 hasTitleImage = true,
+                created = DateTimeFromApi(
+                    originalString = "",
+                    calendarInUTC0 = Calendar.getInstance()
+                ),
                 valueLimits = listOf(
                     MeasurementValueLimit(
                         type = MeasurementType.LIGHT_INTENSITY,
@@ -48,6 +54,10 @@ class PlantsRepositoryMock: IPlantsRepository {
                 species = "Succulent",
                 description = "Found it growing naturally in the garden",
                 hasTitleImage = true,
+                created = DateTimeFromApi(
+                    originalString = "",
+                    calendarInUTC0 = Calendar.getInstance()
+                ),
                 valueLimits = listOf(
                     MeasurementValueLimit(
                         type = MeasurementType.LIGHT_INTENSITY,
@@ -68,6 +78,10 @@ class PlantsRepositoryMock: IPlantsRepository {
                 species = "Palm",
                 description = null,
                 hasTitleImage = false,
+                created = DateTimeFromApi(
+                    originalString = "",
+                    calendarInUTC0 = Calendar.getInstance()
+                ),
                 valueLimits = listOf(
                     MeasurementValueLimit(
                         type = MeasurementType.TEMPERATURE,
@@ -83,6 +97,10 @@ class PlantsRepositoryMock: IPlantsRepository {
                 species = "Succulent/cacti",
                 description = null,
                 hasTitleImage = false,
+                created = DateTimeFromApi(
+                    originalString = "",
+                    calendarInUTC0 = Calendar.getInstance()
+                ),
                 valueLimits = listOf()
             )
         )
@@ -144,6 +162,10 @@ class PlantsRepositoryMock: IPlantsRepository {
             species = postPlant.species,
             description = postPlant.description,
             hasTitleImage = false,
+            created = DateTimeFromApi(
+                originalString = "",
+                calendarInUTC0 = Calendar.getInstance()
+            ),
             valueLimits = postPlant.measurementValueLimits ?: listOf()
         )
         return CommunicationResult.Success(data = newPlant)
@@ -157,6 +179,10 @@ class PlantsRepositoryMock: IPlantsRepository {
             species = putPlant.species,
             description = putPlant.description,
             hasTitleImage = false,
+            created = DateTimeFromApi(
+                originalString = "",
+                calendarInUTC0 = Calendar.getInstance()
+            ),
             valueLimits = putPlant.measurementValueLimits ?: listOf()
         )
         return CommunicationResult.Success(data = updatedPlant)

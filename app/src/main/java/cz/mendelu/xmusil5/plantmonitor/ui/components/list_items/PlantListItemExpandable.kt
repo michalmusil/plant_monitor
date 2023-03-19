@@ -210,7 +210,7 @@ fun PlantListItemExpandable(
             ){
                 if (latestValues.value != null){
                     if (latestValues.value!!.size > 0) {
-                        PlantListItemValues(
+                        ExpandableLastPlantValues(
                             plant = plant,
                             measurementValues = latestValues.value!!,
                             measurementValidator = measurementValidator
@@ -236,14 +236,11 @@ fun PlantListItemExpandable(
 }
 
 @Composable
-fun PlantListItemValues(
+fun ExpandableLastPlantValues(
     plant: GetPlant,
     measurementValues: List<LatestMeasurementValueOfPlant>,
     measurementValidator: IMeasurementsValidator? = null,
 ){
-    val valueTextColor = MaterialTheme.colorScheme.onSurface
-    val defaultValueBackgroundColor = Color.Transparent
-
     val validatedTypeLimits = remember{
         mutableStateListOf<Pair<MeasurementType, MeasurementLimitValidation>>()
     }
@@ -274,47 +271,16 @@ fun PlantListItemValues(
                 fadeWidth = 80f
             )
     ){
-        items(measurementValues){ measurementValue ->
-
-            val roundedValue = remember{
-                mutableStateOf((measurementValue.value * 10.0).roundToInt() / 10.0)
-            }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(horizontal = 5.dp)
-                    .clip(CircleShape)
-                    .background(
-                        validatedTypeLimits.firstOrNull {
-                            it.first == measurementValue.measurementType
-                        }?.second?.color ?: defaultValueBackgroundColor
-                    )
-                    .padding(horizontal = 15.dp, vertical = 5.dp)
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = measurementValue.measurementType.iconId),
-                        contentDescription = stringResource(id = R.string.expand),
-                        tint = measurementValue.measurementType.color,
-                        modifier = Modifier
-                            .height(40.dp)
-                            .aspectRatio(1f)
-                    )
-
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    Text(
-                        text = roundedValue.value.toString() + " ${measurementValue.measurementType.unit}",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = valueTextColor
-                    )
-                }
-            }
+        items(measurementValues){ latestPlantValue ->
+            MeasurementValueListItem(
+                measurementValue = MeasurementValue(
+                    latestPlantValue.measurementType,
+                    value = latestPlantValue.value
+                ),
+                validation = validatedTypeLimits.firstOrNull {
+                    it.first == latestPlantValue.measurementType
+                }?.second
+            )
         }
     }
 }
