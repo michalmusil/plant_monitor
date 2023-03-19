@@ -19,6 +19,12 @@
         android:theme="@style/Theme.PlantMonitor"
         tools:targetApi="31">
 
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/app_logo_monochrome" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/notification" />
+
         <service
             android:name=".communication.notifications.NotificationService"
             android:permission="com.google.android.c2dm.permission.SEND"

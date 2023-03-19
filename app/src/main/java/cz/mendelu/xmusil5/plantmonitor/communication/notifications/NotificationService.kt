@@ -35,11 +35,11 @@ class NotificationService: FirebaseMessagingService() {
         val messageString = "${messagePlantName} ${messageEnding}"
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationId = Random.nextInt(from = 1, until = Int.MAX_VALUE)
+        val notificationId = encodeNotificationId(messagePlantName)
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             createChannel(notificationManager)
         }
-
         val intent = Intent(this, MainActivity::class.java)
             .apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -51,11 +51,21 @@ class NotificationService: FirebaseMessagingService() {
             .setContentTitle(titleString)
             .setContentText(messageString)
             .setSmallIcon(R.drawable.app_logo_monochrome)
+            .setColor(resources.getColor(R.color.notification))
             .setAutoCancel(true)
+            .setOnlyAlertOnce(true)
             .setContentIntent(pendingIntent)
             .build()
 
         notificationManager.notify(notificationId, notification)
+    }
+
+    private fun encodeNotificationId(source: String): Int{
+        var id: Int = 0
+        for (character in source){
+            id += character.code
+        }
+        return id
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

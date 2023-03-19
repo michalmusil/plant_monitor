@@ -125,18 +125,20 @@ class PlantDetailViewModel @Inject constructor(
     ): ChartValueSet{
         val dataPointsAndLabels: MutableList<Pair<DataPoint, String>> = mutableListOf()
 
-        measurementsToFilter.forEachIndexed { index, measurement ->
+        var indexOfValidValues = 0
+        measurementsToFilter.forEach {measurement ->
             val measurementValue = measurement.getMeasurementValueByType(measurementType)
 
             // need both the value (y axis) and the date time taken (x axis) to add to chart set
             if (measurementValue != null && measurement.datetime != null){
                 val dataPoint = DataPoint(
-                    x = index.toFloat(),
+                    x = indexOfValidValues.toFloat(),
                     y = measurementValue.value.toFloat()
                 )
                 val label = DateUtils.getLocalizedDateTimeString(calendar = measurement.datetime.calendarInUTC0)
 
                 dataPointsAndLabels.add(Pair(dataPoint, label))
+                indexOfValidValues += 1
             }
         }
 
