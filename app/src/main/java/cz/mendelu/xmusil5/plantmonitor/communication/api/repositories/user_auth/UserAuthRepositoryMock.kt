@@ -27,4 +27,8 @@ class UserAuthRepositoryMock: IUserAuthRepository {
         return CommunicationResult.Success(data = Unit)
     }
 
+    override suspend fun checkCurrentSignedUserValid(): CommunicationResult<Unit> {
+        return CommunicationResult.Success(Unit)
+    }
+
 }

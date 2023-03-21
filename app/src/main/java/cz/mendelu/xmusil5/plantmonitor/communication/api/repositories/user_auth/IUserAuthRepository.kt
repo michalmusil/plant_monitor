@@ -12,4 +12,6 @@ interface IUserAuthRepository {
     suspend fun register(postAuth: PostAuth): CommunicationResult<Unit>
 
     suspend fun updateNotificationToken(putNotificationToken: PutNotificationTokenUpdate): CommunicationResult<Unit>
+
+    suspend fun checkCurrentSignedUserValid(): CommunicationResult<Unit>
 }

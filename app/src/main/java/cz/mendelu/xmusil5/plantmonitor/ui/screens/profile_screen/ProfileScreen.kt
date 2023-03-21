@@ -4,17 +4,23 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,7 +38,9 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.SmallLoadingIndicator
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
+import cz.mendelu.xmusil5.plantmonitor.utils.LanguageUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
+import java.util.*
 
 @Composable
 fun ProfileScreen(
@@ -40,9 +48,9 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ){
     viewModel.uiState.value.let {
-        when(it){
+        when (it) {
             is ProfileUiState.Start -> {
-                LaunchedEffect(it){
+                LaunchedEffect(it) {
                     viewModel.loadData()
                 }
                 LoadingScreen()
@@ -179,7 +187,7 @@ fun UpperProfileScreenPart(
 @Composable
 fun LowerProfileScreenPart(
     user: GetUser,
-    viewModel: ProfileViewModel
+    viewModel: ProfileViewModel,
 ){
     val cornerRadius = UiConstants.RADIUS_LARGE
 
@@ -341,4 +349,3 @@ fun DarkModeEnabledSwitch(
             .background(MaterialTheme.colorScheme.surface)
     )
 }
-

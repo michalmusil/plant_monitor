@@ -46,6 +46,12 @@ fun LoginScreen(
     viewModel.uiState.value.let {
         when(it){
             is LoginUiState.Start -> {
+                LoadingScreen()
+                LaunchedEffect(it){
+                    viewModel.attemptToRestoreSignedUser()
+                }
+            }
+            is LoginUiState.ProceedWithLogin -> {
                 LoginScreenContent(
                     navigation = navigation,
                     viewModel = viewModel,

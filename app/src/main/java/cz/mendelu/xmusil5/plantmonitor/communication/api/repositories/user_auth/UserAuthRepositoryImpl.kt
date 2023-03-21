@@ -35,4 +35,13 @@ class UserAuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun checkCurrentSignedUserValid(): CommunicationResult<Unit> {
+        return processRequest {
+            api.getUserByIdResponse(
+                id = authenticationManager.getUserId(),
+                bearerToken = authenticationManager.getToken()
+            )
+        }
+    }
+
 }

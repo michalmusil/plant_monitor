@@ -32,6 +32,13 @@ interface HousePlantMeasurementsApi {
     ): Response<Unit>
 
     @Headers("Content-Type: application/json")
+    @GET("users/{id}")
+    suspend fun getUserByIdResponse(
+        @Path("id")id: Long,
+        @Header("Authorization") bearerToken: String
+    ): Response<Unit>
+
+    @Headers("Content-Type: application/json")
     @PUT("users/notificationToken")
     suspend fun updateNotificationToken(
         @Body putNotificationToken: PutNotificationTokenUpdate,

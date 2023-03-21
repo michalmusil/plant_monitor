@@ -30,7 +30,7 @@ fun DetailCard(
         modifier = modifier
             .clip(RoundedCornerShape(cornerRadius))
             .background(backgroundColor)
-            .padding(16.dp)
+            .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
         Text(
             text = titleText,

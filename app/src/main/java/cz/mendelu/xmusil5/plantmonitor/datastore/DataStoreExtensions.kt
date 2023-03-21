@@ -6,4 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import cz.mendelu.xmusil5.plantmonitor.datastore.DataStoreConstants
 
-val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = DataStoreConstants.SETTINGS_DATA_STORE)
+val Context.settingsDataStore: DataStore<Preferences>
+    by preferencesDataStore(name = DataStoreConstants.SETTINGS_DATA_STORE)
+
+val Context.userLoginDataStore: DataStore<Preferences>
+    by preferencesDataStore(name = DataStoreConstants.USER_LOGIN_DATA_STORE)

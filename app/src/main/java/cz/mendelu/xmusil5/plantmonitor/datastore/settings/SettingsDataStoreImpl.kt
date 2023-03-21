@@ -3,7 +3,6 @@ package cz.mendelu.xmusil5.plantmonitor.datastore.settings
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import cz.mendelu.xmusil5.plantmonitor.datastore.DataStoreConstants
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.utils.settingsDataStore
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +31,9 @@ class SettingsDataStoreImpl(
     }
     private fun getDarkModePreferenceKey(): String{
         return "PrefersDarkMode"
+    }
+    private fun getAppLanguagePreferenceKey(user: GetUser): String{
+        return "LanguageOfUserId:${user.userId}"
     }
 
 

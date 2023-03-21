@@ -1,11 +1,17 @@
 package cz.mendelu.xmusil5.plantmonitor.authentication
 
+import cz.mendelu.xmusil5.plantmonitor.datastore.user_login.IUserLoginDataStore
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AuthenticationManagerImpl @Inject constructor(
-    private val navigationRouter: INavigationRouter
+    private val navigationRouter: INavigationRouter,
+    private val userLoginDataStore: IUserLoginDataStore,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ): IAuthenticationManager {
 
     private var loggedUser: GetUser? = null
@@ -33,7 +39,13 @@ class AuthenticationManagerImpl @Inject constructor(
 
 
     override fun logOut() {
-        setUser(null)
-        navigationRouter.toLogin()
+        coroutineScope.launch {
+            userLoginDataStore.removeUserLogin()
+        }.invokeOnCompletion {
+            CoroutineScope(Dispatchers.Main).launch {
+                setUser(null)
+                navigationRouter.toLogin()
+            }
+        }
     }
 }

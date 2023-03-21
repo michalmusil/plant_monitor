@@ -6,6 +6,7 @@
     <string name="measurementMinorInvalid">Not good</string>
     <string name="measurementInvalid">Bad</string>
 
+    <string name="appLanguage">App language</string>
     <string name="back">Back</string>
     <string name="expand">Expand</string>
     <string name="arrow">Arrow</string>

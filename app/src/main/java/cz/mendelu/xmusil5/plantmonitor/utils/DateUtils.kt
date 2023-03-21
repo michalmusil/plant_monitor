@@ -3,15 +3,10 @@ package cz.mendelu.xmusil5.plantmonitor.utils
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.HashMap
 
 object DateUtils {
-    val DATETIME_FORMAT_CS = "dd.MM.yyyy\nHH:mm"
-    val DATE_FORMAT_CS = "dd.MM.yyyy"
-    val TIME_FORMAT_CS = "HH:mm"
 
-    val DATETIME_FORMAT_EN = "yyyy/MM/dd\nhh:mmaa"
-    val DATE_FORMAT_EN = "yyyy/MM/dd"
-    val TIME_FORMAT_EN = "hh:mmaa"
 
     val DATE_FORMAT_API_GET = "yyyy-MM-dd'T'HH:mm:ss.SSS"
 
@@ -49,38 +44,30 @@ object DateUtils {
 
 
     fun getDateString(calendar: Calendar): String{
-        if (LanguageUtils.isLanguageCzech()){
-            return SimpleDateFormat(DATE_FORMAT_CS).format(calendar.time)
-        } else {
-            return SimpleDateFormat(DATE_FORMAT_EN).format(calendar.time)
-        }
+        val language = LanguageUtils.Language
+            .getByCodeDefaultEnglish(Locale.getDefault().language)
+        return language.dateFormat.format(calendar.time)
     }
 
     fun getLocalizedDateTimeString(calendar: Calendar): String{
+        val language = LanguageUtils.Language
+            .getByCodeDefaultEnglish(Locale.getDefault().language)
         calendar.timeZone = TimeZone.getDefault()
-        if (LanguageUtils.isLanguageCzech()){
-            return SimpleDateFormat(DATETIME_FORMAT_CS).format(calendar.time)
-        } else {
-            return SimpleDateFormat(DATETIME_FORMAT_EN).format(calendar.time)
-        }
+        return language.dateTimeFormat.format(calendar.time)
     }
 
     fun getLocalizedDateString(calendar: Calendar): String{
+        val language = LanguageUtils.Language
+            .getByCodeDefaultEnglish(Locale.getDefault().language)
         calendar.timeZone = TimeZone.getDefault()
-        if (LanguageUtils.isLanguageCzech()){
-            return SimpleDateFormat(DATE_FORMAT_CS).format(calendar.time)
-        } else {
-            return SimpleDateFormat(DATE_FORMAT_EN).format(calendar.time)
-        }
+        return language.dateFormat.format(calendar.time)
     }
 
     fun getLocalizedTimeString(calendar: Calendar): String{
+        val language = LanguageUtils.Language
+            .getByCodeDefaultEnglish(Locale.getDefault().language)
         calendar.timeZone = TimeZone.getDefault()
-        if (LanguageUtils.isLanguageCzech()){
-            return SimpleDateFormat(TIME_FORMAT_CS).format(calendar.time)
-        } else {
-            return SimpleDateFormat(TIME_FORMAT_EN).format(calendar.time)
-        }
+        return language.timeFormat.format(calendar.time)
     }
 
     fun getCalendarWithSubtractedElements(
@@ -109,8 +96,9 @@ object DateUtils {
     }
 
     fun getDayOfTheWeekString(dateTime: Calendar): String{
+        val languageCode = Locale.getDefault().language
         val day = dateTime.get(Calendar.DAY_OF_WEEK)
-        val map = if (LanguageUtils.isLanguageCzech()) DAYS_OF_WEEK_CS else DAYS_OF_WEEK_EN
+        val map = getDaysOfWeekByLanguageCode(languageCode)
         val dayString = map.get(day)
         return dayString!!
     }
@@ -119,5 +107,17 @@ object DateUtils {
         val end = endDate.timeInMillis
         val start = startDate.timeInMillis
         return TimeUnit.MILLISECONDS.toDays(end - start)
+    }
+
+    fun getDaysOfWeekByLanguageCode(languageCode: String): HashMap<Int, String>{
+        val language = LanguageUtils.Language.getByCodeDefaultEnglish(languageCode)
+        when (language){
+            LanguageUtils.Language.CZECH -> {
+                return DAYS_OF_WEEK_CS
+            }
+            LanguageUtils.Language.ENGLISH -> {
+                return DAYS_OF_WEEK_EN
+            }
+        }
     }
 }

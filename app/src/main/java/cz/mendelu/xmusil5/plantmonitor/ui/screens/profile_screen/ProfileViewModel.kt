@@ -1,5 +1,6 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.profile_screen
 
+import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -10,11 +11,14 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.
 import cz.mendelu.xmusil5.plantmonitor.communication.notifications.token_manager.INotificationTokenManager
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.datastore.settings.ISettingsDataStore
+import cz.mendelu.xmusil5.plantmonitor.datastore.user_login.IUserLoginDataStore
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
+import cz.mendelu.xmusil5.plantmonitor.utils.LanguageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,14 +38,16 @@ class ProfileViewModel @Inject constructor(
         isLoading.value = true
         subscribeToDarkModeChanges()
 
-        val user = authenticationManager.getUser()
-        if (user != null){
-            uiState.value = ProfileUiState.UserLoaded(user)
-            loadNotificationsEnabledState(user = user)
-        } else {
-            uiState.value = ProfileUiState.Error(errorStringCode = R.string.somethingWentWrong)
+        viewModelScope.launch {
+            val user = authenticationManager.getUser()
+            if (user != null) {
+                uiState.value = ProfileUiState.UserLoaded(user)
+                loadNotificationsEnabledState(user = user)
+            } else {
+                uiState.value = ProfileUiState.Error(errorStringCode = R.string.somethingWentWrong)
+            }
+            isLoading.value = false
         }
-        isLoading.value = false
     }
 
     private fun loadNotificationsEnabledState(user: GetUser){
@@ -121,5 +127,4 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
-
 }

@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Plant monitor</string>
     <string name="measurementValid">OK</string>
+    <string name="appLanguage">Jazyk aplikace</string>
     <string name="measurementMinorInvalid">Špatné</string>
     <string name="measurementInvalid">Velmi špatné</string>
     <string name="back">Zpět</string>

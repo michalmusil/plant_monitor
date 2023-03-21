@@ -256,7 +256,7 @@ fun NewDeviceDialog(
                     maxChars = 15,
                     singleLine = true,
                     isError = communicationIdentifierError.value,
-                    errorMessage = stringResource(id = R.string.emailNotInCorrectFormat),
+                    errorMessage = stringResource(id = R.string.communicationIdentifierNotInCorrectFormat),
                     onTextChanged = {
                         communicationIdentifierError.value = !viewModel.stringValidator.isCommunicationIdentifierValid(
                             communicationIdentifier = it
