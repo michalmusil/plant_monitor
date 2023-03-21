@@ -77,7 +77,7 @@ fun DevicesScreen(
                     }
                     NoDataScreen(
                         message = stringResource(id = R.string.noDevicesYet),
-                        iconId = R.drawable.ic_questionmark
+                        iconId = R.drawable.ic_measuring_device
                     )
                 }
                 is DevicesUiState.DevicesLoaded -> {

@@ -28,7 +28,7 @@
     <string name="no">Ne</string>
     <string name="somethingWentWrong">Něco se pokazilo</string>
     <string name="connectionError">Komunikace se serverem selhala</string>
-    <string name="clickHereToAdd">Klikněte zde pro přidání</string>
+    <string name="clickHereToAdd">Klikni zde pro přidání</string>
     <string name="couldNotLoadData">Nepodařilo se načíst data</string>
     <string name="noPlantsYet">Nemáš zatím žádné rostliny</string>
     <string name="noDevicesYet">Nemáš registrovaná žádná měřicí zařízení</string>
