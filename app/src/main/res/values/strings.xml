@@ -87,6 +87,7 @@
     <!--  PLANT DETAIL SCREEN  -->
     <string name="plantDetailScreen">Plant detail</string>
     <string name="basicInfo">Information</string>
+    <string name="notes">Notes</string>
     <string name="measurements">Measurements</string>
     <string name="charts">Charts</string>
 

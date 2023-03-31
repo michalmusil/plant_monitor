@@ -20,61 +20,67 @@ import java.util.*
 
 @Composable
 fun PlantDetailMeasurements(
-    plant: GetPlant,
-    measurements: List<GetMeasurement>,
     from: MutableState<Calendar>,
     to: MutableState<Calendar>,
     viewModel: PlantDetailViewModel
 ){
+    val plant = viewModel.plant.collectAsState()
+    val measurements = viewModel.measurements.collectAsState()
+
     val measurementsToDisplay = remember{
         mutableStateListOf<GetMeasurement>()
     }
-    LaunchedEffect(measurements, measurements.size){
-        measurementsToDisplay.clear()
-        val ordered = viewModel.getMeasurementsOrderedForDisplay(measurements)
-        measurementsToDisplay.addAll(ordered)
+    LaunchedEffect(measurements, measurements.value?.size){
+        measurements.value?.let {
+            measurementsToDisplay.clear()
+            val ordered = viewModel.getMeasurementsOrderedForDisplay(it)
+            measurementsToDisplay.addAll(ordered)
+        }
     }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(20.dp))
 
-        MeasurementsDateFilter(
-            from = from,
-            to = to
-        )
+    plant.value?.let {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(20.dp))
 
-        Spacer(modifier = Modifier.height(15.dp))
+            MeasurementsDateFilter(
+                from = from,
+                to = to
+            )
 
-        if (measurementsToDisplay.isEmpty()){
-            NoPlantMeasurements(modifier = Modifier.fillMaxWidth())
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(400.dp)
-                    .fadeEdges(
-                        edges = Edges.VERTICAL,
-                        backgroundColor = MaterialTheme.colorScheme.background,
-                        fadeWidth = 70f
-                    )
-            ) {
-                items(
-                    count = measurementsToDisplay.count(),
-                    key = {
-                        measurementsToDisplay[it].id
-                    },
-                    itemContent = { index ->
-                        val measurement = measurementsToDisplay[index]
+            Spacer(modifier = Modifier.height(15.dp))
 
-                        MeasurementListItem(
-                            plant = plant,
-                            measurement = measurement,
-                            measurementValidator = viewModel.measurementsValidator
+            if (measurementsToDisplay.isEmpty()) {
+                NoPlantMeasurements(modifier = Modifier.fillMaxWidth())
+            } else {
+                LazyColumn(
+                    contentPadding = PaddingValues(vertical = 16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp)
+                        .fadeEdges(
+                            edges = Edges.VERTICAL,
+                            backgroundColor = MaterialTheme.colorScheme.background,
+                            fadeWidth = 70f
                         )
-                    }
-                )
+                ) {
+                    items(
+                        count = measurementsToDisplay.count(),
+                        key = {
+                            measurementsToDisplay[it].id
+                        },
+                        itemContent = { index ->
+                            val measurement = measurementsToDisplay[index]
+
+                            MeasurementListItem(
+                                plant = it,
+                                measurement = measurement,
+                                measurementValidator = viewModel.measurementsValidator
+                            )
+                        }
+                    )
+                }
             }
         }
     }

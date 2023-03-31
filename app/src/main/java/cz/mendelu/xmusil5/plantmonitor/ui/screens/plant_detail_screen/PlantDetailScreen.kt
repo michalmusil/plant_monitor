@@ -13,6 +13,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,14 +55,9 @@ fun PlantDetailScreen(
     navigation: INavigationRouter,
     viewModel: PlantDetailViewModel = hiltViewModel()
 ){
-    val plant = remember{
-        mutableStateOf<GetPlant?>(null)
-    }
-    val measurements = remember{
-        mutableStateListOf<GetMeasurement>()
-    }
+    val plant = viewModel.plant.collectAsState()
 
-    val from = remember{
+    val from = rememberSaveable{
         mutableStateOf(
             DateUtils.getCalendarWithSubtractedElements(
                 original = DateUtils.getCurrentCalendarInUTC0(),
@@ -69,7 +65,7 @@ fun PlantDetailScreen(
             )
         )
     }
-    val to = remember {
+    val to = rememberSaveable{
         mutableStateOf(DateUtils.getCurrentCalendarInUTC0())
     }
     LaunchedEffect(from.value, to.value){
@@ -101,43 +97,31 @@ fun PlantDetailScreen(
             }
             is PlantDetailUiState.PlantLoaded -> {
                 LaunchedEffect(it){
-                    plant.value = it.plant
-
                     viewModel.fetchPlantMeasurements(
-                        plantId = it.plant.id,
+                        plantId = plant.value!!.id,
                         from = from.value,
                         to = to.value
                     )
                 }
-                plant.value?.let {
-                    PlantDetailScreenContent(
-                        plant = plant.value!!,
-                        measurements = measurements,
-                        from = from,
-                        to = to,
-                        viewModel = viewModel,
-                        navigation = navigation
-                    )
-                }
+                PlantDetailScreenContent(
+                    from = from,
+                    to = to,
+                    viewModel = viewModel,
+                    navigation = navigation
+                )
             }
             is PlantDetailUiState.MeasurementsLoaded -> {
                 LaunchedEffect(it){
-                    measurements.clear()
-                    measurements.addAll(it.measurements)
                     if (plant.value == null){
                         viewModel.uiState.value = PlantDetailUiState.Start()
                     }
                 }
-                plant.value?.let {
-                    PlantDetailScreenContent(
-                        plant = plant.value!!,
-                        measurements = measurements,
-                        from = from,
-                        to = to,
-                        viewModel = viewModel,
-                        navigation = navigation
-                    )
-                }
+                PlantDetailScreenContent(
+                    from = from,
+                    to = to,
+                    viewModel = viewModel,
+                    navigation = navigation
+                )
             }
             is PlantDetailUiState.Error -> {
                 ErrorScreen(text = stringResource(id = it.errorStringCode)){
@@ -150,49 +134,49 @@ fun PlantDetailScreen(
 
 @Composable
 fun PlantDetailScreenContent(
-    plant: GetPlant,
-    measurements: List<GetMeasurement>,
     from: MutableState<Calendar>,
     to: MutableState<Calendar>,
     viewModel: PlantDetailViewModel,
     navigation: INavigationRouter
 ){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        TopBarWithBackButton(
-            topBarTitle = stringResource(id = R.string.plantDetailScreen),
-            onBackClick = {
-                navigation.returnBack()
-            },
-            actions = {
-                IconButton(
-                    onClick = {
-                        navigation.toEditPlant(plantId = plant.id)
+    val plant = viewModel.plant.collectAsState()
+
+    plant.value?.let {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            TopBarWithBackButton(
+                topBarTitle = stringResource(id = R.string.plantDetailScreen),
+                onBackClick = {
+                    navigation.returnBack()
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            navigation.toEditPlant(plantId = it.id)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Edit,
+                            contentDescription = stringResource(id = R.string.edit),
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Edit,
-                        contentDescription = stringResource(id = R.string.edit),
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
                 }
-            }
-        )
+            )
 
-        PlantDetailImage(plant = plant)
+            PlantDetailImage(plant = it)
 
-        PlantDetailInfo(
-            plant = plant,
-            measurements = measurements,
-            from = from,
-            to = to,
-            viewModel = viewModel,
-            navigation = navigation
-        )
+            PlantDetailInfo(
+                from = from,
+                to = to,
+                viewModel = viewModel,
+                navigation = navigation
+            )
+        }
     }
 }
 
@@ -238,8 +222,6 @@ fun PlantDetailImage(
 
 @Composable
 fun PlantDetailInfo(
-    plant: GetPlant,
-    measurements: List<GetMeasurement>,
     from: MutableState<Calendar>,
     to: MutableState<Calendar>,
     viewModel: PlantDetailViewModel,
@@ -247,49 +229,51 @@ fun PlantDetailInfo(
 ){
     val cornerRadius = UiConstants.RADIUS_LARGE
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .offset(y = (-25).dp)
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius))
-            .background(MaterialTheme.colorScheme.background)
-    ) {
-        Spacer(modifier = Modifier.height(10.dp))
+    val plant = viewModel.plant.collectAsState()
 
+    plant.value?.let {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
+                .offset(y = (-25).dp)
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius))
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            Text(
-                text = plant.name,
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+            Spacer(modifier = Modifier.height(10.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text(
+                    text = it.name,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            PlantInfoContentTab(
-                plant = plant,
-                measurements = measurements,
-                from = from,
-                to = to,
-                viewModel = viewModel,
-                navigation = navigation
-            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                PlantInfoContentTab(
+                    from = from,
+                    to = to,
+                    viewModel = viewModel,
+                    navigation = navigation
+                )
+            }
         }
     }
 }
@@ -297,8 +281,6 @@ fun PlantDetailInfo(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PlantInfoContentTab(
-    plant: GetPlant,
-    measurements: List<GetMeasurement>,
     from: MutableState<Calendar>,
     to: MutableState<Calendar>,
     viewModel: PlantDetailViewModel,
@@ -307,6 +289,7 @@ fun PlantInfoContentTab(
     val contentModes = remember{
         mutableStateListOf(
             PlantInfoContentMode.BASIC_INFO,
+            PlantInfoContentMode.NOTES,
             PlantInfoContentMode.MEASUREMENTS,
             PlantInfoContentMode.CHARTS,
         )
@@ -322,14 +305,6 @@ fun PlantInfoContentTab(
 
     val mostRecentValues = remember{
         mutableStateOf<List<LatestMeasurementValueOfPlant>>(listOf())
-    }
-    LaunchedEffect(plant, measurements){
-        viewModel.fetchMostRecentValuesOfPlant(
-            plant = plant,
-            onValuesFetched = {
-                mostRecentValues.value = it
-            }
-        )
     }
 
     Column(
@@ -354,13 +329,12 @@ fun PlantInfoContentTab(
                             pagerState.animateScrollToPage(index)
                         }
                     },
-                    text = {
-                        Text(
-                            text = stringResource(id = item.nameId),
-                            style = MaterialTheme.typography.labelSmall,
-                            textAlign = TextAlign.Center,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                    icon = {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = item.iconId),
+                            contentDescription = stringResource(id = item.nameId),
+                            modifier = Modifier
+                                .size(24.dp)
                         )
                     }
                 )
@@ -374,16 +348,12 @@ fun PlantInfoContentTab(
             when(currentType){
                 PlantInfoContentMode.BASIC_INFO -> {
                     PlantDetailBasicInfo(
-                        plant = plant,
-                        mostRecentValues = mostRecentValues.value,
                         navigation = navigation,
                         viewModel = viewModel
                     )
                 }
                 PlantInfoContentMode.MEASUREMENTS -> {
                     PlantDetailMeasurements(
-                        plant = plant,
-                        measurements = measurements,
                         from = from,
                         to = to,
                         viewModel = viewModel
@@ -391,7 +361,6 @@ fun PlantInfoContentTab(
                 }
                 PlantInfoContentMode.CHARTS -> {
                     PlantDetailCharts(
-                        measurements = measurements,
                         from = from,
                         to = to,
                         viewModel = viewModel

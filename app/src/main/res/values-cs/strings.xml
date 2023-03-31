@@ -67,6 +67,7 @@
     <string name="couldNotSavePlant">Rostlinu se nepodařilo uložit</string>
     <string name="plantDetailScreen">Detail rostliny</string>
     <string name="basicInfo">Informace</string>
+    <string name="notes">Poznámky</string>
     <string name="measurements">Měření</string>
     <string name="charts">Grafy</string>
     <string name="currentMeasuringDevice">Právě měřící zařízení</string>

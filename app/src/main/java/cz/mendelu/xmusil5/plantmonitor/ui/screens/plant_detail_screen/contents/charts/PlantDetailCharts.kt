@@ -26,7 +26,6 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.madrapps.plot.line.DataPoint
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementChartValuePopup
@@ -40,11 +39,12 @@ import java.util.*
 
 @Composable
 fun PlantDetailCharts(
-    measurements: List<GetMeasurement>,
     from: MutableState<Calendar>,
     to: MutableState<Calendar>,
     viewModel: PlantDetailViewModel
 ){
+    val measurements = viewModel.measurements.collectAsState()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -59,9 +59,8 @@ fun PlantDetailCharts(
         )
 
         Spacer(modifier = Modifier.height(20.dp))
-        if (measurements.isNotEmpty()) {
+        if (measurements.value != null && measurements.value!!.isNotEmpty()) {
             MeasurementsTabView(
-                measurements = measurements,
                 viewModel = viewModel
             )
         } else {
@@ -75,7 +74,6 @@ fun PlantDetailCharts(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MeasurementsTabView(
-    measurements: List<GetMeasurement>,
     viewModel: PlantDetailViewModel
 ){
     val measurementTypes = remember{
@@ -85,14 +83,19 @@ fun MeasurementsTabView(
             MeasurementType.SOIL_MOISTURE
         )
     }
+    val chartValueSets = viewModel.chartValueSets.collectAsState()
+
     val selectedMeasurementType = remember{
         mutableStateOf(measurementTypes.first())
     }
-    val chartValueSet = remember{
-        mutableStateOf(viewModel.getChartValueSetOfType(selectedMeasurementType.value, measurements))
+
+    val selectedChartValueSet = remember{
+        mutableStateOf<ChartValueSet?>(null)
     }
-    LaunchedEffect(selectedMeasurementType.value, measurements.size){
-        chartValueSet.value = viewModel.getChartValueSetOfType(selectedMeasurementType.value, measurements)
+    LaunchedEffect(selectedMeasurementType.value, chartValueSets.value){
+        chartValueSets.value?.let {
+            selectedChartValueSet.value = it.firstOrNull{ it.measurementType == selectedMeasurementType.value }
+        }
     }
 
     val pagerState = rememberPagerState()
@@ -173,9 +176,11 @@ fun MeasurementsTabView(
                     overflow = TextOverflow.Ellipsis
                 )
 
-                MeasurementsChart(
-                    chartValueSet = chartValueSet
-                )
+                selectedChartValueSet.value?.let {
+                    MeasurementsChart(
+                        chartValueSet = it
+                    )
+                }
             }
         }
     }
@@ -183,7 +188,7 @@ fun MeasurementsTabView(
 
 @Composable
 fun MeasurementsChart(
-    chartValueSet: MutableState<ChartValueSet>
+    chartValueSet: ChartValueSet
 ){
     val showPopup = remember{
         mutableStateOf(false)
@@ -192,13 +197,13 @@ fun MeasurementsChart(
         mutableStateOf<Pair<String, DataPoint>?>(null)
     }
     val measurementType = remember{
-        mutableStateOf(chartValueSet.value.measurementType)
+        mutableStateOf(chartValueSet.measurementType)
     }
-    LaunchedEffect(chartValueSet.value){
-        measurementType.value = chartValueSet.value.measurementType
+    LaunchedEffect(chartValueSet){
+        measurementType.value = chartValueSet.measurementType
     }
     MeasurementsLineChart(
-        chartValues = chartValueSet.value,
+        chartValues = chartValueSet,
         selectedData = selectedData,
         showSelected = showPopup
     )

@@ -2,8 +2,9 @@ package cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents
 
 import cz.mendelu.xmusil5.plantmonitor.R
 
-enum class PlantInfoContentMode(val nameId: Int) {
-    BASIC_INFO(R.string.basicInfo),
-    MEASUREMENTS(R.string.measurements),
-    CHARTS(R.string.charts);
+enum class PlantInfoContentMode(val nameId: Int, val iconId: Int) {
+    BASIC_INFO(R.string.basicInfo, R.drawable.ic_measuring_device),
+    NOTES(R.string.basicInfo, R.drawable.ic_measuring_device),
+    MEASUREMENTS(R.string.measurements, R.drawable.ic_measuring_device),
+    CHARTS(R.string.charts, R.drawable.ic_measuring_device);
 }

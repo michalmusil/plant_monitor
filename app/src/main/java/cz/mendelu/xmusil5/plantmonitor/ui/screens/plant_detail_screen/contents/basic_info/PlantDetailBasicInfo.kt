@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,78 +27,83 @@ import java.util.*
 
 @Composable
 fun PlantDetailBasicInfo(
-    plant: GetPlant,
-    mostRecentValues: List<LatestMeasurementValueOfPlant>,
     navigation: INavigationRouter,
     viewModel: PlantDetailViewModel
 ){
     val cornerRadius = UiConstants.RADIUS_LARGE
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    val plant = viewModel.plant.collectAsState()
+    val mostRecentValues = viewModel.mostRecentMeasurementValues.collectAsState()
 
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 15.dp)
+    plant.value?.let {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            DetailCard(
-                titleText = stringResource(id = R.string.plantSpecies),
-                contentText = plant.species,
-                modifier = Modifier.weight(1f)
-            )
-            Spacer(modifier = Modifier.weight(0.05f))
-            DetailCard(
-                titleText = stringResource(id = R.string.created),
-                contentText = DateUtils.getLocalizedDateString(plant.created?.calendarInUTC0 ?: Calendar.getInstance()),
-                modifier = Modifier.weight(1f)
-            )
-        }
 
-        if (mostRecentValues.isNotEmpty()){
-            MostRecentMeasurementValuesCard(
-                plant = plant,
-                mostRecentValues = mostRecentValues,
-                measurementsValidator = viewModel.measurementsValidator,
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 15.dp)
-            )
-        }
+            ) {
+                DetailCard(
+                    titleText = stringResource(id = R.string.plantSpecies),
+                    contentText = it.species,
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.weight(0.05f))
+                DetailCard(
+                    titleText = stringResource(id = R.string.created),
+                    contentText = DateUtils.getLocalizedDateString(it.created?.calendarInUTC0 ?: Calendar.getInstance()),
+                    modifier = Modifier.weight(1f)
+                )
+            }
 
-        plant.associatedDevice?.let {
-            DeviceCard(
-                device = it,
-                onClick = {
-                    navigation.toDeviceDetailAndControl(it.id)
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 15.dp)
-                    .padding(horizontal = 5.dp)
-                    .customShadow(
-                        color = shadowColor,
-                        borderRadius = cornerRadius,
-                        spread = 0.dp,
-                        blurRadius = 5.dp,
-                        offsetY = 2.dp
+            mostRecentValues.value?.let { measurementValues ->
+                if (measurementValues.isNotEmpty()) {
+                    MostRecentMeasurementValuesCard(
+                        plant = it,
+                        mostRecentValues = measurementValues,
+                        measurementsValidator = viewModel.measurementsValidator,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 15.dp)
                     )
-                    .clip(RoundedCornerShape(cornerRadius))
-                    .background(MaterialTheme.colorScheme.surface)
-            )
-        }
-        if (plant.description != null && plant.description.length > 0) {
-            DetailCard(
-                titleText = stringResource(id = R.string.plantDescription),
-                contentText = plant.description,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 15.dp)
-            )
+                }
+            }
+
+            it.associatedDevice?.let {
+                DeviceCard(
+                    device = it,
+                    onClick = {
+                        navigation.toDeviceDetailAndControl(it.id)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 15.dp)
+                        .padding(horizontal = 5.dp)
+                        .customShadow(
+                            color = shadowColor,
+                            borderRadius = cornerRadius,
+                            spread = 0.dp,
+                            blurRadius = 5.dp,
+                            offsetY = 2.dp
+                        )
+                        .clip(RoundedCornerShape(cornerRadius))
+                        .background(MaterialTheme.colorScheme.surface)
+                )
+            }
+            if (it.description != null && it.description.length > 0) {
+                DetailCard(
+                    titleText = stringResource(id = R.string.plantDescription),
+                    contentText = it.description,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 15.dp)
+                )
+            }
         }
     }
 }

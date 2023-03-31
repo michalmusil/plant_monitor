@@ -9,6 +9,7 @@ import com.madrapps.plot.line.DataPoint
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.IDevicesRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements.IMeasurementsRepository
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plant_notes.IPlantNotesRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
@@ -16,10 +17,12 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.GetPlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -29,10 +32,18 @@ class PlantDetailViewModel @Inject constructor(
     private val plantsRepository: IPlantsRepository,
     private val measurementsRepository: IMeasurementsRepository,
     private val devicesRepository: IDevicesRepository,
+    private val plantNotesRepository: IPlantNotesRepository,
     val measurementsValidator: IMeasurementsValidator
 ): ViewModel() {
 
     val uiState: MutableState<PlantDetailUiState> = mutableStateOf(PlantDetailUiState.Start())
+
+    val plant: MutableStateFlow<GetPlant?> = MutableStateFlow(null)
+    val plantNotes: MutableStateFlow<List<GetPlantNote>?> = MutableStateFlow(null)
+    val mostRecentMeasurementValues: MutableStateFlow<List<LatestMeasurementValueOfPlant>?> = MutableStateFlow(null)
+    val measurements: MutableStateFlow<List<GetMeasurement>?> = MutableStateFlow(null)
+    val chartValueSets: MutableStateFlow<List<ChartValueSet>?> = MutableStateFlow(null)
+
 
     fun fetchPlant(plantId: Long){
         viewModelScope.launch {
@@ -61,7 +72,10 @@ class PlantDetailViewModel @Inject constructor(
                 resultDevice?.plant = resultPlant
                 resultPlant.associatedDevice = resultDevice
 
-                uiState.value = PlantDetailUiState.PlantLoaded(plant = resultPlant)
+                plant.value = resultPlant
+                fetchPlantNotes(resultPlant.id)
+
+                uiState.value = PlantDetailUiState.PlantLoaded()
             }
         }
     }
@@ -83,6 +97,55 @@ class PlantDetailViewModel @Inject constructor(
         }
         return null
     }
+
+    fun fetchPlantMeasurements(plantId: Long, from: Calendar, to: Calendar){
+        viewModelScope.launch {
+            val result = measurementsRepository.getMeasurementsOfPlant(
+                plantId = plantId,
+                from = from,
+                to = to
+            )
+            when(result){
+                is CommunicationResult.Success -> {
+                    measurements.value = result.data
+                    fetchMostRecentValuesOfPlant(plantId)
+                    chartValueSets.value = getAllChartValueSets(result.data)
+
+                    uiState.value = PlantDetailUiState.MeasurementsLoaded()
+                }
+                is CommunicationResult.Error -> {
+                    uiState.value = PlantDetailUiState.Error(R.string.somethingWentWrong)
+                }
+                is CommunicationResult.Exception -> {
+                    uiState.value = PlantDetailUiState.Error(R.string.connectionError)
+                }
+            }
+        }
+    }
+
+    fun fetchMostRecentValuesOfPlant(plantId: Long){
+        viewModelScope.launch {
+            val result = measurementsRepository.getLatestPlantMeasurementValues(
+                plantId = plantId
+            )
+            if (result is CommunicationResult.Success){
+                mostRecentMeasurementValues.value = result.data
+            }
+        }
+    }
+
+    fun fetchPlantNotes(plantId: Long){
+        viewModelScope.launch {
+            val result = plantNotesRepository.getByPlantId(plantId = plantId)
+
+            if (result is CommunicationResult.Success){
+                plantNotes.value = result.data
+            }
+        }
+    }
+
+
+
 
     fun getInclusiveDate(
         originalCalendar: Calendar,
@@ -113,39 +176,16 @@ class PlantDetailViewModel @Inject constructor(
         return inclusiveDate
     }
 
-    fun fetchPlantMeasurements(plantId: Long, from: Calendar, to: Calendar){
-        viewModelScope.launch {
-            val result = measurementsRepository.getMeasurementsOfPlant(
-                plantId = plantId,
-                from = from,
-                to = to
+    fun getAllChartValueSets(measurementsToFilter: List<GetMeasurement>): List<ChartValueSet>{
+        val chartValueSets = mutableListOf<ChartValueSet>()
+        MeasurementType.getValidTypes().forEach {
+            val set = getChartValueSetOfType(
+                measurementType = it,
+                measurementsToFilter = measurementsToFilter
             )
-            when(result){
-                is CommunicationResult.Success -> {
-                    uiState.value = PlantDetailUiState.MeasurementsLoaded(result.data)
-                }
-                is CommunicationResult.Error -> {
-                    uiState.value = PlantDetailUiState.Error(R.string.somethingWentWrong)
-                }
-                is CommunicationResult.Exception -> {
-                    uiState.value = PlantDetailUiState.Error(R.string.connectionError)
-                }
-            }
+            chartValueSets.add(set)
         }
-    }
-
-    fun fetchMostRecentValuesOfPlant(plant: GetPlant, onValuesFetched: (List<LatestMeasurementValueOfPlant>) -> Unit){
-        viewModelScope.launch {
-            val result = measurementsRepository.getLatestPlantMeasurementValues(
-                plantId = plant.id,
-            )
-            if (result is CommunicationResult.Success){
-                onValuesFetched(result.data)
-            }
-            else {
-                onValuesFetched(listOf())
-            }
-        }
+        return chartValueSets
     }
 
     fun getChartValueSetOfType(
