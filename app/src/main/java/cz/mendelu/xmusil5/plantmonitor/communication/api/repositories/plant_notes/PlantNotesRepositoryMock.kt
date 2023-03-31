@@ -57,7 +57,7 @@ class PlantNotesRepositoryMock: IPlantNotesRepository{
         return CommunicationResult.Success(data = matchingNotes)
     }
 
-    override suspend fun postNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<GetPlantNote> {
+    override suspend fun addNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<GetPlantNote> {
         val existingPlant = PlantsRepositoryMock.PLANTS.firstOrNull { it.id == postPlantNote.plantId }
         existingPlant?.let {
             return CommunicationResult.Error(

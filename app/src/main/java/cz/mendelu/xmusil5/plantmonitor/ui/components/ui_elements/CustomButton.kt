@@ -94,15 +94,17 @@ fun CustomButton(
                     )
                 }
             }
-            Text(
-                text = text,
-                color = textColor,
-                fontWeight = FontWeight.Bold,
-                maxLines = 2,
-                lineHeight = 12.sp,
-                overflow = TextOverflow.Ellipsis,
-                fontSize = textSize,
-            )
+            if (text.isNotBlank()) {
+                Text(
+                    text = text,
+                    color = textColor,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    lineHeight = 12.sp,
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = textSize,
+                )
+            }
         }
     }
 }

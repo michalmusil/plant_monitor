@@ -23,6 +23,7 @@
     <string name="appLogo">App logo</string>
     <string name="user">User</string>
     <string name="icon">Icon</string>
+    <string name="date">Date</string>
     <string name="created">Created</string>
     <string name="from">From</string>
     <string name="to">To</string>
@@ -91,8 +92,11 @@
     <string name="measurements">Measurements</string>
     <string name="charts">Charts</string>
 
+    <string name="newNote">New note</string>
+
     <string name="currentMeasuringDevice">Current measuring device</string>
     <string name="measurementValues">Measurements</string>
+    <string name="noPlantNotesYet">You haven\'t added any notes to this plant yet</string>
 
     <!--  DEVICES SCREEN  -->
     <string name="devicesScreen">Devices</string>

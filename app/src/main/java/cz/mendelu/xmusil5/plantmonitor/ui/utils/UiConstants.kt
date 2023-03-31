@@ -7,5 +7,8 @@ object UiConstants {
     val RADIUS_MEDIUM = 20.dp
     val RADIUS_LARGE = 30.dp
 
+    val EDGE_FADE_SMALL = 40f
+    val EDGE_FADE_MEDIUM = 60f
+
     val RADIUS_CAPSULE_PERCENTAGE = 50
 }

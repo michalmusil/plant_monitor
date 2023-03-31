@@ -15,6 +15,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoPlantMeasurements
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.MeasurementsDateFilter
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailViewModel
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
 import java.util.*
 
@@ -42,8 +43,6 @@ fun PlantDetailMeasurements(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
-
             MeasurementsDateFilter(
                 from = from,
                 to = to
@@ -62,7 +61,7 @@ fun PlantDetailMeasurements(
                         .fadeEdges(
                             edges = Edges.VERTICAL,
                             backgroundColor = MaterialTheme.colorScheme.background,
-                            fadeWidth = 70f
+                            fadeWidth = UiConstants.EDGE_FADE_MEDIUM
                         )
                 ) {
                     items(

@@ -44,6 +44,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.P
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.PlantDetailCharts
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.PlantInfoContentMode
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.measurements.PlantDetailMeasurements
+import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.notes.PlantDetailNotes
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import kotlinx.coroutines.launch
@@ -303,12 +304,10 @@ fun PlantInfoContentTab(
         selectedContentMode.value = contentModes[pagerState.currentPage]
     }
 
-    val mostRecentValues = remember{
-        mutableStateOf<List<LatestMeasurementValueOfPlant>>(listOf())
-    }
-
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
     ) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
@@ -345,26 +344,48 @@ fun PlantInfoContentTab(
             state = pagerState,
         ) {
             val currentType = contentModes[pagerState.currentPage]
-            when(currentType){
-                PlantInfoContentMode.BASIC_INFO -> {
-                    PlantDetailBasicInfo(
-                        navigation = navigation,
-                        viewModel = viewModel
-                    )
-                }
-                PlantInfoContentMode.MEASUREMENTS -> {
-                    PlantDetailMeasurements(
-                        from = from,
-                        to = to,
-                        viewModel = viewModel
-                    )
-                }
-                PlantInfoContentMode.CHARTS -> {
-                    PlantDetailCharts(
-                        from = from,
-                        to = to,
-                        viewModel = viewModel
-                    )
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = stringResource(id = currentType.nameId),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(15.dp))
+                when (currentType) {
+                    PlantInfoContentMode.BASIC_INFO -> {
+                        PlantDetailBasicInfo(
+                            navigation = navigation,
+                            viewModel = viewModel
+                        )
+                    }
+                    PlantInfoContentMode.NOTES -> {
+                        PlantDetailNotes(
+                            viewModel = viewModel,
+                            navigation = navigation
+                        )
+                    }
+                    PlantInfoContentMode.MEASUREMENTS -> {
+                        PlantDetailMeasurements(
+                            from = from,
+                            to = to,
+                            viewModel = viewModel
+                        )
+                    }
+                    PlantInfoContentMode.CHARTS -> {
+                        PlantDetailCharts(
+                            from = from,
+                            to = to,
+                            viewModel = viewModel
+                        )
+                    }
                 }
             }
         }

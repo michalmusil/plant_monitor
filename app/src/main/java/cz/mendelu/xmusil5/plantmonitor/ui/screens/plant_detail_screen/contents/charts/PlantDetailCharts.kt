@@ -50,8 +50,6 @@ fun PlantDetailCharts(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        
-        Spacer(modifier = Modifier.height(20.dp))
 
         MeasurementsDateFilter(
             from = from,

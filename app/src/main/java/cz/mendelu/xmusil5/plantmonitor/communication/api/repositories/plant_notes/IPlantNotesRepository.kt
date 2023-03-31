@@ -8,7 +8,7 @@ interface IPlantNotesRepository {
 
     suspend fun getByPlantId(plantId: Long): CommunicationResult<List<GetPlantNote>>
 
-    suspend fun postNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<GetPlantNote>
+    suspend fun addNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<GetPlantNote>
 
     suspend fun deletePlantNote(plantNoteId: Long): CommunicationResult<Unit>
 }

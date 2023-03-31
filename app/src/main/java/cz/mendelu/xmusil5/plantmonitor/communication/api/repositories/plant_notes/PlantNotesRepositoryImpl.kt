@@ -22,7 +22,7 @@ class PlantNotesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun postNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<GetPlantNote> {
+    override suspend fun addNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<GetPlantNote> {
         return processRequest {
             api.postNewPlantNote(
                 postPlantNote = postPlantNote,

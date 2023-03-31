@@ -68,6 +68,8 @@
     <string name="plantDetailScreen">Detail rostliny</string>
     <string name="basicInfo">Informace</string>
     <string name="notes">Poznámky</string>
+    <string name="noPlantNotesYet">K této rostlině ještě nemáš žádné poznámky</string>
+    <string name="newNote">Nová poznámka</string>
     <string name="measurements">Měření</string>
     <string name="charts">Grafy</string>
     <string name="currentMeasuringDevice">Právě měřící zařízení</string>
@@ -105,4 +107,5 @@
     <string name="temperature">Teplota</string>
     <string name="lightIntensity">Intenzita světla</string>
     <string name="soilMoisture">Vlhkost půdy</string>
+    <string name="date">Datum</string>
 </resources>

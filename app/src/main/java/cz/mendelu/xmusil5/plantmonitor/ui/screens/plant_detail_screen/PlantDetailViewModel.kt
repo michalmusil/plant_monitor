@@ -18,6 +18,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementV
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.GetPlantNote
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PostPlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
@@ -144,6 +145,50 @@ class PlantDetailViewModel @Inject constructor(
         }
     }
 
+    fun addPlantNote(text: String, plantId: Long){
+        if (text.isNotBlank()){
+            val newNote = PostPlantNote(
+                text = text,
+                plantId = plantId
+            )
+            viewModelScope.launch {
+                val result = plantNotesRepository.addNewPlantNote(newNote)
+                when(result){
+                    is CommunicationResult.Success -> {
+                        plant.value?.let {
+                            fetchPlantNotes(it.id)
+                        }
+                    }
+                    is CommunicationResult.Error -> {
+                        uiState.value = PlantDetailUiState.Error(R.string.somethingWentWrong)
+                    }
+                    is CommunicationResult.Exception -> {
+                        uiState.value = PlantDetailUiState.Error(R.string.connectionError)
+                    }
+                }
+            }
+        }
+    }
+
+    fun deletePlantNote(noteId: Long){
+        viewModelScope.launch {
+            val result = plantNotesRepository.deletePlantNote(noteId)
+            when(result){
+                is CommunicationResult.Success -> {
+                    plant.value?.let {
+                        fetchPlantNotes(it.id)
+                    }
+                }
+                is CommunicationResult.Error -> {
+                    uiState.value = PlantDetailUiState.Error(R.string.somethingWentWrong)
+                }
+                is CommunicationResult.Exception -> {
+                    uiState.value = PlantDetailUiState.Error(R.string.connectionError)
+                }
+            }
+        }
+    }
+
 
 
 
@@ -224,6 +269,12 @@ class PlantDetailViewModel @Inject constructor(
     fun getMeasurementsOrderedForDisplay(measurements: List<GetMeasurement>): List<GetMeasurement>{
         return measurements.sortedByDescending {
             it.datetime?.calendarInUTC0?.timeInMillis ?: it.id
+        }
+    }
+
+    fun getPlantNotesOrderedForDisplay(notes: List<GetPlantNote>): List<GetPlantNote>{
+        return notes.sortedByDescending {
+            it.created?.calendarInUTC0?.timeInMillis ?: it.id
         }
     }
 }

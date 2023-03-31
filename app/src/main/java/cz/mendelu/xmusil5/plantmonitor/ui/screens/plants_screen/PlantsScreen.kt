@@ -20,6 +20,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoDataScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.AddFloatingActionButton
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
 
 @Composable
@@ -93,7 +94,7 @@ fun PlantsScreenContent(
             .fadeEdges(
                 edges = Edges.VERTICAL,
                 backgroundColor = MaterialTheme.colorScheme.background,
-                fadeWidth = 70f
+                fadeWidth = UiConstants.EDGE_FADE_MEDIUM
             )
     ){
         items(

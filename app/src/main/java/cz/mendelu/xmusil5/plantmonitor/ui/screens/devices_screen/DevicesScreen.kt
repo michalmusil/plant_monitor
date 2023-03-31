@@ -135,7 +135,7 @@ fun DevicesScreenContent(
             .fadeEdges(
                 edges = Edges.VERTICAL,
                 backgroundColor = MaterialTheme.colorScheme.background,
-                fadeWidth = 70f
+                fadeWidth = UiConstants.EDGE_FADE_MEDIUM
             )
     ) {
         items(
