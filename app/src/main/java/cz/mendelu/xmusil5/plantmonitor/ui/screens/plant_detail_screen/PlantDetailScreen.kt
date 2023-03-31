@@ -332,8 +332,9 @@ fun PlantInfoContentTab(
                         Icon(
                             imageVector = ImageVector.vectorResource(id = item.iconId),
                             contentDescription = stringResource(id = item.nameId),
+                            tint = MaterialTheme.colorScheme.onBackground,
                             modifier = Modifier
-                                .size(24.dp)
+                                .size(25.dp)
                         )
                     }
                 )
