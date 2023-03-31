@@ -265,7 +265,7 @@ fun ExpandableLastPlantValues(
             .fadeEdges(
                 edges = Edges.HORIZONTAL,
                 backgroundColor = MaterialTheme.colorScheme.secondary,
-                fadeWidth = 80f
+                fadeWidth = 50f
             )
     ){
         items(

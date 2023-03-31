@@ -9,6 +9,8 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementV
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.GetPlantNote
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PostPlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
@@ -167,4 +169,28 @@ interface HousePlantMeasurementsApi {
     ): Response<List<LatestMeasurementValueOfPlant>>
 
 
+
+
+
+
+    @Headers("Content-Type: application/json")
+    @GET("plants/notes/plant/{id}")
+    suspend fun getNotesOfPlant(
+        @Path("id")plantId: Long,
+        @Header("Authorization") bearerToken: String
+    ): Response<List<GetPlantNote>>
+
+    @Headers("Content-Type: application/json")
+    @POST("plants/notes")
+    suspend fun postNewPlantNote(
+        @Body postPlantNote: PostPlantNote,
+        @Header("Authorization") bearerToken: String
+    ): Response<GetPlantNote>
+
+    @Headers("Content-Type: application/json")
+    @DELETE("plants/notes/{id}")
+    suspend fun deletePlantNote(
+        @Path("id")plantNoteId: Long,
+        @Header("Authorization") bearerToken: String
+    ): Response<Unit>
 }

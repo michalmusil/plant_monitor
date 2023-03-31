@@ -4,6 +4,8 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.De
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.IDevicesRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements.IMeasurementsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements.MeasurementsRepositoryMock
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plant_notes.IPlantNotesRepository
+import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plant_notes.PlantNotesRepositoryMock
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.PlantsRepositoryMock
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.IUserAuthRepository
@@ -35,6 +37,12 @@ class MockRepositoryModule {
     @Provides
     fun provideMeasurementsRepository(): IMeasurementsRepository {
         return MeasurementsRepositoryMock()
+    }
+
+    @ActivityRetainedScoped
+    @Provides
+    fun providePlantNotesRepository(): IPlantNotesRepository {
+        return PlantNotesRepositoryMock()
     }
 
     @ActivityRetainedScoped
