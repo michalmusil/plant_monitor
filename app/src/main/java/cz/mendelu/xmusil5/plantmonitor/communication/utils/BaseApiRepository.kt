@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.ApiConstants
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageUtils
 import okhttp3.ResponseBody
 import retrofit2.Response
 
@@ -44,7 +46,10 @@ abstract class BaseApiRepository(
         }
     }
 
-    inline fun processImageRequest(request: () -> Response<ResponseBody>): CommunicationResult<Bitmap>{
+    inline fun processImageRequest(
+        resultBitmapQuality: ImageQuality,
+        request: () -> Response<ResponseBody>
+    ): CommunicationResult<Bitmap>{
         try {
             val response = request.invoke()
 
@@ -54,9 +59,14 @@ abstract class BaseApiRepository(
 
             if (response.isSuccessful()) {
                 response.body()?.let {
-                    // display the image data in a ImageView or save it
-                    val bmp = BitmapFactory.decodeStream(it.byteStream())
-                    return CommunicationResult.Success(data = bmp)
+                    val bitmap = ImageUtils.getBitmapFromInputStream(
+                        inputStream = it.byteStream(),
+                        quality = resultBitmapQuality
+                    )
+                    bitmap?.let {
+                        return CommunicationResult.Success(data = bitmap)
+                    }
+                    return CommunicationResult.Exception(NullPointerException())
                 }
                 return CommunicationResult.Error(
                     CommunicationError(

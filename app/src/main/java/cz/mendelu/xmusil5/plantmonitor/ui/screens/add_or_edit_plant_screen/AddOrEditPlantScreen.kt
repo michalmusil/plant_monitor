@@ -76,6 +76,9 @@ fun AddOrEditPlantScreen(
                     error = errorString
                 )
             }
+            is AddOrEditPlantUiState.SavingChanges -> {
+                LoadingScreen()
+            }
             is AddOrEditPlantUiState.PlantSaved -> {
                 LaunchedEffect(it) {
                     navigation.toPlantsScreen()

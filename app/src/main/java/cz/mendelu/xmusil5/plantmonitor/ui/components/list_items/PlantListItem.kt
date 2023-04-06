@@ -23,7 +23,7 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
-import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 
 @Composable

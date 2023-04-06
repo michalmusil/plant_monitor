@@ -58,36 +58,6 @@ fun PlantDetailScreen(
 ){
     val plant = viewModel.plant.collectAsState()
 
-    val from = rememberSaveable{
-        mutableStateOf(
-            DateUtils.getCalendarWithSubtractedElements(
-                original = DateUtils.getCurrentCalendarInUTC0(),
-                years = 1
-            )
-        )
-    }
-    val to = rememberSaveable{
-        mutableStateOf(DateUtils.getCurrentCalendarInUTC0())
-    }
-    LaunchedEffect(from.value, to.value){
-        plant.value?.let {
-            // Have to adjust TO value here (otherwise the default Date picker rounds the date up incorrectly)
-            val fromInclusive = viewModel.getInclusiveDate(
-                originalCalendar = from.value,
-                endInclusive = false
-            )
-            val toInclusive = viewModel.getInclusiveDate(
-                originalCalendar = to.value,
-                endInclusive = true
-            )
-            viewModel.fetchPlantMeasurements(
-                plantId = it.id,
-                from = fromInclusive,
-                to = toInclusive
-            )
-        }
-    }
-
     viewModel.uiState.value.let {
         when(it){
             is PlantDetailUiState.Start -> {
@@ -97,16 +67,7 @@ fun PlantDetailScreen(
                 }
             }
             is PlantDetailUiState.PlantLoaded -> {
-                LaunchedEffect(it){
-                    viewModel.fetchPlantMeasurements(
-                        plantId = plant.value!!.id,
-                        from = from.value,
-                        to = to.value
-                    )
-                }
                 PlantDetailScreenContent(
-                    from = from,
-                    to = to,
                     viewModel = viewModel,
                     navigation = navigation
                 )
@@ -118,8 +79,6 @@ fun PlantDetailScreen(
                     }
                 }
                 PlantDetailScreenContent(
-                    from = from,
-                    to = to,
                     viewModel = viewModel,
                     navigation = navigation
                 )
@@ -135,8 +94,6 @@ fun PlantDetailScreen(
 
 @Composable
 fun PlantDetailScreenContent(
-    from: MutableState<Calendar>,
-    to: MutableState<Calendar>,
     viewModel: PlantDetailViewModel,
     navigation: INavigationRouter
 ){
@@ -172,8 +129,6 @@ fun PlantDetailScreenContent(
             PlantDetailImage(plant = it)
 
             PlantDetailInfo(
-                from = from,
-                to = to,
                 viewModel = viewModel,
                 navigation = navigation
             )
@@ -223,8 +178,6 @@ fun PlantDetailImage(
 
 @Composable
 fun PlantDetailInfo(
-    from: MutableState<Calendar>,
-    to: MutableState<Calendar>,
     viewModel: PlantDetailViewModel,
     navigation: INavigationRouter
 ){
@@ -269,8 +222,6 @@ fun PlantDetailInfo(
                     .padding(horizontal = 16.dp)
             ) {
                 PlantInfoContentTab(
-                    from = from,
-                    to = to,
                     viewModel = viewModel,
                     navigation = navigation
                 )
@@ -282,8 +233,6 @@ fun PlantDetailInfo(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PlantInfoContentTab(
-    from: MutableState<Calendar>,
-    to: MutableState<Calendar>,
     viewModel: PlantDetailViewModel,
     navigation: INavigationRouter
 ){
@@ -375,15 +324,11 @@ fun PlantInfoContentTab(
                     }
                     PlantInfoContentMode.MEASUREMENTS -> {
                         PlantDetailMeasurements(
-                            from = from,
-                            to = to,
                             viewModel = viewModel
                         )
                     }
                     PlantInfoContentMode.CHARTS -> {
                         PlantDetailCharts(
-                            from = from,
-                            to = to,
                             viewModel = viewModel
                         )
                     }

@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.utils
+package cz.mendelu.xmusil5.plantmonitor.utils.image
 
 import android.content.Context
 import android.database.Cursor
@@ -11,7 +11,10 @@ import android.provider.MediaStore
 import android.provider.OpenableColumns
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.net.toUri
+import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
 
 object ImageUtils {
@@ -55,11 +58,25 @@ object ImageUtils {
         return bitmap
     }
 
-    fun getImageBitmapFromUri(context: Context, uriString: String): Bitmap?{
+    fun getBitmapFromUri(
+        context: Context,
+        uriString: String,
+        quality: ImageQuality = ImageQuality.SMALL
+    ): Bitmap?{
+        val inputStream = context.contentResolver.openInputStream(uriString.toUri())
+        inputStream?.let {
+            val bitmap = getBitmapFromInputStream(
+                inputStream = inputStream,
+                quality = quality
+            )
+            return bitmap
+        }
+        return null
+        /*
         try {
             val uri = Uri.parse(uriString)
             val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
-            /*
+
             if (uri.path != null) {
                 var bitmapRotated: Bitmap? = null
                 // Rotating the image to be upright
@@ -82,15 +99,45 @@ object ImageUtils {
 
                 return bitmapRotated
             }
-             */
-
             return bitmap
         } catch (ex: java.lang.Exception){
             return null
         }
+         */
     }
 
-    fun getFileName(context: Context, uri: Uri): String {
+    fun getBitmapFromInputStream(
+        inputStream: InputStream,
+        quality: ImageQuality = ImageQuality.SMALL
+    ): Bitmap?{
+        try {
+            val bufferedInputStream = BufferedInputStream(inputStream)
+
+            val compressed = BitmapFactory.Options().run {
+                bufferedInputStream.mark(bufferedInputStream.available())
+                inJustDecodeBounds = true
+                BitmapFactory.decodeStream(bufferedInputStream, null, this)
+
+                inSampleSize = calculateSampleSize(
+                    options = this,
+                    quality = quality
+                )
+
+                bufferedInputStream.reset()
+                inJustDecodeBounds = false
+                BitmapFactory.decodeStream(bufferedInputStream, null, this)
+            }
+            return compressed
+        } catch (ex: Exception){
+            ex.printStackTrace()
+            return null
+        }
+    }
+
+    fun getFileName(
+        context: Context,
+        uri: Uri
+    ): String {
         val contentResolver = context.contentResolver
 
         var result: String? = null
@@ -113,4 +160,26 @@ object ImageUtils {
         }
         return result
     }
+
+    fun calculateSampleSize(
+        options: BitmapFactory.Options,
+        quality: ImageQuality
+    ): Int {
+        // Raw height and width of image
+        val originalHeight = options.outHeight
+        val originalWidth = options.outWidth
+        var sampleSize = 1
+
+        var compressedHeight = originalHeight
+        var compressedWidth = originalWidth
+
+        while ((compressedHeight * compressedWidth) > quality.maxPixelDensity){
+            sampleSize += 1
+            compressedHeight /= 2
+            compressedWidth /= 2
+        }
+
+        return sampleSize
+    }
+
 }

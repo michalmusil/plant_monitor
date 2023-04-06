@@ -7,7 +7,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageUtils
 
 @Composable
 fun GalleryLauncherButton(
@@ -22,9 +23,10 @@ fun GalleryLauncherButton(
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.GetContent()) { imageUri ->
             imageUri?.let {
-                val bitmap = ImageUtils.getImageBitmapFromUri(
+                val bitmap = ImageUtils.getBitmapFromUri(
                     context = context,
-                    uriString = it.toString()
+                    uriString = it.toString(),
+                    quality = ImageQuality.SMALL
                 )
                 onImagePicked(it, bitmap)
             }

@@ -10,6 +10,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.utils.DateTimeFromApi
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
 import okhttp3.MultipartBody
 import java.util.*
 import kotlin.math.max
@@ -126,7 +127,7 @@ class PlantsRepositoryMock: IPlantsRepository {
         )
     }
 
-    override suspend fun getPlantImage(plantId: Long): CommunicationResult<Bitmap> {
+    override suspend fun getPlantImage(plantId: Long, imageQuality: ImageQuality): CommunicationResult<Bitmap> {
         return CommunicationResult.Error(
             error = CommunicationError(
                 code = 404,

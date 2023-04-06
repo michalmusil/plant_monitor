@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -16,9 +17,11 @@ import java.util.*
 
 @Composable
 fun MeasurementsDateFilter(
-    from: MutableState<Calendar>,
-    to: MutableState<Calendar>
+    viewModel: PlantDetailViewModel
 ){
+    val from = viewModel.from.collectAsState()
+    val to = viewModel.to.collectAsState()
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -38,7 +41,9 @@ fun MeasurementsDateFilter(
             DatePicker(
                 date = from.value,
                 onDatePicked = {
-                    from.value = it
+                    viewModel.filterMeasurementsByDate(
+                        fromFilter = it
+                    )
                 }
             )
         }
@@ -54,7 +59,9 @@ fun MeasurementsDateFilter(
             DatePicker(
                 date = to.value,
                 onDatePicked = {
-                    to.value = it
+                    viewModel.filterMeasurementsByDate(
+                        toFilter = it
+                    )
                 }
             )
         }

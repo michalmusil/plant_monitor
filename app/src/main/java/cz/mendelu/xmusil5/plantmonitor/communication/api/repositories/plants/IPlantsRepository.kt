@@ -5,6 +5,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
 import okhttp3.MultipartBody
 
 interface IPlantsRepository {
@@ -12,7 +13,7 @@ interface IPlantsRepository {
 
     suspend fun getPlantById(plantId: Long): CommunicationResult<GetPlant>
 
-    suspend fun getPlantImage(plantId: Long): CommunicationResult<Bitmap>
+    suspend fun getPlantImage(plantId: Long, imageQuality: ImageQuality = ImageQuality.SMALL): CommunicationResult<Bitmap>
 
     suspend fun uploadPlantImage(plantId: Long, imagePart: MultipartBody.Part): CommunicationResult<GetPlant>
 

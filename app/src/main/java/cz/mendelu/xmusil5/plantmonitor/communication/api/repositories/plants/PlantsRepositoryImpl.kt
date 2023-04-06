@@ -9,6 +9,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
 import okhttp3.MultipartBody
 import javax.inject.Inject
 
@@ -35,8 +36,8 @@ class PlantsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPlantImage(plantId: Long): CommunicationResult<Bitmap> {
-        return processImageRequest{
+    override suspend fun getPlantImage(plantId: Long, imageQuality: ImageQuality): CommunicationResult<Bitmap> {
+        return processImageRequest(resultBitmapQuality = imageQuality){
             api.getPlantImage(
                 plantId = plantId,
                 bearerToken = authenticationManager.getToken()

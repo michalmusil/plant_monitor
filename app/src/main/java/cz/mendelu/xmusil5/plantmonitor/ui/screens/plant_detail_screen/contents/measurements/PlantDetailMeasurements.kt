@@ -21,8 +21,6 @@ import java.util.*
 
 @Composable
 fun PlantDetailMeasurements(
-    from: MutableState<Calendar>,
-    to: MutableState<Calendar>,
     viewModel: PlantDetailViewModel
 ){
     val plant = viewModel.plant.collectAsState()
@@ -44,8 +42,7 @@ fun PlantDetailMeasurements(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             MeasurementsDateFilter(
-                from = from,
-                to = to
+                viewModel = viewModel
             )
 
             Spacer(modifier = Modifier.height(15.dp))

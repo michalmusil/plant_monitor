@@ -24,6 +24,8 @@ import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -39,12 +41,49 @@ class PlantDetailViewModel @Inject constructor(
 
     val uiState: MutableState<PlantDetailUiState> = mutableStateOf(PlantDetailUiState.Start())
 
+    val from: MutableStateFlow<Calendar> = MutableStateFlow(
+        DateUtils.getCalendarWithSubtractedElements(
+            original = DateUtils.getCurrentCalendarInUTC0(),
+            days = 10
+        )
+    )
+    val to: MutableStateFlow<Calendar> = MutableStateFlow(
+        DateUtils.getCurrentCalendarInUTC0()
+    )
+
     val plant: MutableStateFlow<GetPlant?> = MutableStateFlow(null)
     val plantNotes: MutableStateFlow<List<GetPlantNote>?> = MutableStateFlow(null)
     val mostRecentMeasurementValues: MutableStateFlow<List<LatestMeasurementValueOfPlant>?> = MutableStateFlow(null)
     val measurements: MutableStateFlow<List<GetMeasurement>?> = MutableStateFlow(null)
     val chartValueSets: MutableStateFlow<List<ChartValueSet>?> = MutableStateFlow(null)
 
+
+    fun filterMeasurementsByDate(
+        fromFilter: Calendar = this.from.value,
+        toFilter: Calendar = this.to.value
+    ){
+        if (fromFilter.timeInMillis != from.value.timeInMillis){
+            from.value = fromFilter
+        }
+        if (toFilter.timeInMillis != to.value.timeInMillis){
+            to.value = toFilter
+        }
+        plant.value?.let {
+            val fromInclusive = getInclusiveDate(
+                originalCalendar = fromFilter,
+                endInclusive = false
+            )
+            val toInclusive = getInclusiveDate(
+                originalCalendar = toFilter,
+                endInclusive = true
+            )
+            fetchPlantMeasurements(
+                plantId = it.id,
+                from = fromInclusive,
+                to = toInclusive
+            )
+        }
+    }
 
     fun fetchPlant(plantId: Long){
         viewModelScope.launch {
@@ -77,6 +116,11 @@ class PlantDetailViewModel @Inject constructor(
                 fetchPlantNotes(resultPlant.id)
 
                 uiState.value = PlantDetailUiState.PlantLoaded()
+                fetchPlantMeasurements(
+                    plantId = resultPlant.id,
+                    from = from.value,
+                    to = to.value
+                )
             }
         }
     }
@@ -99,7 +143,7 @@ class PlantDetailViewModel @Inject constructor(
         return null
     }
 
-    fun fetchPlantMeasurements(plantId: Long, from: Calendar, to: Calendar){
+    private fun fetchPlantMeasurements(plantId: Long, from: Calendar, to: Calendar){
         viewModelScope.launch {
             val result = measurementsRepository.getMeasurementsOfPlant(
                 plantId = plantId,

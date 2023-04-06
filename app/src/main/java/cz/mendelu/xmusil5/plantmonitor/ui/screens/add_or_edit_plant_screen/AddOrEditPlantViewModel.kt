@@ -12,14 +12,13 @@ import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.ApiConstants.HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimitInEdit
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
-import cz.mendelu.xmusil5.plantmonitor.utils.ImageUtils
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -45,6 +44,7 @@ class AddOrEditPlantViewModel @Inject constructor(
         measurementValueLimits: List<MeasurementValueLimitInEdit>?,
         plantImageUri: Uri?
     ){
+        uiState.value = AddOrEditPlantUiState.SavingChanges()
         val userId = authenticationManager.getUserId()
         val limitsToSave = measurementValueLimits?.filter {
             it.enabled
@@ -93,6 +93,8 @@ class AddOrEditPlantViewModel @Inject constructor(
         measurementValueLimits: List<MeasurementValueLimitInEdit>?,
         plantImageUri: Uri?
     ){
+        uiState.value = AddOrEditPlantUiState.SavingChanges()
+
         val plantId = existingPlant.id
         val limitsToSave = measurementValueLimits?.filter {
             it.enabled
