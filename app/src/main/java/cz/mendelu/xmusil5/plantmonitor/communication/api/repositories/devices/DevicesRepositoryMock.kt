@@ -14,28 +14,24 @@ class DevicesRepositoryMock: IDevicesRepository {
         val DEVICES = mutableListOf(
             GetDevice(
                 id = 1,
-                communicationId = "292fh92ufh923hfde",
                 active = true,
                 userId = AuthenticationManagerMock.MOCKED_USER_ID,
                 plantId = 1
             ),
             GetDevice(
                 id = 2,
-                communicationId = "hdh827y387123h8jnvaz",
                 active = false,
                 userId = AuthenticationManagerMock.MOCKED_USER_ID,
                 plantId = null
             ),
             GetDevice(
                 id = 3,
-                communicationId = "hdh827adfgiuh34921",
                 active = true,
                 userId = AuthenticationManagerMock.MOCKED_USER_ID,
                 plantId = 2
             ),
             GetDevice(
                 id = 4,
-                communicationId = "1wcbg5vjopfv34921",
                 active = false,
                 userId = AuthenticationManagerMock.MOCKED_USER_ID,
                 plantId = 3
@@ -65,7 +61,6 @@ class DevicesRepositoryMock: IDevicesRepository {
         val maxId = DEVICES.maxOf { it.id }
         val newDevice = GetDevice(
             id = maxId,
-            communicationId = deviceRegister.communicationId,
             active = true,
             userId = AuthenticationManagerMock.MOCKED_USER_ID,
             plantId = null
@@ -85,7 +80,6 @@ class DevicesRepositoryMock: IDevicesRepository {
         foundDevice?.let {
             val activatedDevice = GetDevice(
                 id = it.id,
-                communicationId = it.communicationId,
                 active = putDeviceActivation.isActive,
                 userId = it.userId,
                 plantId = it.plantId
@@ -105,7 +99,6 @@ class DevicesRepositoryMock: IDevicesRepository {
         foundDevice?.let {
             val assignedDevice = GetDevice(
                 id = it.id,
-                communicationId = it.communicationId,
                 active = it.active,
                 userId = it.userId,
                 plantId = devicePlantAssignment.plantId

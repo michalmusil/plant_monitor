@@ -73,7 +73,7 @@
     <string name="plantSpecies">Species</string>
     <string name="plantDescription">Description</string>
     <string name="saveNewPlant">Add new plant</string>
-    <string name="measurementValueLimits">Acceptable measurement values</string>
+    <string name="measurementValueLimits">Acceptable measurement value range</string>
 
     <string name="deletePlant">Delete plant</string>
     <string name="sureToDeletePlant">Are you sure you want to delete this plant? This action is irreversible.</string>
@@ -93,6 +93,7 @@
     <string name="charts">Charts</string>
 
     <string name="newNote">New note</string>
+    <string name="range">Range</string>
 
     <string name="currentMeasuringDevice">Current measuring device</string>
     <string name="measurementValues">Measurements</string>
@@ -100,6 +101,7 @@
 
     <!--  DEVICES SCREEN  -->
     <string name="devicesScreen">Devices</string>
+    <string name="measuringDevice">Device</string>
     <string name="addNewDevice">Add new measuring device</string>
 
     <string name="newDeviceIdentifier">Communication identifier</string>

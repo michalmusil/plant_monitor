@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -101,7 +102,7 @@ fun DeviceListItem(
                     Spacer(modifier = Modifier.width(2.dp))
 
                     Text(
-                        text = device.plant?.name ?: stringResource(id = R.string.noPlantAssigned),
+                        text = device.getDisplayName(context = LocalContext.current),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         maxLines = 2,
@@ -113,7 +114,7 @@ fun DeviceListItem(
                 Spacer(modifier = Modifier.height(5.dp))
                 
                 Text(
-                    text = device.communicationId,
+                    text = device.plant?.name ?: stringResource(id = R.string.noPlantAssigned),
                     style = MaterialTheme.typography.labelSmall,
                     textAlign = TextAlign.Center,
                     maxLines = 2,

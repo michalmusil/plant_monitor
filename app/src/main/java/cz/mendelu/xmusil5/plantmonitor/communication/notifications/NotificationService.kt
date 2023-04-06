@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -23,11 +24,15 @@ class NotificationService: FirebaseMessagingService() {
         super.onNewToken(token)
     }
 
+    override fun startService(service: Intent?): ComponentName? {
+        return super.startService(service)
+    }
+
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        val titleString = this.getString(R.string.plantNotFeelingWellTitle)
-        val messageEnding = this.getString(R.string.plantNotFeelingWellMessageEnd)
+        val titleString = resources.getString(R.string.plantNotFeelingWellTitle)
+        val messageEnding = resources.getString(R.string.plantNotFeelingWellMessageEnd)
         val messagePlantName = message.data[NotificationConstants.NOTIFICATION_PLANT_NAME_KEY]
         if(messagePlantName.isNullOrBlank()) {
             return

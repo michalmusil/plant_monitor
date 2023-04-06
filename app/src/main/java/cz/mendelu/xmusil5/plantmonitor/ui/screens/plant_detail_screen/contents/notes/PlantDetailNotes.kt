@@ -135,7 +135,7 @@ fun AddNewNoteField(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
-                .padding(horizontal = 5.dp)
+                .padding(horizontal = 5.dp, vertical = 2.dp)
                 .fillMaxWidth()
         ) {
             Box(

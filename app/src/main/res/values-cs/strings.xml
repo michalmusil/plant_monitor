@@ -75,6 +75,8 @@
     <string name="currentMeasuringDevice">Právě měřící zařízení</string>
     <string name="measurementValues">Měření</string>
     <string name="devicesScreen">Měřicí zařízení</string>
+    <string name="range">Rozsah</string>
+    <string name="measuringDevice">Zařízení</string>
     <string name="addNewDevice">Přidat nové měřicí zařízení</string>
     <string name="newDeviceIdentifier">Komunikační identifikátor</string>
     <string name="newDeviceMacAddress">MAC adresa</string>

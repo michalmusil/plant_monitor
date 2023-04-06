@@ -19,6 +19,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.DeviceCar
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MostRecentMeasurementValuesCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.DetailCard
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailViewModel
+import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.basic_info.PlantMeasurementLimits
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
@@ -61,6 +62,16 @@ fun PlantDetailBasicInfo(
                 )
             }
 
+            if (it.description != null && it.description.length > 0) {
+                DetailCard(
+                    titleText = stringResource(id = R.string.plantDescription),
+                    contentText = it.description,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 15.dp)
+                )
+            }
+
             mostRecentValues.value?.let { measurementValues ->
                 if (measurementValues.isNotEmpty()) {
                     MostRecentMeasurementValuesCard(
@@ -72,6 +83,14 @@ fun PlantDetailBasicInfo(
                             .padding(top = 15.dp)
                     )
                 }
+            }
+
+            plant.value?.valueLimits?.let {
+                PlantMeasurementLimits(
+                    limits = it,
+                    modifier = Modifier
+                        .padding(top = 15.dp)
+                )
             }
 
             it.associatedDevice?.let {
@@ -95,15 +114,8 @@ fun PlantDetailBasicInfo(
                         .background(MaterialTheme.colorScheme.surface)
                 )
             }
-            if (it.description != null && it.description.length > 0) {
-                DetailCard(
-                    titleText = stringResource(id = R.string.plantDescription),
-                    contentText = it.description,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 15.dp)
-                )
-            }
+
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

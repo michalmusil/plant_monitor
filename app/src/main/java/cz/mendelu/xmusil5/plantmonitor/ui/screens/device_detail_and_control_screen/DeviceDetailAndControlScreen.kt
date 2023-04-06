@@ -232,9 +232,11 @@ fun DeviceDetailAndControlScreenContent(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
+
                 Text(
-                    text = device.communicationId,
-                    style = MaterialTheme.typography.labelMedium,
+                    text = device.getDisplayName(context = LocalContext.current),
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onBackground
                 )

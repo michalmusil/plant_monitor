@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -76,7 +77,7 @@ fun DeviceCard(
                 Spacer(modifier = Modifier.height(5.dp))
 
                 Text(
-                    text = device.communicationId,
+                    text = device.getDisplayName(context = LocalContext.current),
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     maxLines = 2,

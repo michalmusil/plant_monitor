@@ -2,6 +2,10 @@ package cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -23,9 +27,15 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.DeviceListItem
+import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.LatestMeasurementValueListItem
+import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.MeasurementValueListItem
+import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
+import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import kotlin.math.roundToInt
 
@@ -78,103 +88,29 @@ fun MostRecentMeasurementValuesCard(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            mostRecentValues.forEach { measurementValue ->
-                LatestValueItem(
-                    measurementValue = measurementValue,
-                    measurementValidation = validatedTypeLimits.firstOrNull{
-                        it.first == measurementValue.measurementType
-                    }?.second ?: MeasurementLimitValidation.VALID
+            LazyHorizontalGrid(
+                rows = GridCells.Adaptive(150.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(330.dp)
+            ){
+                items(
+                    count = mostRecentValues.count(),
+                    key = {
+                        mostRecentValues[it].hashCode()
+                    },
+                    itemContent = { index ->
+                        LatestMeasurementValueListItem(
+                            measurementValue = mostRecentValues[index],
+                            measurementValidation = validatedTypeLimits.firstOrNull{
+                                it.first == mostRecentValues[index].measurementType
+                            }?.second ?: MeasurementLimitValidation.VALID
+                        )
+                    }
                 )
             }
-
             Spacer(modifier = Modifier.height(10.dp))
-        }
-    }
-}
-
-@Composable
-fun LatestValueItem(
-    measurementValue: LatestMeasurementValueOfPlant,
-    measurementValidation: MeasurementLimitValidation,
-    textColor: Color = MaterialTheme.colorScheme.onSurface
-){
-    val roundedValue = remember{
-        mutableStateOf((measurementValue.value * 10.0).roundToInt() / 10.0)
-    }
-
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .padding(vertical = 3.dp, horizontal = 10.dp)
-            .clip(CircleShape)
-            .fillMaxWidth()
-            .background(measurementValidation.color)
-            .padding(vertical = 10.dp, horizontal = 16.dp)
-    ){
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .weight(2.5f)
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = measurementValue.measurementType.iconId),
-                    contentDescription = stringResource(id = R.string.expand),
-                    tint = measurementValue.measurementType.color,
-                    modifier = Modifier
-                        .height(35.dp)
-                        .aspectRatio(1f)
-                )
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = stringResource(id = measurementValue.measurementType.nameId),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = textColor
-                    )
-                    Text(
-                        text = roundedValue.value.toString() + " ${measurementValue.measurementType.unit}",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = textColor
-                    )
-                }
-            }
-            
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-            ) {
-                measurementValue.datetime?.calendarInUTC0?.let {
-                    Text(
-                        text = DateUtils.getLocalizedDateTimeString(it),
-                        style = MaterialTheme.typography.labelSmall,
-                        textAlign = TextAlign.Center,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
-
-            Text(
-                text = stringResource(id = measurementValidation.nameId),
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                color = textColor,
-                modifier = Modifier
-                    .weight(1f)
-            )
-
-
         }
     }
 }
