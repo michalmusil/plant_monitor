@@ -42,15 +42,15 @@ fun CustomTextField(
     modifierTextField: Modifier = Modifier
 ){
     val localFocusManager = LocalFocusManager.current
-    val cornerRadius = UiConstants.RADIUS_CAPSULE_PERCENTAGE
+    val cornerRadius = UiConstants.RADIUS_LARGE
 
     Column(
         modifier = Modifier
             .padding(vertical = 10.dp)
             .fillMaxWidth()
-            .customShadowPercentage(
+            .customShadow(
                 color = shadowColor,
-                borderRadiusPercentage = cornerRadius,
+                borderRadius = cornerRadius,
                 spread = 0.dp,
                 blurRadius = 5.dp,
                 offsetY = 2.dp

@@ -31,16 +31,11 @@ class NotificationService: FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        val titleString = resources.getString(R.string.plantNotFeelingWellTitle)
-        val messageEnding = resources.getString(R.string.plantNotFeelingWellMessageEnd)
-        val messagePlantName = message.data[NotificationConstants.NOTIFICATION_PLANT_NAME_KEY]
-        if(messagePlantName.isNullOrBlank()) {
-            return
-        }
-        val messageString = "${messagePlantName} ${messageEnding}"
+        val titleString = message.notification!!.title!!
+        val messageString = message.notification!!.body!!
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationId = encodeNotificationId(messagePlantName)
+        val notificationId = encodeNotificationId(titleString)
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             createChannel(notificationManager)
