@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -34,6 +35,7 @@ fun CustomTextField(
     labelTitle: String,
     value: MutableState<String>,
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     isError: Boolean = false,
     errorMessage: String = "",
     onTextChanged: (String) -> Unit = {},
@@ -84,6 +86,7 @@ fun CustomTextField(
                     textColor = MaterialTheme.colorScheme.onSurface
                 ),
                 visualTransformation = visualTransformation,
+                keyboardOptions = keyboardOptions,
                 keyboardActions = KeyboardActions(
                     onDone = {
                         localFocusManager.clearFocus()

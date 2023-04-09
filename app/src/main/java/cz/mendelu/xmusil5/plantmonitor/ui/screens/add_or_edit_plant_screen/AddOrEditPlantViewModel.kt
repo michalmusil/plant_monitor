@@ -18,6 +18,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLi
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
 import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -154,7 +155,17 @@ class AddOrEditPlantViewModel @Inject constructor(
                 val imageName = ImageUtils.getFileName(context, imageUri)
                 val mediaType = contentResolver.getType(imageUri)?.toMediaTypeOrNull()
 
-                val imageInBytes = it.readBytes()
+                val downSampledImage = ImageUtils.getBitmapFromInputStream(
+                    inputStream = it,
+                    quality = ImageQuality.MEDIUM
+                )
+
+                if (downSampledImage == null){
+                    throw IllegalStateException()
+                }
+
+                val imageInBytes = ImageUtils.fromBitmapToByteArray(downSampledImage)
+
                 val request = imageInBytes.toRequestBody(mediaType, 0, imageInBytes.size)
                 val filePart = MultipartBody.Part.createFormData(
                     HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME,

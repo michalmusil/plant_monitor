@@ -27,7 +27,7 @@ fun MeasurementsLineChart(
     chartValues: ChartValueSet,
     selectedData: MutableState<Pair<String, DataPoint>?>,
     showSelected: MutableState<Boolean>,
-    height: Dp = 400.dp,
+    height: Dp = 300.dp,
     modifier: Modifier = Modifier
 ){
     val spaceAroundChart = remember {
@@ -73,7 +73,7 @@ fun MeasurementsLineChart(
                             strokeWidth = 2.dp,
                             pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 20f))
                         ),
-                        detectionTime = 50L
+                        detectionTime = 100L
                     ),
                     horizontalExtraSpace = spaceAroundChart.value,
                     xAxis = LinePlot.XAxis(

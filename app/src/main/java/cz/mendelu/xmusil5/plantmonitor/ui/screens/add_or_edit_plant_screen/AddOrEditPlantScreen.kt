@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
@@ -26,6 +27,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -373,6 +376,10 @@ fun AddOrEditPlantForm(
             value = name,
             maxChars = 50,
             isError = nameError.value,
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                imeAction = ImeAction.Next
+            ),
             errorMessage = stringResource(id = R.string.plantNameCantBeEmpty),
             onTextChanged = {
                 nameError.value = it.isBlank()
@@ -383,6 +390,10 @@ fun AddOrEditPlantForm(
             value = species,
             maxChars = 50,
             isError = speciesError.value,
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                imeAction = ImeAction.Next
+            ),
             errorMessage = stringResource(id = R.string.plantSpeciesCantBeEmpty),
             onTextChanged = {
                 speciesError.value = it.isBlank()
@@ -390,6 +401,9 @@ fun AddOrEditPlantForm(
         )
         CustomTextField(
             labelTitle = stringResource(id = R.string.plantDescription),
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Done
+            ),
             value = description,
             singleLine = false,
         )

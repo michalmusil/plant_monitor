@@ -17,11 +17,9 @@ abstract class BaseApiRepository(
     inline fun <T: Any> processRequest(request: () -> Response<T>): CommunicationResult<T> {
         try {
             val response = request.invoke()
-
             if (!isAuthorized(response)){
                 logOut()
             }
-
             if (response.isSuccessful) {
                 response.body()?.let {
                     return CommunicationResult.Success(it)

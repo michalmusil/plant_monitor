@@ -11,10 +11,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +25,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -256,6 +260,10 @@ fun NewDeviceDialog(
                     maxChars = 15,
                     singleLine = true,
                     isError = communicationIdentifierError.value,
+                    keyboardOptions = KeyboardOptions(
+                        autoCorrect = false,
+                        imeAction = ImeAction.Next
+                    ),
                     errorMessage = stringResource(id = R.string.communicationIdentifierNotInCorrectFormat),
                     onTextChanged = {
                         communicationIdentifierError.value = !viewModel.stringValidator.isCommunicationIdentifierValid(
@@ -271,6 +279,10 @@ fun NewDeviceDialog(
                     maxChars = 17,
                     singleLine = true,
                     isError = macAddressError.value,
+                    keyboardOptions = KeyboardOptions(
+                        autoCorrect = false,
+                        imeAction = ImeAction.Done
+                    ),
                     errorMessage = stringResource(id = R.string.macAddressNotInCorrectFormat),
                     onTextChanged = {
                         macAddressError.value = !viewModel.stringValidator.isMacAddressValid(
