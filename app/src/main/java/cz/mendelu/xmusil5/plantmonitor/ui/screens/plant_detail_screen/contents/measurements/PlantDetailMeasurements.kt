@@ -7,17 +7,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.MeasurementListItem
-import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItemExpandable
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoPlantMeasurements
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.MeasurementsDateFilter
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailViewModel
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
-import java.util.*
 
 @Composable
 fun PlantDetailMeasurements(
@@ -27,7 +24,7 @@ fun PlantDetailMeasurements(
     val measurements = viewModel.measurements.collectAsState()
 
     val measurementsToDisplay = remember{
-        mutableStateListOf<GetMeasurement>()
+        mutableStateListOf<Measurement>()
     }
     LaunchedEffect(measurements, measurements.value?.size){
         measurements.value?.let {

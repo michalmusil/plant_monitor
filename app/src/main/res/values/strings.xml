@@ -43,7 +43,7 @@
     <!--  LOGIN AND REGISTRATION SCREEN  -->
     <string name="loginScreen">Login</string>
 
-    <string name="email">Email</string>
+    <string name="email">E-mail</string>
     <string name="password">Password</string>
 
     <string name="login">Log in</string>
@@ -55,7 +55,7 @@
     <string name="alreadyHaveAnAccount">Already have an account?</string>
 
     <string name="invalidCredentials">Invalid credentials</string>
-    <string name="emailNotInCorrectFormat">Email not in correct format</string>
+    <string name="emailNotInCorrectFormat">E-mail not in correct format</string>
     <string name="passwordTooShort">Password is too short</string>
 
     <!--  PLANTS SCREEN  -->

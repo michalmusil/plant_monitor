@@ -1,32 +1,32 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plant_notes
 
-import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
+import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.GetPlantNote
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PostPlantNote
 import javax.inject.Inject
 
 class PlantNotesRepositoryImpl @Inject constructor(
-    authenticationManager: IAuthenticationManager,
+    userSessionManager: IUserSessionManager,
     private val api: HousePlantMeasurementsApi
-): BaseApiRepository(authenticationManager), IPlantNotesRepository {
+): BaseApiRepository(userSessionManager), IPlantNotesRepository {
 
-    override suspend fun getByPlantId(plantId: Long): CommunicationResult<List<GetPlantNote>> {
+    override suspend fun getByPlantId(plantId: Long): CommunicationResult<List<PlantNote>> {
         return processRequest {
             api.getNotesOfPlant(
                 plantId = plantId,
-                bearerToken = authenticationManager.getToken()
+                bearerToken = userSessionManager.getToken()
             )
         }
     }
 
-    override suspend fun addNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<GetPlantNote> {
+    override suspend fun addNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<PlantNote> {
         return processRequest {
             api.postNewPlantNote(
                 postPlantNote = postPlantNote,
-                bearerToken = authenticationManager.getToken()
+                bearerToken = userSessionManager.getToken()
             )
         }
     }
@@ -35,7 +35,7 @@ class PlantNotesRepositoryImpl @Inject constructor(
         return processRequest {
             api.deletePlantNote(
                 plantNoteId = plantNoteId,
-                bearerToken = authenticationManager.getToken()
+                bearerToken = userSessionManager.getToken()
             )
         }
     }

@@ -2,8 +2,6 @@ package cz.mendelu.xmusil5.plantmonitor.ui.components.list_items
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -13,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -23,18 +20,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.*
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
-import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
-import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import kotlin.math.roundToInt
 
 @Composable
 fun MeasurementListItem(
-    plant: GetPlant,
-    measurement: GetMeasurement,
+    plant: Plant,
+    measurement: Measurement,
     measurementValidator: IMeasurementsValidator? = null,
 ){
     val cornerRadius = UiConstants.RADIUS_MEDIUM

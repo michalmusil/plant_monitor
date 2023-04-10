@@ -4,23 +4,14 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
+import cz.mendelu.xmusil5.plantmonitor.models.api.user.User
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.SwitchCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
@@ -38,9 +29,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.SmallLoadingIndicator
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
-import cz.mendelu.xmusil5.plantmonitor.utils.LanguageUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
-import java.util.*
 
 @Composable
 fun ProfileScreen(
@@ -73,7 +62,7 @@ fun ProfileScreen(
 
 @Composable
 fun ProfileScreenContent(
-    user: GetUser,
+    user: User,
     viewModel: ProfileViewModel,
     navigation: INavigationRouter
 ){
@@ -118,7 +107,7 @@ fun ProfileScreenLoadingIndicator(
 
 @Composable
 fun UpperProfileScreenPart(
-    user: GetUser,
+    user: User,
     viewModel: ProfileViewModel,
 ){
     Box(
@@ -186,7 +175,7 @@ fun UpperProfileScreenPart(
 
 @Composable
 fun LowerProfileScreenPart(
-    user: GetUser,
+    user: User,
     viewModel: ProfileViewModel,
 ){
     val cornerRadius = UiConstants.RADIUS_LARGE
@@ -217,7 +206,7 @@ fun LowerProfileScreenPart(
 @Composable
 fun NotificationEnabledSwitch(
     viewModel: ProfileViewModel,
-    user: GetUser
+    user: User
 ){
     val cornerRadius = UiConstants.RADIUS_LARGE
 

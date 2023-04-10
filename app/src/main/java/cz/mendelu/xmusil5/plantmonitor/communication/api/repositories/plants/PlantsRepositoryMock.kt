@@ -1,27 +1,26 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants
 
 import android.graphics.Bitmap
-import cz.mendelu.xmusil5.plantmonitor.authentication.AuthenticationManagerMock
+import cz.mendelu.xmusil5.plantmonitor.user_session.UserSessionManagerMock
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationError
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.utils.DateTimeFromApi
 import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
 import okhttp3.MultipartBody
 import java.util.*
-import kotlin.math.max
 
 class PlantsRepositoryMock: IPlantsRepository {
 
     companion object{
         val PLANTS = listOf(
-            GetPlant(
+            Plant(
                 id = 1,
-                userId = AuthenticationManagerMock.MOCKED_USER_ID,
+                userId = UserSessionManagerMock.MOCKED_USER_ID,
                 name = "Aloe vera - living room",
                 species = "Succulent",
                 description = "Had this plant since 2018",
@@ -48,9 +47,9 @@ class PlantsRepositoryMock: IPlantsRepository {
                     )
                 )
             ),
-            GetPlant(
+            Plant(
                 id = 2,
-                userId = AuthenticationManagerMock.MOCKED_USER_ID,
+                userId = UserSessionManagerMock.MOCKED_USER_ID,
                 name = "Sempervivum - gray one",
                 species = "Succulent",
                 description = "Found it growing naturally in the garden",
@@ -72,9 +71,9 @@ class PlantsRepositoryMock: IPlantsRepository {
                     )
                 )
             ),
-            GetPlant(
+            Plant(
                 id = 3,
-                userId = AuthenticationManagerMock.MOCKED_USER_ID,
+                userId = UserSessionManagerMock.MOCKED_USER_ID,
                 name = "Yucca",
                 species = "Palm",
                 description = null,
@@ -91,9 +90,9 @@ class PlantsRepositoryMock: IPlantsRepository {
                     )
                 )
             ),
-            GetPlant(
+            Plant(
                 id = 4,
-                userId = AuthenticationManagerMock.MOCKED_USER_ID,
+                userId = UserSessionManagerMock.MOCKED_USER_ID,
                 name = "Rhipsalis",
                 species = "Succulent/cacti",
                 description = null,
@@ -108,11 +107,11 @@ class PlantsRepositoryMock: IPlantsRepository {
     }
 
 
-    override suspend fun getAllPlants(): CommunicationResult<List<GetPlant>> {
+    override suspend fun getAllPlants(): CommunicationResult<List<Plant>> {
         return CommunicationResult.Success(data = PLANTS)
     }
 
-    override suspend fun getPlantById(plantId: Long): CommunicationResult<GetPlant> {
+    override suspend fun getPlantById(plantId: Long): CommunicationResult<Plant> {
         val foundPlant = PLANTS.firstOrNull{
             it.id == plantId
         }
@@ -139,7 +138,7 @@ class PlantsRepositoryMock: IPlantsRepository {
     override suspend fun uploadPlantImage(
         plantId: Long,
         imagePart: MultipartBody.Part
-    ): CommunicationResult<GetPlant> {
+    ): CommunicationResult<Plant> {
         val plant = PLANTS.firstOrNull {
             it.id == plantId
         }
@@ -154,11 +153,11 @@ class PlantsRepositoryMock: IPlantsRepository {
         )
     }
 
-    override suspend fun postNewPlant(postPlant: PostPlant): CommunicationResult<GetPlant> {
+    override suspend fun postNewPlant(postPlant: PostPlant): CommunicationResult<Plant> {
         val maxId = PLANTS.maxOf { it.id }
-        val newPlant = GetPlant(
+        val newPlant = Plant(
             id = maxId + 1,
-            userId = AuthenticationManagerMock.MOCKED_USER_ID,
+            userId = UserSessionManagerMock.MOCKED_USER_ID,
             name = postPlant.name,
             species = postPlant.species,
             description = postPlant.description,
@@ -172,10 +171,10 @@ class PlantsRepositoryMock: IPlantsRepository {
         return CommunicationResult.Success(data = newPlant)
     }
 
-    override suspend fun updatePlant(putPlant: PutPlant): CommunicationResult<GetPlant> {
-        val updatedPlant = GetPlant(
+    override suspend fun updatePlant(putPlant: PutPlant): CommunicationResult<Plant> {
+        val updatedPlant = Plant(
             id = putPlant.id,
-            userId = AuthenticationManagerMock.MOCKED_USER_ID,
+            userId = UserSessionManagerMock.MOCKED_USER_ID,
             name = putPlant.name,
             species = putPlant.species,
             description = putPlant.description,

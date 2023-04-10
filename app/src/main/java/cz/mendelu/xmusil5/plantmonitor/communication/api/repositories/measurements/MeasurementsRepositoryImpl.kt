@@ -1,23 +1,21 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements
 
-import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
+import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import java.util.*
 import javax.inject.Inject
 
 class MeasurementsRepositoryImpl @Inject constructor(
-    authenticationManager: IAuthenticationManager,
+    userSessionManager: IUserSessionManager,
     private val api: HousePlantMeasurementsApi
-): BaseApiRepository(authenticationManager), IMeasurementsRepository {
+): BaseApiRepository(userSessionManager), IMeasurementsRepository {
 
-    override suspend fun getMeasurementsOfPlant(plantId: Long, from: Calendar?, to: Calendar?): CommunicationResult<List<GetMeasurement>> {
+    override suspend fun getMeasurementsOfPlant(plantId: Long, from: Calendar?, to: Calendar?): CommunicationResult<List<Measurement>> {
         val stringFrom = when(from){
             is Calendar -> DateUtils.apiDateStringFromCalendar(from)
             else -> {null}
@@ -32,7 +30,7 @@ class MeasurementsRepositoryImpl @Inject constructor(
                 plantId = plantId,
                 from = stringFrom,
                 to = stringTo,
-                bearerToken = authenticationManager.getToken()
+                bearerToken = userSessionManager.getToken()
             )
         }
     }
@@ -41,7 +39,7 @@ class MeasurementsRepositoryImpl @Inject constructor(
         return processRequest {
             api.getLatestPlantMeasurementValues(
                 plantId = plantId,
-                bearerToken = authenticationManager.getToken()
+                bearerToken = userSessionManager.getToken()
             )
         }
     }

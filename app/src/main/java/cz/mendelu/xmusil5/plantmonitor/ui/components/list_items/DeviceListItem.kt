@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.errorColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.onlineColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
@@ -31,7 +31,7 @@ import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 
 @Composable
 fun DeviceListItem(
-    device: GetDevice,
+    device: Device,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {

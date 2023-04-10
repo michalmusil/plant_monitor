@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
+import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.datastore.settings.ISettingsDataStore
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    val authenticationManager: IAuthenticationManager,
+    val userSessionManager: IUserSessionManager,
     val navigationRouter: INavigationRouter,
     private val settingsDataStore: ISettingsDataStore
 ): ViewModel() {

@@ -1,29 +1,25 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.profile_screen
 
-import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
+import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.IUserAuthRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.notifications.token_manager.INotificationTokenManager
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.datastore.settings.ISettingsDataStore
-import cz.mendelu.xmusil5.plantmonitor.datastore.user_login.IUserLoginDataStore
-import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
+import cz.mendelu.xmusil5.plantmonitor.models.api.user.User
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
-import cz.mendelu.xmusil5.plantmonitor.utils.LanguageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val authenticationManager: IAuthenticationManager,
+    private val userSessionManager: IUserSessionManager,
     private val userAuthRepository: IUserAuthRepository,
     private val notificationTokenManager: INotificationTokenManager,
     private val settingsDataStore: ISettingsDataStore
@@ -39,7 +35,7 @@ class ProfileViewModel @Inject constructor(
         subscribeToDarkModeChanges()
 
         viewModelScope.launch {
-            val user = authenticationManager.getUser()
+            val user = userSessionManager.getUser()
             if (user != null) {
                 uiState.value = ProfileUiState.UserLoaded(user)
                 loadNotificationsEnabledState(user = user)
@@ -50,7 +46,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private fun loadNotificationsEnabledState(user: GetUser){
+    private fun loadNotificationsEnabledState(user: User){
         isLoading.value = true
         viewModelScope.launch {
             val enabled = settingsDataStore.areNotificationsEnabled(user = user)
@@ -60,10 +56,10 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun logOut(){
-        authenticationManager.logOut()
+        userSessionManager.logOut()
     }
 
-    fun setNotificationsEnabled(enabled: Boolean, user: GetUser){
+    fun setNotificationsEnabled(enabled: Boolean, user: User){
         isLoading.value = true
         if (enabled){
             viewModelScope.launch {

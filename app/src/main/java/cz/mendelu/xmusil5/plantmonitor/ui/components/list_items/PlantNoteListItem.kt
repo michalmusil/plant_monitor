@@ -7,7 +7,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,15 +22,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.GetPlantNote
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PlantNote
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 
 @Composable
 fun PlantNoteListItem(
-    note: GetPlantNote,
+    note: PlantNote,
     backgroundColor: Color = MaterialTheme.colorScheme.surface,
-    onDelete: (GetPlantNote) -> Unit
+    onDelete: (PlantNote) -> Unit
 ){
     Box(
         contentAlignment = Alignment.Center,

@@ -4,12 +4,11 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.IDevicesRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceRegister
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.strings.IStringValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,8 +49,8 @@ class DevicesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun addPlantsToDevices(devicesWithoutPlants: List<GetDevice>): List<GetDevice>{
-        val devicesWithPlants = mutableListOf<GetDevice>()
+    private suspend fun addPlantsToDevices(devicesWithoutPlants: List<Device>): List<Device>{
+        val devicesWithPlants = mutableListOf<Device>()
 
         devicesWithoutPlants.forEach { device ->
             val deviceToAdd = device

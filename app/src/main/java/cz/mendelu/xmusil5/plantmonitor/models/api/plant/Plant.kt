@@ -3,14 +3,13 @@ package cz.mendelu.xmusil5.plantmonitor.models.api.plant
 import android.graphics.Bitmap
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.models.api.utils.DateTimeFromApi
 
 @JsonClass(generateAdapter = true)
-data class GetPlant(
+data class Plant(
     @Json(name = "id") val id: Long,
     @Json(name = "userId") val userId: Long?,
     @Json(name = "name") val name: String,
@@ -25,5 +24,5 @@ data class GetPlant(
 
     @Transient var mostRecentValues: List<LatestMeasurementValueOfPlant>? = null
 
-    @Transient var associatedDevice: GetDevice? = null
+    @Transient var associatedDevice: Device? = null
 }

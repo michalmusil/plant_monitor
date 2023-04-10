@@ -36,7 +36,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementV
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
@@ -48,7 +48,7 @@ import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasuremen
 
 @Composable
 fun PlantListItemExpandable(
-    plant: GetPlant,
+    plant: Plant,
     plantImage: MutableState<Bitmap?>,
     latestValues: MutableState<List<LatestMeasurementValueOfPlant>?>,
     expanded: MutableState<Boolean>,
@@ -234,7 +234,7 @@ fun PlantListItemExpandable(
 
 @Composable
 fun ExpandableLastPlantValues(
-    plant: GetPlant,
+    plant: Plant,
     measurementValues: List<LatestMeasurementValueOfPlant>,
     measurementValidator: IMeasurementsValidator? = null,
 ){

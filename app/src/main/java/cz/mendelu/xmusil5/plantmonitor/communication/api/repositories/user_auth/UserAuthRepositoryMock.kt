@@ -1,20 +1,20 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth
 
-import cz.mendelu.xmusil5.plantmonitor.authentication.AuthenticationManagerMock
+import cz.mendelu.xmusil5.plantmonitor.user_session.UserSessionManagerMock
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
+import cz.mendelu.xmusil5.plantmonitor.models.api.user.User
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.Role
 
 class UserAuthRepositoryMock: IUserAuthRepository {
 
-    override suspend fun login(postAuth: PostAuth): CommunicationResult<GetUser> {
-        val newUser = GetUser(
-            userId = AuthenticationManagerMock.MOCKED_USER_ID,
+    override suspend fun login(postAuth: PostAuth): CommunicationResult<User> {
+        val newUser = User(
+            userId = UserSessionManagerMock.MOCKED_USER_ID,
             email = postAuth.email,
             role = Role.USER,
-            token = AuthenticationManagerMock.MOCKED_USER_TOKEN
+            token = UserSessionManagerMock.MOCKED_USER_TOKEN
         )
         return CommunicationResult.Success(data = newUser)
     }

@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.ScreenSkeleton
-import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
+import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.add_or_edit_plant_screen.AddOrEditPlantScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.device_detail_and_control_screen.DeviceDetailAndControlScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.devices_screen.DevicesScreen
@@ -22,7 +22,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.screens.splash_screen.SplashScreen
 
 @Composable
 fun NavGraph(
-    authenticationManager: IAuthenticationManager,
+    userSessionManager: IUserSessionManager,
     navController: NavHostController = rememberNavController(),
     navigation: INavigationRouter,
     startDestination: String

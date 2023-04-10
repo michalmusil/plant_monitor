@@ -9,14 +9,10 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements.IMeasurementsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,7 +49,7 @@ class PlantsViewModel @Inject constructor(
         }
     }
 
-    fun fetchMostRecentValuesOfPlant(plant: GetPlant, onValuesFetched: (List<LatestMeasurementValueOfPlant>) -> Unit){
+    fun fetchMostRecentValuesOfPlant(plant: Plant, onValuesFetched: (List<LatestMeasurementValueOfPlant>) -> Unit){
         viewModelScope.launch {
             val result = measurementsRepository.getLatestPlantMeasurementValues(
                 plantId = plant.id,
@@ -68,7 +64,7 @@ class PlantsViewModel @Inject constructor(
     }
 
     fun fetchPlantImage(
-        plant: GetPlant,
+        plant: Plant,
         onSuccess: (Bitmap) -> Unit,
         onFailure: () -> Unit = {}
     ){

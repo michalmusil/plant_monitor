@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageUtils
@@ -28,7 +28,7 @@ import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
 
 @Composable
 fun PlantListItem(
-    plant: GetPlant,
+    plant: Plant,
     plantImage: MutableState<Bitmap?>,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,

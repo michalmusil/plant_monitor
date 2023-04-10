@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 import cz.mendelu.xmusil5.plantmonitor.models.api.utils.DateTimeFromApi
 
 @JsonClass(generateAdapter = true)
-data class GetMeasurement(
+data class Measurement(
     @Json(name = "id") val id: Long,
     @Json(name = "taken") val datetime: DateTimeFromApi?,
     @Json(name = "plantId") val plantId: Long,

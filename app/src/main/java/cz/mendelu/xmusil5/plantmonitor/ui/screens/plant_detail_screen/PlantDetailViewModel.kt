@@ -12,20 +12,18 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measuremen
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plant_notes.IPlantNotesRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.GetPlantNote
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PostPlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -51,10 +49,11 @@ class PlantDetailViewModel @Inject constructor(
         DateUtils.getCurrentCalendarInUTC0()
     )
 
-    val plant: MutableStateFlow<GetPlant?> = MutableStateFlow(null)
-    val plantNotes: MutableStateFlow<List<GetPlantNote>?> = MutableStateFlow(null)
+    val plant: MutableStateFlow<Plant?> = MutableStateFlow(null)
+    val plantImageLoadedSucessfully: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val plantNotes: MutableStateFlow<List<PlantNote>?> = MutableStateFlow(null)
     val mostRecentMeasurementValues: MutableStateFlow<List<LatestMeasurementValueOfPlant>?> = MutableStateFlow(null)
-    val measurements: MutableStateFlow<List<GetMeasurement>?> = MutableStateFlow(null)
+    val measurements: MutableStateFlow<List<Measurement>?> = MutableStateFlow(null)
     val chartValueSets: MutableStateFlow<List<ChartValueSet>?> = MutableStateFlow(null)
 
 
@@ -89,15 +88,12 @@ class PlantDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val plantCall = plantsRepository.getPlantById(plantId)
 
-            var resultPlant: GetPlant? = null
-            var resultDevice: GetDevice? = null
+            var resultPlant: Plant? = null
+            var resultDevice: Device? = null
 
             when(plantCall){
                 is CommunicationResult.Success -> {
                     resultPlant = plantCall.data
-                    if (resultPlant.hasTitleImage){
-                        resultPlant.titleImageBitmap = fetchPlantImage(resultPlant)
-                    }
                 }
                 is CommunicationResult.Error -> {
                     uiState.value = PlantDetailUiState.Error(R.string.somethingWentWrong)
@@ -121,19 +117,28 @@ class PlantDetailViewModel @Inject constructor(
                     from = from.value,
                     to = to.value
                 )
+                if (resultPlant.hasTitleImage){
+                    fetchPlantImage(resultPlant.id)
+                }
             }
         }
     }
 
-    private suspend fun fetchPlantImage(plant: GetPlant): Bitmap?{
-        val result = plantsRepository.getPlantImage(plantId = plant.id)
-        if (result is CommunicationResult.Success){
-            return result.data
+    private fun fetchPlantImage(plantId: Long) {
+        viewModelScope.launch {
+            val result = plantsRepository.getPlantImage(plantId = plantId)
+            if (result is CommunicationResult.Success){
+                plant.value?.let {
+                    plant.value = it.apply {
+                        titleImageBitmap = result.data
+                    }
+                    plantImageLoadedSucessfully.value = true
+                }
+            }
         }
-        return null
     }
 
-    private suspend fun fetchPlantDevice(plantId: Long): GetDevice?{
+    private suspend fun fetchPlantDevice(plantId: Long): Device?{
         val deviceCall = devicesRepository.getAllDevices()
         if (deviceCall is CommunicationResult.Success){
             return deviceCall.data.firstOrNull() {
@@ -265,7 +270,7 @@ class PlantDetailViewModel @Inject constructor(
         return inclusiveDate
     }
 
-    fun getAllChartValueSets(measurementsToFilter: List<GetMeasurement>): List<ChartValueSet>{
+    fun getAllChartValueSets(measurementsToFilter: List<Measurement>): List<ChartValueSet>{
         val chartValueSets = mutableListOf<ChartValueSet>()
         MeasurementType.getValidTypes().forEach {
             val set = getChartValueSetOfType(
@@ -279,7 +284,7 @@ class PlantDetailViewModel @Inject constructor(
 
     fun getChartValueSetOfType(
         measurementType: MeasurementType,
-        measurementsToFilter: List<GetMeasurement>
+        measurementsToFilter: List<Measurement>
     ): ChartValueSet{
         val dataPointsAndLabels: MutableList<Pair<DataPoint, String>> = mutableListOf()
 
@@ -310,13 +315,13 @@ class PlantDetailViewModel @Inject constructor(
         )
     }
 
-    fun getMeasurementsOrderedForDisplay(measurements: List<GetMeasurement>): List<GetMeasurement>{
+    fun getMeasurementsOrderedForDisplay(measurements: List<Measurement>): List<Measurement>{
         return measurements.sortedByDescending {
             it.datetime?.calendarInUTC0?.timeInMillis ?: it.id
         }
     }
 
-    fun getPlantNotesOrderedForDisplay(notes: List<GetPlantNote>): List<GetPlantNote>{
+    fun getPlantNotesOrderedForDisplay(notes: List<PlantNote>): List<PlantNote>{
         return notes.sortedByDescending {
             it.created?.calendarInUTC0?.timeInMillis ?: it.id
         }

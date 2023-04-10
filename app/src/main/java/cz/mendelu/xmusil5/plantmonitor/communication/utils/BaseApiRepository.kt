@@ -1,8 +1,7 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.utils
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
+import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.ApiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
 import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageUtils
@@ -11,9 +10,8 @@ import retrofit2.Response
 
 
 abstract class BaseApiRepository(
-    protected val authenticationManager: IAuthenticationManager
+    protected val userSessionManager: IUserSessionManager
 ) {
-
     inline fun <T: Any> processRequest(request: () -> Response<T>): CommunicationResult<T> {
         try {
             val response = request.invoke()
@@ -90,7 +88,7 @@ abstract class BaseApiRepository(
     }
 
     fun logOut(){
-        authenticationManager.logOut()
-        authenticationManager.setUser(null)
+        userSessionManager.logOut()
+        userSessionManager.setUser(null)
     }
 }

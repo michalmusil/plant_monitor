@@ -1,9 +1,9 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices
 
-import cz.mendelu.xmusil5.plantmonitor.authentication.AuthenticationManagerMock
+import cz.mendelu.xmusil5.plantmonitor.user_session.UserSessionManagerMock
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationError
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceRegister
@@ -12,39 +12,39 @@ class DevicesRepositoryMock: IDevicesRepository {
 
     companion object{
         val DEVICES = mutableListOf(
-            GetDevice(
+            Device(
                 id = 1,
                 active = true,
-                userId = AuthenticationManagerMock.MOCKED_USER_ID,
+                userId = UserSessionManagerMock.MOCKED_USER_ID,
                 plantId = 1
             ),
-            GetDevice(
+            Device(
                 id = 2,
                 active = false,
-                userId = AuthenticationManagerMock.MOCKED_USER_ID,
+                userId = UserSessionManagerMock.MOCKED_USER_ID,
                 plantId = null
             ),
-            GetDevice(
+            Device(
                 id = 3,
                 active = true,
-                userId = AuthenticationManagerMock.MOCKED_USER_ID,
+                userId = UserSessionManagerMock.MOCKED_USER_ID,
                 plantId = 2
             ),
-            GetDevice(
+            Device(
                 id = 4,
                 active = false,
-                userId = AuthenticationManagerMock.MOCKED_USER_ID,
+                userId = UserSessionManagerMock.MOCKED_USER_ID,
                 plantId = 3
             ),
 
         )
     }
 
-    override suspend fun getAllDevices(): CommunicationResult<List<GetDevice>> {
+    override suspend fun getAllDevices(): CommunicationResult<List<Device>> {
         return CommunicationResult.Success(data = DEVICES)
     }
 
-    override suspend fun getDeviceById(deviceId: Long): CommunicationResult<GetDevice> {
+    override suspend fun getDeviceById(deviceId: Long): CommunicationResult<Device> {
         val foundDevice = DEVICES.firstOrNull{ it.id == deviceId }
         foundDevice?.let {
             return CommunicationResult.Success(data = it)
@@ -57,12 +57,12 @@ class DevicesRepositoryMock: IDevicesRepository {
         )
     }
 
-    override suspend fun registerDevice(deviceRegister: PutDeviceRegister): CommunicationResult<GetDevice> {
+    override suspend fun registerDevice(deviceRegister: PutDeviceRegister): CommunicationResult<Device> {
         val maxId = DEVICES.maxOf { it.id }
-        val newDevice = GetDevice(
+        val newDevice = Device(
             id = maxId,
             active = true,
-            userId = AuthenticationManagerMock.MOCKED_USER_ID,
+            userId = UserSessionManagerMock.MOCKED_USER_ID,
             plantId = null
         )
         return CommunicationResult.Success(data = newDevice)
@@ -75,10 +75,10 @@ class DevicesRepositoryMock: IDevicesRepository {
         return CommunicationResult.Success(Unit)
     }
 
-    override suspend fun deviceActivation(putDeviceActivation: PutDeviceActivation): CommunicationResult<GetDevice> {
+    override suspend fun deviceActivation(putDeviceActivation: PutDeviceActivation): CommunicationResult<Device> {
         val foundDevice = DEVICES.firstOrNull{ it.id == putDeviceActivation.deviceId }
         foundDevice?.let {
-            val activatedDevice = GetDevice(
+            val activatedDevice = Device(
                 id = it.id,
                 active = putDeviceActivation.isActive,
                 userId = it.userId,
@@ -94,10 +94,10 @@ class DevicesRepositoryMock: IDevicesRepository {
         )
     }
 
-    override suspend fun assignDeviceToPlant(devicePlantAssignment: PutDevicePlantAssignment): CommunicationResult<GetDevice> {
+    override suspend fun assignDeviceToPlant(devicePlantAssignment: PutDevicePlantAssignment): CommunicationResult<Device> {
         val foundDevice = DEVICES.firstOrNull{ it.id == devicePlantAssignment.deviceId }
         foundDevice?.let {
-            val assignedDevice = GetDevice(
+            val assignedDevice = Device(
                 id = it.id,
                 active = it.active,
                 userId = it.userId,

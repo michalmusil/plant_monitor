@@ -12,8 +12,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.DeviceCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MostRecentMeasurementValuesCard

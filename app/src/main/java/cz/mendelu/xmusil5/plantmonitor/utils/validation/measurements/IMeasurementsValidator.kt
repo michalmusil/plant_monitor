@@ -1,13 +1,12 @@
 package cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements
 
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 
 interface IMeasurementsValidator {
-    fun isMeasurementValid(measurement: GetMeasurement, plant: GetPlant): MeasurementLimitValidation
+    fun isMeasurementValid(measurement: Measurement, plant: Plant): MeasurementLimitValidation
 
-    fun validateMeasurementValue(value: Double, type: MeasurementType, plant: GetPlant): MeasurementLimitValidation
+    fun validateMeasurementValue(value: Double, type: MeasurementType, plant: Plant): MeasurementLimitValidation
 }

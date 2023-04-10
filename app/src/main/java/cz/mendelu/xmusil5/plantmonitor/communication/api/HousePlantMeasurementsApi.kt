@@ -1,17 +1,17 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api
 
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceRegister
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.GetPlantNote
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PostPlantNote
-import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
+import cz.mendelu.xmusil5.plantmonitor.models.api.user.User
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
 import okhttp3.MultipartBody
@@ -25,7 +25,7 @@ interface HousePlantMeasurementsApi {
     @POST("auth/login")
     suspend fun login(
         @Body postAuth: PostAuth
-    ): Response<GetUser>
+    ): Response<User>
 
     @Headers("Content-Type: application/json")
     @POST("users/register")
@@ -56,28 +56,28 @@ interface HousePlantMeasurementsApi {
     suspend fun getAllPlants(
         @Path("id")userId: Long,
         @Header("Authorization") bearerToken: String
-    ): Response<List<GetPlant>>
+    ): Response<List<Plant>>
 
     @Headers("Content-Type: application/json")
     @GET("plants/{id}")
     suspend fun getPlantById(
         @Path("id")id: Long,
         @Header("Authorization") bearerToken: String
-    ): Response<GetPlant>
+    ): Response<Plant>
 
     @Headers("Content-Type: application/json")
     @POST("plants")
     suspend fun postNewPlant(
         @Body postPlant: PostPlant,
         @Header("Authorization") bearerToken: String
-    ): Response<GetPlant>
+    ): Response<Plant>
 
     @Headers("Content-Type: application/json")
     @PUT("plants")
     suspend fun updatePlant(
         @Body putPlant: PutPlant,
         @Header("Authorization") bearerToken: String
-    ): Response<GetPlant>
+    ): Response<Plant>
 
     @Headers("Content-Type: application/json")
     @DELETE("plants/{id}")
@@ -98,7 +98,7 @@ interface HousePlantMeasurementsApi {
         @Query("plantId") plantId: Long,
         @Part image: MultipartBody.Part,
         @Header("Authorization") bearerToken: String
-    ): Response<GetPlant>
+    ): Response<Plant>
 
 
 
@@ -110,21 +110,21 @@ interface HousePlantMeasurementsApi {
     suspend fun getAllDevices(
         @Path("id")userId: Long,
         @Header("Authorization") bearerToken: String
-    ): Response<List<GetDevice>>
+    ): Response<List<Device>>
 
     @Headers("Content-Type: application/json")
     @GET("devices/{id}")
     suspend fun getDeviceById(
         @Path("id")id: Long,
         @Header("Authorization") bearerToken: String
-    ): Response<GetDevice>
+    ): Response<Device>
 
     @Headers("Content-Type: application/json")
     @PUT("devices/register")
     suspend fun registerDevice(
         @Body putDeviceRegister: PutDeviceRegister,
         @Header("Authorization") bearerToken: String
-    ): Response<GetDevice>
+    ): Response<Device>
 
     @Headers("Content-Type: application/json")
     @PUT("devices/unregister/{id}")
@@ -138,14 +138,14 @@ interface HousePlantMeasurementsApi {
     suspend fun deviceActivation(
         @Body putDeviceActivation: PutDeviceActivation,
         @Header("Authorization") bearerToken: String
-    ): Response<GetDevice>
+    ): Response<Device>
 
     @Headers("Content-Type: application/json")
     @PUT("devices/assignToPlant")
     suspend fun devicePlantAssign(
         @Body putDevicePlantAssignment: PutDevicePlantAssignment,
         @Header("Authorization") bearerToken: String
-    ): Response<GetDevice>
+    ): Response<Device>
 
 
 
@@ -159,7 +159,7 @@ interface HousePlantMeasurementsApi {
         @Query("from")from: String?,
         @Query("to")to: String?,
         @Header("Authorization") bearerToken: String
-    ): Response<List<GetMeasurement>>
+    ): Response<List<Measurement>>
 
     @Headers("Content-Type: application/json")
     @GET("measurements/plant/latestValues/{id}")
@@ -178,14 +178,14 @@ interface HousePlantMeasurementsApi {
     suspend fun getNotesOfPlant(
         @Path("id")plantId: Long,
         @Header("Authorization") bearerToken: String
-    ): Response<List<GetPlantNote>>
+    ): Response<List<PlantNote>>
 
     @Headers("Content-Type: application/json")
     @POST("plants/notes")
     suspend fun postNewPlantNote(
         @Body postPlantNote: PostPlantNote,
         @Header("Authorization") bearerToken: String
-    ): Response<GetPlantNote>
+    ): Response<PlantNote>
 
     @Headers("Content-Type: application/json")
     @DELETE("plants/notes/{id}")

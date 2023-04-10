@@ -2,7 +2,6 @@ package cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -13,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.GetPlantNote
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PlantNote
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantNoteListItem
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoPlantNotes
@@ -35,7 +34,7 @@ fun PlantDetailNotes(
     val notes = viewModel.plantNotes.collectAsState()
 
     val notesToDisplay = remember{
-        mutableStateListOf<GetPlantNote>()
+        mutableStateListOf<PlantNote>()
     }
 
     val listState = rememberLazyListState()

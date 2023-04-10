@@ -1,20 +1,20 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth
 
-import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
+import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
+import cz.mendelu.xmusil5.plantmonitor.models.api.user.User
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
 import javax.inject.Inject
 
 class UserAuthRepositoryImpl @Inject constructor(
-    authenticationManager: IAuthenticationManager,
+    userSessionManager: IUserSessionManager,
     private val api: HousePlantMeasurementsApi
-): BaseApiRepository(authenticationManager), IUserAuthRepository {
+): BaseApiRepository(userSessionManager), IUserAuthRepository {
 
-    override suspend fun login(postAuth: PostAuth): CommunicationResult<GetUser> {
+    override suspend fun login(postAuth: PostAuth): CommunicationResult<User> {
         return processRequest{
             api.login(postAuth)
         }
@@ -30,7 +30,7 @@ class UserAuthRepositoryImpl @Inject constructor(
         return processRequest {
             api.updateNotificationToken(
                 putNotificationToken = putNotificationToken,
-                bearerToken = authenticationManager.getToken()
+                bearerToken = userSessionManager.getToken()
             )
         }
     }
@@ -38,8 +38,8 @@ class UserAuthRepositoryImpl @Inject constructor(
     override suspend fun checkCurrentSignedUserValid(): CommunicationResult<Unit> {
         return processRequest {
             api.getUserByIdResponse(
-                id = authenticationManager.getUserId(),
-                bearerToken = authenticationManager.getToken()
+                id = userSessionManager.getUserId(),
+                bearerToken = userSessionManager.getToken()
             )
         }
     }

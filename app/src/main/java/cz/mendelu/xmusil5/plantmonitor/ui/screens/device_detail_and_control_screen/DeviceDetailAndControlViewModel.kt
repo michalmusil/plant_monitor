@@ -11,7 +11,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPl
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,7 +50,7 @@ class DeviceDetailAndControlViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchDevicePlant(plantId: Long): GetPlant?{
+    private suspend fun fetchDevicePlant(plantId: Long): Plant?{
         val result = plantsRepository.getPlantById(plantId)
         if (result is CommunicationResult.Success){
             return result.data
@@ -58,7 +58,7 @@ class DeviceDetailAndControlViewModel @Inject constructor(
         return null
     }
 
-    fun fetchPlants(onSuccess: (List<GetPlant>) -> Unit){
+    fun fetchPlants(onSuccess: (List<Plant>) -> Unit){
         viewModelScope.launch {
             isLoading.value = true
             val result = plantsRepository.getAllPlants()
@@ -70,7 +70,7 @@ class DeviceDetailAndControlViewModel @Inject constructor(
     }
 
     fun fetchPlantImage(
-        plant: GetPlant,
+        plant: Plant,
         onSuccess: (Bitmap) -> Unit,
         onFailure: () -> Unit = {}
     ){

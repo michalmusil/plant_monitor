@@ -1,13 +1,11 @@
 package cz.mendelu.xmusil5.plantmonitor.datastore.settings
 
 import android.content.Context
-import cz.mendelu.xmusil5.plantmonitor.models.api.user.GetUser
-import cz.mendelu.xmusil5.plantmonitor.utils.LanguageUtils
+import cz.mendelu.xmusil5.plantmonitor.models.api.user.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import java.util.*
 
 class SettingsDataStoreMock(
     private val context: Context,
@@ -25,11 +23,11 @@ class SettingsDataStoreMock(
         }
     }
 
-    override suspend fun areNotificationsEnabled(user: GetUser): Boolean {
+    override suspend fun areNotificationsEnabled(user: User): Boolean {
         return notificationsEnabled
     }
 
-    override suspend fun setNotificationsEnabled(enabled: Boolean, user: GetUser) {
+    override suspend fun setNotificationsEnabled(enabled: Boolean, user: User) {
         notificationsEnabled = enabled
     }
 

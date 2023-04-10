@@ -2,46 +2,31 @@ package cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
-import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.DeviceListItem
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.LatestMeasurementValueListItem
-import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.MeasurementValueListItem
-import cz.mendelu.xmusil5.plantmonitor.ui.utils.Edges
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
-import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
-import cz.mendelu.xmusil5.plantmonitor.utils.fadeEdges
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
-import kotlin.math.roundToInt
 
 @Composable
 fun MostRecentMeasurementValuesCard(
-    plant: GetPlant,
+    plant: Plant,
     mostRecentValues: List<LatestMeasurementValueOfPlant>,
     measurementsValidator: IMeasurementsValidator,
     modifier: Modifier = Modifier

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItemExpandable
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
@@ -29,7 +29,7 @@ fun PlantsScreen(
     viewModel: PlantsViewModel = hiltViewModel()
 ){
     val plants = remember{
-        mutableStateListOf<GetPlant>()
+        mutableStateListOf<Plant>()
     }
 
     Box(
@@ -80,7 +80,7 @@ fun PlantsScreen(
 fun PlantsScreenContent(
     navigation: INavigationRouter,
     viewModel: PlantsViewModel,
-    plants: List<GetPlant>
+    plants: List<Plant>
 ){
     LazyColumn(
         contentPadding = PaddingValues(

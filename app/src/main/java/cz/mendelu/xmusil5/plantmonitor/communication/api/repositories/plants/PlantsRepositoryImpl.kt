@@ -1,12 +1,11 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants
 
 import android.graphics.Bitmap
-import android.net.Uri
-import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
+import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
 import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
@@ -14,24 +13,24 @@ import okhttp3.MultipartBody
 import javax.inject.Inject
 
 class PlantsRepositoryImpl @Inject constructor(
-    authenticationManager: IAuthenticationManager,
+    userSessionManager: IUserSessionManager,
     private val api: HousePlantMeasurementsApi
-): BaseApiRepository(authenticationManager), IPlantsRepository {
+): BaseApiRepository(userSessionManager), IPlantsRepository {
 
-    override suspend fun getAllPlants(): CommunicationResult<List<GetPlant>> {
+    override suspend fun getAllPlants(): CommunicationResult<List<Plant>> {
         return processRequest{
             api.getAllPlants(
-                userId = authenticationManager.getUserId(),
-                bearerToken = authenticationManager.getToken()
+                userId = userSessionManager.getUserId(),
+                bearerToken = userSessionManager.getToken()
             )
         }
     }
 
-    override suspend fun getPlantById(plantId: Long): CommunicationResult<GetPlant> {
+    override suspend fun getPlantById(plantId: Long): CommunicationResult<Plant> {
         return processRequest {
             api.getPlantById(
                 id = plantId,
-                bearerToken = authenticationManager.getToken()
+                bearerToken = userSessionManager.getToken()
             )
         }
     }
@@ -40,7 +39,7 @@ class PlantsRepositoryImpl @Inject constructor(
         return processImageRequest(resultBitmapQuality = imageQuality){
             api.getPlantImage(
                 plantId = plantId,
-                bearerToken = authenticationManager.getToken()
+                bearerToken = userSessionManager.getToken()
             )
         }
     }
@@ -48,30 +47,30 @@ class PlantsRepositoryImpl @Inject constructor(
     override suspend fun uploadPlantImage(
         plantId: Long,
         imagePart: MultipartBody.Part
-    ): CommunicationResult<GetPlant> {
+    ): CommunicationResult<Plant> {
        return processRequest {
            api.uploadPlantImage(
                plantId = plantId,
                image = imagePart,
-               bearerToken = authenticationManager.getToken()
+               bearerToken = userSessionManager.getToken()
            )
        }
     }
 
-    override suspend fun postNewPlant(postPlant: PostPlant): CommunicationResult<GetPlant> {
+    override suspend fun postNewPlant(postPlant: PostPlant): CommunicationResult<Plant> {
         return processRequest {
             api.postNewPlant(
                 postPlant = postPlant,
-                bearerToken = authenticationManager.getToken()
+                bearerToken = userSessionManager.getToken()
             )
         }
     }
 
-    override suspend fun updatePlant(putPlant: PutPlant): CommunicationResult<GetPlant> {
+    override suspend fun updatePlant(putPlant: PutPlant): CommunicationResult<Plant> {
         return processRequest {
             api.updatePlant(
                 putPlant = putPlant,
-                bearerToken = authenticationManager.getToken()
+                bearerToken = userSessionManager.getToken()
             )
         }
     }
@@ -80,7 +79,7 @@ class PlantsRepositoryImpl @Inject constructor(
         return processRequest {
             api.deletePlant(
                 id = plantId,
-                bearerToken = authenticationManager.getToken()
+                bearerToken = userSessionManager.getToken()
             )
         }
     }

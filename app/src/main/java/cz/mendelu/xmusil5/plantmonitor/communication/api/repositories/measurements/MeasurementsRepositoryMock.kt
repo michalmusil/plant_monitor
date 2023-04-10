@@ -1,7 +1,7 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements
 
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
@@ -12,7 +12,7 @@ class MeasurementsRepositoryMock: IMeasurementsRepository {
 
     companion object{
         val MEASUREMENTS = listOf(
-            GetMeasurement(
+            Measurement(
                 id = 1,
                 datetime = DateTimeFromApi(
                     originalString = "",
@@ -35,7 +35,7 @@ class MeasurementsRepositoryMock: IMeasurementsRepository {
                     ),
                 )
             ),
-            GetMeasurement(
+            Measurement(
                 id = 2,
                 datetime = DateTimeFromApi(
                     originalString = "",
@@ -58,7 +58,7 @@ class MeasurementsRepositoryMock: IMeasurementsRepository {
                     ),
                 )
             ),
-            GetMeasurement(
+            Measurement(
                 id = 3,
                 datetime = DateTimeFromApi(
                     originalString = "",
@@ -84,7 +84,7 @@ class MeasurementsRepositoryMock: IMeasurementsRepository {
         )
     }
 
-    override suspend fun getMeasurementsOfPlant(plantId: Long, from: Calendar?, to: Calendar?): CommunicationResult<List<GetMeasurement>> {
+    override suspend fun getMeasurementsOfPlant(plantId: Long, from: Calendar?, to: Calendar?): CommunicationResult<List<Measurement>> {
         val matchingMeasurements = MEASUREMENTS.filter {
             it.plantId == plantId
         }

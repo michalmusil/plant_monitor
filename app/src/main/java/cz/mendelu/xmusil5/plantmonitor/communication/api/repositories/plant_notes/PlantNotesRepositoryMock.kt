@@ -3,7 +3,7 @@ package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plant_not
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.PlantsRepositoryMock
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationError
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.GetPlantNote
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PostPlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.api.utils.DateTimeFromApi
 import java.util.*
@@ -11,7 +11,7 @@ import java.util.*
 class PlantNotesRepositoryMock: IPlantNotesRepository{
     companion object {
         val PLANT_NOTES = mutableListOf(
-            GetPlantNote(
+            PlantNote(
                 id = 1,
                 text = "Just planted. Will need more thorough watering for the first month",
                 plantId = 1,
@@ -20,7 +20,7 @@ class PlantNotesRepositoryMock: IPlantNotesRepository{
                     calendarInUTC0 = Calendar.getInstance()
                 ),
             ),
-            GetPlantNote(
+            PlantNote(
                 id = 2,
                 text = "Yellow spots started to show up after too much watering.",
                 plantId = 1,
@@ -29,7 +29,7 @@ class PlantNotesRepositoryMock: IPlantNotesRepository{
                     calendarInUTC0 = Calendar.getInstance()
                 ),
             ),
-            GetPlantNote(
+            PlantNote(
                 id = 3,
                 text = "Needs more attention because of the weak roots",
                 plantId = 1,
@@ -38,7 +38,7 @@ class PlantNotesRepositoryMock: IPlantNotesRepository{
                     calendarInUTC0 = Calendar.getInstance()
                 ),
             ),
-            GetPlantNote(
+            PlantNote(
                 id = 4,
                 text = "Repoted today.",
                 plantId = 3,
@@ -50,14 +50,14 @@ class PlantNotesRepositoryMock: IPlantNotesRepository{
         )
     }
 
-    override suspend fun getByPlantId(plantId: Long): CommunicationResult<List<GetPlantNote>> {
+    override suspend fun getByPlantId(plantId: Long): CommunicationResult<List<PlantNote>> {
         val matchingNotes =  PLANT_NOTES.filter {
             it.plantId == plantId
         }
         return CommunicationResult.Success(data = matchingNotes)
     }
 
-    override suspend fun addNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<GetPlantNote> {
+    override suspend fun addNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<PlantNote> {
         val existingPlant = PlantsRepositoryMock.PLANTS.firstOrNull { it.id == postPlantNote.plantId }
         existingPlant?.let {
             return CommunicationResult.Error(
@@ -67,7 +67,7 @@ class PlantNotesRepositoryMock: IPlantNotesRepository{
                 )
             )
         }
-        val newPlantNote = GetPlantNote(
+        val newPlantNote = PlantNote(
             id = (PLANT_NOTES.maxOf{ it.id } + 1),
             text = postPlantNote.text,
             plantId = postPlantNote.plantId,

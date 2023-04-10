@@ -15,14 +15,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
-import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
 import cz.mendelu.xmusil5.plantmonitor.navigation.Destination
-import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.navigation.NavGraph
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.PlantMonitorTheme
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity: ComponentActivity() {
@@ -57,7 +53,7 @@ class MainActivity: ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     NavGraph(
-                        authenticationManager = viewModel.authenticationManager,
+                        userSessionManager = viewModel.userSessionManager,
                         navigation = viewModel.navigationRouter,
                         startDestination = Destination.SplashScreen.route
                     )

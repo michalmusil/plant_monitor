@@ -1,6 +1,6 @@
 package cz.mendelu.xmusil5.plantmonitor.di
 
-import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
+import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.DevicesRepositoryImpl
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.IDevicesRepository
@@ -15,12 +15,8 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
-import dagger.hilt.android.scopes.ActivityScoped
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
@@ -29,45 +25,45 @@ class RepositoryModule {
     @ActivityRetainedScoped
     @Provides
     fun provideUserAuthRepository(
-        authenticationManager: IAuthenticationManager,
+        userSessionManager: IUserSessionManager,
         api: HousePlantMeasurementsApi
     ): IUserAuthRepository {
-        return UserAuthRepositoryImpl(authenticationManager, api)
+        return UserAuthRepositoryImpl(userSessionManager, api)
     }
 
     @ActivityRetainedScoped
     @Provides
     fun providePlantsRepository(
-        authenticationManager: IAuthenticationManager,
+        userSessionManager: IUserSessionManager,
         api: HousePlantMeasurementsApi
     ): IPlantsRepository {
-        return PlantsRepositoryImpl(authenticationManager, api)
+        return PlantsRepositoryImpl(userSessionManager, api)
     }
 
     @ActivityRetainedScoped
     @Provides
     fun provideMeasurementsRepository(
-        authenticationManager: IAuthenticationManager,
+        userSessionManager: IUserSessionManager,
         api: HousePlantMeasurementsApi
     ): IMeasurementsRepository {
-        return MeasurementsRepositoryImpl(authenticationManager, api)
+        return MeasurementsRepositoryImpl(userSessionManager, api)
     }
 
     @ActivityRetainedScoped
     @Provides
     fun providePlantNotesRepository(
-        authenticationManager: IAuthenticationManager,
+        userSessionManager: IUserSessionManager,
         api: HousePlantMeasurementsApi
     ): IPlantNotesRepository {
-        return PlantNotesRepositoryImpl(authenticationManager, api)
+        return PlantNotesRepositoryImpl(userSessionManager, api)
     }
 
     @ActivityRetainedScoped
     @Provides
     fun provideDevicesRepository(
-        authenticationManager: IAuthenticationManager,
+        userSessionManager: IUserSessionManager,
         api: HousePlantMeasurementsApi
     ): IDevicesRepository {
-        return DevicesRepositoryImpl(authenticationManager, api)
+        return DevicesRepositoryImpl(userSessionManager, api)
     }
 }

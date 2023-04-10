@@ -13,7 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,9 +34,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.TopBarWithBackButton
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.PlantDetailBasicInfo
@@ -46,9 +43,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.P
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.measurements.PlantDetailMeasurements
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.notes.PlantDetailNotes
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
-import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 @Composable
 fun PlantDetailScreen(
@@ -126,7 +121,7 @@ fun PlantDetailScreenContent(
                 }
             )
 
-            PlantDetailImage(plant = it)
+            PlantDetailImage(viewModel = viewModel)
 
             PlantDetailInfo(
                 viewModel = viewModel,
@@ -140,21 +135,26 @@ fun PlantDetailScreenContent(
 
 @Composable
 fun PlantDetailImage(
-    plant: GetPlant
+    viewModel: PlantDetailViewModel
 ){
+    val plant = viewModel.plant.collectAsState()
+    val imageLoaded = viewModel.plantImageLoadedSucessfully.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(350.dp)
     ) {
-        if (plant.titleImageBitmap != null) {
-            Image(
-                bitmap = plant.titleImageBitmap!!.asImageBitmap(),
-                contentDescription = plant.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-            )
+        if (imageLoaded.value) {
+            plant.value?.let {
+                Image(
+                    bitmap = it.titleImageBitmap!!.asImageBitmap(),
+                    contentDescription = it.name,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
         }
         else {
             Box(
@@ -165,7 +165,7 @@ fun PlantDetailImage(
             ){
                 Image(
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_plant_root),
-                    contentDescription = plant.name,
+                    contentDescription = plant.value?.name,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(100.dp)

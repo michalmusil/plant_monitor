@@ -8,14 +8,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.authentication.IAuthenticationManager
+import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.ApiConstants.HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimitInEdit
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
 import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
@@ -30,7 +30,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddOrEditPlantViewModel @Inject constructor(
-    private val authenticationManager: IAuthenticationManager,
+    private val userSessionManager: IUserSessionManager,
     private val plantsRepository: IPlantsRepository
 ): ViewModel() {
 
@@ -46,7 +46,7 @@ class AddOrEditPlantViewModel @Inject constructor(
         plantImageUri: Uri?
     ){
         uiState.value = AddOrEditPlantUiState.SavingChanges()
-        val userId = authenticationManager.getUserId()
+        val userId = userSessionManager.getUserId()
         val limitsToSave = measurementValueLimits?.filter {
             it.enabled
         }?.map {
@@ -87,7 +87,7 @@ class AddOrEditPlantViewModel @Inject constructor(
 
     fun updateExistingPlant(
         context: Context,
-        existingPlant: GetPlant,
+        existingPlant: Plant,
         name: String,
         species: String,
         description: String,
@@ -135,7 +135,7 @@ class AddOrEditPlantViewModel @Inject constructor(
         }
     }
 
-    fun deletePlant(plant: GetPlant){
+    fun deletePlant(plant: Plant){
         viewModelScope.launch {
             val result = plantsRepository.deletePlant(plantId = plant.id)
             if (result is CommunicationResult.Success){
@@ -206,7 +206,7 @@ class AddOrEditPlantViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchPlantImage(plant: GetPlant): Bitmap?{
+    private suspend fun fetchPlantImage(plant: Plant): Bitmap?{
         val result = plantsRepository.getPlantImage(plantId = plant.id)
         if (result is CommunicationResult.Success){
             return result.data

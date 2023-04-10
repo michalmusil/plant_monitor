@@ -35,7 +35,7 @@
     <string name="plantNotFeelingWellTitle">Rostilna se necítí dobře</string>
     <string name="plantNotFeelingWellMessageEnd">překročila přijatelné hranice měření.</string>
     <string name="loginScreen">Přihlášení</string>
-    <string name="email">Email</string>
+    <string name="email">E-mail</string>
     <string name="password">Heslo</string>
     <string name="login">Přihlásit se</string>
     <string name="goToLogin">Přejít na přihlášení</string>
@@ -44,7 +44,7 @@
     <string name="noAccountYet">Ještě nemáš účet?</string>
     <string name="alreadyHaveAnAccount">Už máš účet?</string>
     <string name="invalidCredentials">Neplatné údaje</string>
-    <string name="emailNotInCorrectFormat">Email není ve správném formátu</string>
+    <string name="emailNotInCorrectFormat">E-mail není ve správném formátu</string>
     <string name="passwordTooShort">Heslo je moc krátké</string>
     <string name="plantsScreen">Rostliny</string>
     <string name="latestValues">Poslední naměřené hodnoty</string>

@@ -1,17 +1,16 @@
 package cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements
 
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.GetMeasurement
+import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 
 class MeasurementsValidatorImpl: IMeasurementsValidator {
 
     // Percentage of deviation from original measurement, when the measurement will be judged as MINOR INVALID.
     val minorInvalidPercentage = 0.1
 
-    override fun isMeasurementValid(measurement: GetMeasurement, plant: GetPlant): MeasurementLimitValidation {
+    override fun isMeasurementValid(measurement: Measurement, plant: Plant): MeasurementLimitValidation {
         var result = MeasurementLimitValidation.VALID
         for (measurementValue in measurement.values) {
             validateMeasurementValue(
@@ -36,7 +35,7 @@ class MeasurementsValidatorImpl: IMeasurementsValidator {
     override fun validateMeasurementValue(
         value: Double,
         type: MeasurementType,
-        plant: GetPlant
+        plant: Plant
     ): MeasurementLimitValidation {
         val minorInvalidPercentage = 0.1
 

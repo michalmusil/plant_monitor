@@ -31,8 +31,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.TopBarWithBackButton
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.device.GetDevice
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.GetPlant
+import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
+import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.SwitchCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItem
@@ -54,7 +54,7 @@ fun DeviceDetailAndControlScreen(
     viewModel: DeviceDetailAndControlViewModel = hiltViewModel()
 ){
     val device = remember{
-        mutableStateOf<GetDevice?>(null)
+        mutableStateOf<Device?>(null)
     }
     val errorMessage = remember{
         mutableStateOf<String?>(null)
@@ -127,7 +127,7 @@ fun DeviceDetailAndControlScreen(
 
 @Composable
 fun DeviceDetailAndControlScreenContent(
-    device: GetDevice,
+    device: Device,
     errorMessage: String?,
     viewModel: DeviceDetailAndControlViewModel,
     navigation: INavigationRouter
@@ -257,7 +257,7 @@ fun DeviceDetailAndControlScreenContent(
 
 @Composable
 fun DeviceUnregisterDialog(
-    device: GetDevice,
+    device: Device,
     showDialog: MutableState<Boolean>,
     viewModel: DeviceDetailAndControlViewModel
 ){
@@ -298,7 +298,7 @@ fun DeviceDetailAndControlLoadingIndicator(
 
 @Composable
 fun DeviceDetailAndControlInfo(
-    device: GetDevice,
+    device: Device,
     viewModel: DeviceDetailAndControlViewModel,
     navigation: INavigationRouter
 ){
@@ -337,7 +337,7 @@ fun DeviceDetailAndControlInfo(
 
 @Composable
 fun DeviceActivationSwitch(
-    device: GetDevice,
+    device: Device,
     viewModel: DeviceDetailAndControlViewModel
 ){
     val cornerRadius = UiConstants.RADIUS_LARGE
@@ -403,7 +403,7 @@ fun DeviceActivationSwitch(
 
 @Composable
 fun CurrentlyAssignedPlantCard(
-    plant: GetPlant,
+    plant: Plant,
     viewModel: DeviceDetailAndControlViewModel,
     navigation: INavigationRouter
 ){
@@ -495,7 +495,7 @@ fun CurrentlyAssignedPlantCard(
 
 @Composable
 fun AssignNewPlantCard(
-    device: GetDevice,
+    device: Device,
     viewModel: DeviceDetailAndControlViewModel
 ){
     val cornerRadius = UiConstants.RADIUS_LARGE
@@ -534,11 +534,11 @@ fun AssignNewPlantCard(
 
 @Composable
 fun AssignablePlantsList(
-    device: GetDevice,
+    device: Device,
     viewModel: DeviceDetailAndControlViewModel
 ){
     val plantsToDisplay = remember {
-        mutableStateListOf<GetPlant>()
+        mutableStateListOf<Plant>()
     }
     LaunchedEffect(device){
         viewModel.fetchPlants {
