@@ -4,5 +4,5 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 
 sealed class AddOrEditPlantMode{
     class NewPlant(): AddOrEditPlantMode()
-    class EditPlant(val plant: Plant): AddOrEditPlantMode()
+    class EditPlant(): AddOrEditPlantMode()
 }

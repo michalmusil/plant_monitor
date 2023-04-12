@@ -13,14 +13,14 @@ import kotlinx.coroutines.launch
 
 class SettingsDataStoreImpl(
     private val context: Context,
-    private val coroutineScope: CoroutineScope? = CoroutineScope(Dispatchers.Default)
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ): ISettingsDataStore {
     companion object {
         private const val defaultNotificationsEnabled: Boolean = true
     }
     init {
-        coroutineScope?.launch {
-            darkModePreference.value = getDarkModePreference()
+        coroutineScope.launch {
+            darkModePreference?.value = getDarkModePreference()
         }
     }
 

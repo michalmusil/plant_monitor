@@ -20,6 +20,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PostPlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -126,7 +127,10 @@ class PlantDetailViewModel @Inject constructor(
 
     private fun fetchPlantImage(plantId: Long) {
         viewModelScope.launch {
-            val result = plantsRepository.getPlantImage(plantId = plantId)
+            val result = plantsRepository.getPlantImage(
+                plantId = plantId,
+                imageQuality = ImageQuality.LARGE
+            )
             if (result is CommunicationResult.Success){
                 plant.value?.let {
                     plant.value = it.apply {

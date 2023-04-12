@@ -13,7 +13,7 @@ interface IPlantsRepository {
 
     suspend fun getPlantById(plantId: Long): CommunicationResult<Plant>
 
-    suspend fun getPlantImage(plantId: Long, imageQuality: ImageQuality = ImageQuality.SMALL): CommunicationResult<Bitmap>
+    suspend fun getPlantImage(plantId: Long, imageQuality: ImageQuality): CommunicationResult<Bitmap>
 
     suspend fun uploadPlantImage(plantId: Long, imagePart: MultipartBody.Part): CommunicationResult<Plant>
 

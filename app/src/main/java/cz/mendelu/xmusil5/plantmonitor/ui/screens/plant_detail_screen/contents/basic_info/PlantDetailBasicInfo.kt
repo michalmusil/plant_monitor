@@ -84,11 +84,13 @@ fun PlantDetailBasicInfo(
             }
 
             plant.value?.valueLimits?.let {
-                PlantMeasurementLimits(
-                    limits = it,
-                    modifier = Modifier
-                        .padding(top = 15.dp)
-                )
+                if (it.isNotEmpty()) {
+                    PlantMeasurementLimits(
+                        limits = it,
+                        modifier = Modifier
+                            .padding(top = 15.dp)
+                    )
+                }
             }
 
             it.associatedDevice?.let {

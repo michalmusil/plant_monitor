@@ -5,15 +5,18 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.provider.OpenableColumns
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.net.toUri
+import androidx.core.net.toFile
 import java.io.BufferedInputStream
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.InputStream
 
 
@@ -52,16 +55,40 @@ object ImageUtils {
 
     fun getBitmapFromUri(
         context: Context,
-        uriString: String,
-        quality: ImageQuality = ImageQuality.SMALL
+        uri: Uri,
+        quality: ImageQuality = ImageQuality.MEDIUM
     ): Bitmap?{
-        val inputStream = context.contentResolver.openInputStream(uriString.toUri())
+        val inputStream = context.contentResolver.openInputStream(uri)
+
         inputStream?.let {
             val bitmap = getBitmapFromInputStream(
                 inputStream = inputStream,
                 quality = quality
             )
-            return bitmap
+            inputStream.close()
+            try {
+                val exifInputStream = context.contentResolver.openInputStream(uri)
+                val exif = ExifInterface(exifInputStream!!)
+                val photoOrientation: Int = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1)
+                exifInputStream.close()
+                val rotationDegrees: Float = when(photoOrientation){
+                    3 -> 180.0f
+                    4 -> 180.0f
+                    5 -> 90.0f
+                    6 -> 90.0f
+                    7 -> 270.0f
+                    8 -> 270.0f
+                    else -> 0.0f
+                }
+                val matrix = Matrix().apply {
+                    postRotate(rotationDegrees)
+                }
+                val bitmapRotated = Bitmap.createBitmap(bitmap!!, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+                return bitmapRotated
+            } catch (ex: java.lang.Exception){
+                return bitmap
+            }
         }
         return null
         /*
@@ -100,7 +127,7 @@ object ImageUtils {
 
     fun getBitmapFromInputStream(
         inputStream: InputStream,
-        quality: ImageQuality = ImageQuality.SMALL
+        quality: ImageQuality = ImageQuality.MEDIUM
     ): Bitmap?{
         try {
             val bufferedInputStream = BufferedInputStream(inputStream)
@@ -119,6 +146,7 @@ object ImageUtils {
                 inJustDecodeBounds = false
                 BitmapFactory.decodeStream(bufferedInputStream, null, this)
             }
+            bufferedInputStream.close()
             return compressed
         } catch (ex: Exception){
             ex.printStackTrace()

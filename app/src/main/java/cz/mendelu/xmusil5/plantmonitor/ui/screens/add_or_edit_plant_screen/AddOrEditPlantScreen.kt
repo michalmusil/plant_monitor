@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -35,6 +36,7 @@ import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.TopBarWithBackButton
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimitInEdit
+import cz.mendelu.xmusil5.plantmonitor.models.support.BitmapWithUri
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementValueLimitPicker
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
@@ -43,6 +45,8 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.GalleryLauncherButton
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddOrEditPlantScreen(
@@ -118,7 +122,6 @@ fun AddOrEditPlantScreenContent(
     error: MutableState<String?>
 ){
     val cornerRadius = UiConstants.RADIUS_LARGE
-    val context = LocalContext.current
 
     val name = rememberSaveable{
         mutableStateOf("")
@@ -129,13 +132,9 @@ fun AddOrEditPlantScreenContent(
     val description = rememberSaveable{
         mutableStateOf("")
     }
-    val measurementValueLimits = remember{
+    val measurementValueLimits = remember {
         mutableStateListOf<MeasurementValueLimitInEdit>()
     }
-    val selectedImage = remember {
-        mutableStateOf<Pair<Uri, Bitmap>?>(null)
-    }
-
     val nameError = rememberSaveable{
         mutableStateOf(false)
     }
@@ -146,30 +145,26 @@ fun AddOrEditPlantScreenContent(
         mutableStateOf(false)
     }
 
-    // When mode is edit, i fill all the plants info out
-    viewModel.mode.value.let {
-        if (it is AddOrEditPlantMode.EditPlant){
-            LaunchedEffect(it){
-                name.value = it.plant.name
-                species.value = it.plant.species
-                description.value = it.plant.description ?: ""
-                it.plant.titleImageBitmap?.let {
-                    selectedImage.value = Pair(Uri.EMPTY, it)
-                }
+
+    val existingPlant = viewModel.existingPlant.collectAsState()
+    LaunchedEffect(existingPlant.value){
+        if (existingPlant.value != null) {
+            // When mode is edit and i have an existing plant, i fill all the plants info out
+            existingPlant.value?.let {
+                name.value = it.name
+                species.value = it.species
+                description.value = it.description ?: ""
                 measurementValueLimits.clear()
                 measurementValueLimits.addAll(
-                    viewModel.getMeasurementValueLimitsForEditing(it.plant.valueLimits)
+                    viewModel.getMeasurementValueLimitsForEditing(it.valueLimits)
                 )
             }
-        }
-        else {
-            // will fill measurementValueLimits with default limits
-            LaunchedEffect(it){
-                measurementValueLimits.clear()
-                measurementValueLimits.addAll(
-                    viewModel.getMeasurementValueLimitsForEditing(listOf())
-                )
-            }
+        } else {
+            // If the mode is adding new plant, i will fill measurementValueLimits with default limits
+            measurementValueLimits.clear()
+            measurementValueLimits.addAll(
+                viewModel.getMeasurementValueLimitsForEditing(listOf())
+            )
         }
     }
 
@@ -216,7 +211,7 @@ fun AddOrEditPlantScreenContent(
             onConfirm = {
                 viewModel.mode.value.let {
                     if (it is AddOrEditPlantMode.EditPlant) {
-                        viewModel.deletePlant(it.plant)
+                        viewModel.deleteExistingPlant()
                     }
                 }
             },
@@ -226,7 +221,6 @@ fun AddOrEditPlantScreenContent(
         )
 
         NewPlantImage(
-            selectedImage = selectedImage,
             viewModel = viewModel
         )
 
@@ -266,7 +260,6 @@ fun AddOrEditPlantScreenContent(
                 name = name,
                 species = species,
                 description = description,
-                selectedImage = selectedImage,
                 measurementValueLimits = measurementValueLimits,
                 viewModel = viewModel
             )
@@ -276,9 +269,10 @@ fun AddOrEditPlantScreenContent(
 
 @Composable
 fun NewPlantImage(
-    selectedImage: MutableState<Pair<Uri, Bitmap>?>,
     viewModel: AddOrEditPlantViewModel
 ){
+    val selectedImage = viewModel.plantImage.collectAsState()
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -293,7 +287,7 @@ fun NewPlantImage(
                     .fillMaxSize()
             ) {
                 Image(
-                    bitmap = selectedImage.value!!.second.asImageBitmap(),
+                    bitmap = selectedImage.value!!.bitmap.asImageBitmap(),
                     contentDescription = stringResource(id = R.string.plantImage),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -304,7 +298,10 @@ fun NewPlantImage(
                     iconId = R.drawable.ic_change,
                     onImagePicked = { uri, bitmap ->
                         bitmap?.let {
-                            selectedImage.value = Pair(uri, it)
+                            viewModel.plantImage.value = BitmapWithUri(
+                                uri = uri,
+                                bitmap = bitmap
+                            )
                         }
                     },
                     modifier = Modifier
@@ -318,7 +315,10 @@ fun NewPlantImage(
                 iconId = R.drawable.ic_plus,
                 onImagePicked = { uri, bitmap ->
                     bitmap?.let {
-                        selectedImage.value = Pair(uri, it)
+                        viewModel.plantImage.value = BitmapWithUri(
+                            uri = uri,
+                            bitmap = bitmap
+                        )
                     }
                 },
             )
@@ -455,7 +455,6 @@ fun SavePlantButton(
     name: MutableState<String>,
     species: MutableState<String>,
     description: MutableState<String>,
-    selectedImage: MutableState<Pair<Uri, Bitmap>?>,
     measurementValueLimits: List<MeasurementValueLimitInEdit>,
     viewModel: AddOrEditPlantViewModel,
 ){
@@ -482,18 +481,15 @@ fun SavePlantButton(
                                 species = species.value,
                                 description = description.value,
                                 measurementValueLimits = if (measurementValueLimits.isNotEmpty()) measurementValueLimits else null,
-                                plantImageUri = selectedImage.value?.first
                             )
                         }
                         is AddOrEditPlantMode.EditPlant -> {
                             viewModel.updateExistingPlant(
                                 context = context,
-                                existingPlant = it.plant,
                                 name = name.value,
                                 species = species.value,
                                 description = description.value,
                                 measurementValueLimits = if (measurementValueLimits.isNotEmpty()) measurementValueLimits else null,
-                                plantImageUri = selectedImage.value?.first
                             )
                         }
                     }

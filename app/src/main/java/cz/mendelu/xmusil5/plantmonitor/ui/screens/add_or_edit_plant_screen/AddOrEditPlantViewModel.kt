@@ -1,7 +1,6 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.add_or_edit_plant_screen
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -18,10 +17,12 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLi
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
+import cz.mendelu.xmusil5.plantmonitor.models.support.BitmapWithUri
 import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
 import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -37,13 +38,15 @@ class AddOrEditPlantViewModel @Inject constructor(
     val uiState: MutableState<AddOrEditPlantUiState> = mutableStateOf(AddOrEditPlantUiState.Start())
     val mode: MutableState<AddOrEditPlantMode> = mutableStateOf(AddOrEditPlantMode.NewPlant())
 
+    val existingPlant: MutableStateFlow<Plant?> = MutableStateFlow(null)
+    val plantImage: MutableStateFlow<BitmapWithUri?> = MutableStateFlow(null)
+
     fun saveNewPlant(
         context: Context,
         name: String,
         species: String,
         description: String,
-        measurementValueLimits: List<MeasurementValueLimitInEdit>?,
-        plantImageUri: Uri?
+        measurementValueLimits: List<MeasurementValueLimitInEdit>?
     ){
         uiState.value = AddOrEditPlantUiState.SavingChanges()
         val userId = userSessionManager.getUserId()
@@ -64,16 +67,15 @@ class AddOrEditPlantViewModel @Inject constructor(
 
             when(result){
                 is CommunicationResult.Success -> {
-                    plantImageUri?.let {
+                    plantImage.value?.let {
                         async {
                             savePlantImage(
                                 context = context,
                                 plantId = result.data.id,
-                                imageUri = it
                             )
                         }.await()
                     }
-                    uiState.value = AddOrEditPlantUiState.PlantSaved(result.data)
+                    uiState.value = AddOrEditPlantUiState.PlantSaved()
                 }
                 is CommunicationResult.Exception -> {
                     uiState.value = AddOrEditPlantUiState.PlantPostFailed(R.string.couldNotSavePlant)
@@ -87,99 +89,99 @@ class AddOrEditPlantViewModel @Inject constructor(
 
     fun updateExistingPlant(
         context: Context,
-        existingPlant: Plant,
         name: String,
         species: String,
         description: String,
         measurementValueLimits: List<MeasurementValueLimitInEdit>?,
-        plantImageUri: Uri?
     ){
         uiState.value = AddOrEditPlantUiState.SavingChanges()
 
-        val plantId = existingPlant.id
-        val limitsToSave = measurementValueLimits?.filter {
-            it.enabled
-        }?.map {
-            it.limit
+        if (existingPlant.value == null){
+            uiState.value = AddOrEditPlantUiState.Error(R.string.somethingWentWrong)
         }
-        val updatedPlant = PutPlant(
-            id = plantId,
-            name = name,
-            species = species,
-            description = description,
-            measurementValueLimits = limitsToSave
-        )
-        viewModelScope.launch{
-            val result = plantsRepository.updatePlant(updatedPlant)
 
-            when(result){
-                is CommunicationResult.Success -> {
-                    if (plantImageUri != null && plantImageUri != Uri.EMPTY) {
-                        async {
-                            savePlantImage(
-                                context = context,
-                                plantId = result.data.id,
-                                imageUri = plantImageUri
-                            )
-                        }.await()
+        existingPlant.value?.let {
+            val plantId = it.id
+            val limitsToSave = measurementValueLimits?.filter {
+                it.enabled
+            }?.map {
+                it.limit
+            }
+            val updatedPlant = PutPlant(
+                id = plantId,
+                name = name,
+                species = species,
+                description = description,
+                measurementValueLimits = limitsToSave
+            )
+            viewModelScope.launch {
+                val result = plantsRepository.updatePlant(updatedPlant)
+
+                when (result) {
+                    is CommunicationResult.Success -> {
+                        if (plantImage.value != null) {
+                            async {
+                                savePlantImage(
+                                    context = context,
+                                    plantId = result.data.id,
+                                )
+                            }.await()
+                        }
+                        uiState.value = AddOrEditPlantUiState.PlantSaved()
                     }
-                    uiState.value = AddOrEditPlantUiState.PlantSaved(result.data)
-                }
-                is CommunicationResult.Exception -> {
-                    uiState.value = AddOrEditPlantUiState.PlantPostFailed(R.string.couldNotSavePlant)
-                }
-                is CommunicationResult.Error -> {
-                    uiState.value = AddOrEditPlantUiState.PlantPostFailed(R.string.couldNotSavePlant)
+                    is CommunicationResult.Exception -> {
+                        uiState.value =
+                            AddOrEditPlantUiState.PlantPostFailed(R.string.couldNotSavePlant)
+                    }
+                    is CommunicationResult.Error -> {
+                        uiState.value =
+                            AddOrEditPlantUiState.PlantPostFailed(R.string.couldNotSavePlant)
+                    }
                 }
             }
         }
     }
 
-    fun deletePlant(plant: Plant){
-        viewModelScope.launch {
-            val result = plantsRepository.deletePlant(plantId = plant.id)
-            if (result is CommunicationResult.Success){
-                uiState.value = AddOrEditPlantUiState.PlantDeleted()
-            }
-            else {
-                uiState.value = AddOrEditPlantUiState.PlantPostFailed(R.string.failedToDeletePlant)
+    fun deleteExistingPlant(){
+        existingPlant.value?.let {
+            viewModelScope.launch {
+                val result = plantsRepository.deletePlant(plantId = it.id)
+                if (result is CommunicationResult.Success){
+                    uiState.value = AddOrEditPlantUiState.PlantDeleted()
+                }
+                else {
+                    uiState.value = AddOrEditPlantUiState.PlantPostFailed(R.string.failedToDeletePlant)
+                }
             }
         }
     }
 
-    private suspend fun savePlantImage(context: Context, plantId: Long, imageUri: Uri){
+    private suspend fun savePlantImage(context: Context, plantId: Long){
         val contentResolver = context.contentResolver
         try {
-            val stream = contentResolver.openInputStream(imageUri)
-            stream?.let {
-                val imageName = ImageUtils.getFileName(context, imageUri)
-                val mediaType = contentResolver.getType(imageUri)?.toMediaTypeOrNull()
+            val plantImageCopy = plantImage.value
+            if (plantImageCopy?.uri != null) {
+                val stream = contentResolver.openInputStream(plantImageCopy.uri)
+                stream?.let {
+                    val imageName = ImageUtils.getFileName(context, plantImageCopy.uri)
+                    val mediaType = contentResolver.getType(plantImageCopy.uri)?.toMediaTypeOrNull()
+                    val bitmap = plantImageCopy.bitmap
+                    val imageInBytes = ImageUtils.fromBitmapToByteArray(bitmap)
 
-                val downSampledImage = ImageUtils.getBitmapFromInputStream(
-                    inputStream = it,
-                    quality = ImageQuality.MEDIUM
-                )
-
-                if (downSampledImage == null){
-                    throw IllegalStateException()
+                    val request = imageInBytes.toRequestBody(mediaType, 0, imageInBytes.size)
+                    val filePart = MultipartBody.Part.createFormData(
+                        HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME,
+                        imageName,
+                        request
+                    )
+                    plantsRepository.uploadPlantImage(
+                        plantId = plantId,
+                        imagePart = filePart
+                    )
                 }
-
-                val imageInBytes = ImageUtils.fromBitmapToByteArray(downSampledImage)
-
-                val request = imageInBytes.toRequestBody(mediaType, 0, imageInBytes.size)
-                val filePart = MultipartBody.Part.createFormData(
-                    HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME,
-                    imageName,
-                    request
-                )
-                plantsRepository.uploadPlantImage(
-                    plantId = plantId,
-                    imagePart = filePart
-                )
             }
-        }
-        catch (ex: java.lang.Exception){
-            ex.printStackTrace()
+        } catch(ex: java. lang . Exception){
+                ex.printStackTrace()
         }
     }
 
@@ -191,10 +193,12 @@ class AddOrEditPlantViewModel @Inject constructor(
                 is CommunicationResult.Success -> {
                     val resultPlant = plantCall.data
                     if (resultPlant.hasTitleImage){
-                        resultPlant.titleImageBitmap = fetchPlantImage(resultPlant)
+                        fetchPlantImage(resultPlant)
+                        resultPlant.titleImageBitmap = plantImage.value?.bitmap
                     }
-                    mode.value = AddOrEditPlantMode.EditPlant(plant = resultPlant)
-                    uiState.value = AddOrEditPlantUiState.PlantToEditLoaded(plant = resultPlant)
+                    existingPlant.value = resultPlant
+                    mode.value = AddOrEditPlantMode.EditPlant()
+                    uiState.value = AddOrEditPlantUiState.PlantToEditLoaded()
                 }
                 is CommunicationResult.Error -> {
                     uiState.value = AddOrEditPlantUiState.Error(R.string.somethingWentWrong)
@@ -206,12 +210,17 @@ class AddOrEditPlantViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchPlantImage(plant: Plant): Bitmap?{
-        val result = plantsRepository.getPlantImage(plantId = plant.id)
+    private suspend fun fetchPlantImage(plant: Plant){
+        val result = plantsRepository.getPlantImage(
+            plantId = plant.id,
+            imageQuality = ImageQuality.LARGE
+        )
         if (result is CommunicationResult.Success){
-            return result.data
+            plantImage.value = BitmapWithUri(
+                uri = null,
+                bitmap = result.data
+            )
         }
-        return null
     }
 
     fun getMeasurementValueLimitsForEditing(

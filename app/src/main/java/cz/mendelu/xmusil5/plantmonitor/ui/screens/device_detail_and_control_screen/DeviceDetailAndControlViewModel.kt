@@ -12,6 +12,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -79,7 +80,10 @@ class DeviceDetailAndControlViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            val response = plantsRepository.getPlantImage(plantId = plant.id)
+            val response = plantsRepository.getPlantImage(
+                plantId = plant.id,
+                imageQuality = ImageQuality.SMALL
+            )
             when(response){
                 is CommunicationResult.Success -> {
                     onSuccess(response.data)

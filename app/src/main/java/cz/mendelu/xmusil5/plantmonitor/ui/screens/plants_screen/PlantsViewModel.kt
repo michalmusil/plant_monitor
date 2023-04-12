@@ -11,6 +11,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPl
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
+import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements.IMeasurementsValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -73,7 +74,10 @@ class PlantsViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            val response = plantsRepository.getPlantImage(plantId = plant.id)
+            val response = plantsRepository.getPlantImage(
+                plantId = plant.id,
+                imageQuality = ImageQuality.SMALL
+            )
             when(response){
                 is CommunicationResult.Success -> {
                     onSuccess(response.data)

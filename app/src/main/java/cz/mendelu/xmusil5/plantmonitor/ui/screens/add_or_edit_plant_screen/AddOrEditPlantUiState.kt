@@ -4,9 +4,9 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 
 sealed class AddOrEditPlantUiState{
     class Start(): AddOrEditPlantUiState()
-    class PlantToEditLoaded(val plant: Plant): AddOrEditPlantUiState()
+    class PlantToEditLoaded(): AddOrEditPlantUiState()
     class SavingChanges(): AddOrEditPlantUiState()
-    class PlantSaved(val plant: Plant): AddOrEditPlantUiState()
+    class PlantSaved(): AddOrEditPlantUiState()
     class PlantPostFailed(val reasonStringCode: Int): AddOrEditPlantUiState()
     class PlantDeleted(): AddOrEditPlantUiState()
     class Error(val errorStringCode: Int): AddOrEditPlantUiState()

@@ -25,8 +25,7 @@ fun GalleryLauncherButton(
             imageUri?.let {
                 val bitmap = ImageUtils.getBitmapFromUri(
                     context = context,
-                    uriString = it.toString(),
-                    quality = ImageQuality.SMALL
+                    uri = it
                 )
                 onImagePicked(it, bitmap)
             }
