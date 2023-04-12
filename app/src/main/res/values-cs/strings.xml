@@ -57,6 +57,8 @@
     <string name="plantDescription">Popis</string>
     <string name="saveNewPlant">Přidat novou rostlinu</string>
     <string name="measurementValueLimits">Přijatelné hranice měření</string>
+    <string name="deletePlantNote">Odstranit poznámku</string>
+    <string name="sureToDeletePlantNote">Určitě chceš odstranit tuto poznámku? Tato akce je neodvolatelná.</string>
     <string name="deletePlant">Odstranit rostlinu</string>
     <string name="sureToDeletePlant">Určitě chceš odstranit tuto rostlinu? Tato akce je neodvolatelná.</string>
     <string name="addPlantImage">Přidat obrázek</string>

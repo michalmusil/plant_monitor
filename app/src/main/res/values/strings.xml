@@ -95,6 +95,8 @@
     <string name="newNote">New note</string>
     <string name="range">Range</string>
 
+    <string name="deletePlantNote">Detete plant note</string>
+    <string name="sureToDeletePlantNote">Are you sure you want to delete this note? This action is irreversible.</string>
     <string name="currentMeasuringDevice">Current measuring device</string>
     <string name="measurementValues">Measurements</string>
     <string name="noPlantNotesYet">You haven\'t added any notes to this plant yet</string>

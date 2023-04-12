@@ -1,6 +1,5 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen
 
-import android.graphics.Bitmap
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -56,6 +55,7 @@ class PlantDetailViewModel @Inject constructor(
     val measurements: MutableStateFlow<List<Measurement>?> = MutableStateFlow(null)
     val chartValueSets: MutableStateFlow<List<ChartValueSet>?> = MutableStateFlow(null)
 
+    val plantNoteToDelete: MutableState<PlantNote?> = mutableStateOf(null)
 
     fun filterMeasurementsByDate(
         fromFilter: Calendar = this.from.value,
@@ -219,20 +219,23 @@ class PlantDetailViewModel @Inject constructor(
         }
     }
 
-    fun deletePlantNote(noteId: Long){
-        viewModelScope.launch {
-            val result = plantNotesRepository.deletePlantNote(noteId)
-            when(result){
-                is CommunicationResult.Success -> {
-                    plant.value?.let {
-                        fetchPlantNotes(it.id)
+    fun deleteSelectedPlantNote(){
+        plantNoteToDelete.value?.let {
+            viewModelScope.launch {
+                val result = plantNotesRepository.deletePlantNote(it.id)
+                when(result){
+                    is CommunicationResult.Success -> {
+                        plantNoteToDelete.value = null
+                        plant.value?.let {
+                            fetchPlantNotes(it.id)
+                        }
                     }
-                }
-                is CommunicationResult.Error -> {
-                    uiState.value = PlantDetailUiState.Error(R.string.somethingWentWrong)
-                }
-                is CommunicationResult.Exception -> {
-                    uiState.value = PlantDetailUiState.Error(R.string.connectionError)
+                    is CommunicationResult.Error -> {
+                        uiState.value = PlantDetailUiState.Error(R.string.somethingWentWrong)
+                    }
+                    is CommunicationResult.Exception -> {
+                        uiState.value = PlantDetailUiState.Error(R.string.connectionError)
+                    }
                 }
             }
         }

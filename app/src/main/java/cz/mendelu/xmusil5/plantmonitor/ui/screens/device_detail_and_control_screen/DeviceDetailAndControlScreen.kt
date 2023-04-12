@@ -261,22 +261,20 @@ fun DeviceUnregisterDialog(
     showDialog: MutableState<Boolean>,
     viewModel: DeviceDetailAndControlViewModel
 ){
-    if(showDialog.value) {
-        PopupDialog(
-            showDialog = showDialog,
-            title = stringResource(id = R.string.unregisterDevice),
-            text = stringResource(id = R.string.sureToUnregisterDevice),
-            confirmButtonText = stringResource(id = R.string.yes),
-            cancelButtonText = stringResource(id = R.string.no),
-            onConfirm = {
-                viewModel.unregisterDevice(deviceId = device.id)
-                showDialog.value = false
-            },
-            onCancel = {
-                showDialog.value = false
-            }
-        )
-    }
+    PopupDialog(
+        showDialog = showDialog,
+        title = stringResource(id = R.string.unregisterDevice),
+        text = stringResource(id = R.string.sureToUnregisterDevice),
+        confirmButtonText = stringResource(id = R.string.yes),
+        cancelButtonText = stringResource(id = R.string.no),
+        onConfirm = {
+            viewModel.unregisterDevice(deviceId = device.id)
+            showDialog.value = false
+        },
+        onCancelOrDismiss = {
+            showDialog.value = false
+        }
+    )
 }
 
 @Composable

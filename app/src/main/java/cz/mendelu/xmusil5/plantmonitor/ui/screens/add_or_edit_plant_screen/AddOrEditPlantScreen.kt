@@ -28,7 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -208,25 +207,23 @@ fun AddOrEditPlantScreenContent(
             }
         )
 
-        if (showDeleteDialog.value) {
-            PopupDialog(
-                showDialog = showDeleteDialog,
-                title = stringResource(id = R.string.deletePlant),
-                text = stringResource(id = R.string.sureToDeletePlant),
-                confirmButtonText = stringResource(id = R.string.yes),
-                cancelButtonText = stringResource(id = R.string.no),
-                onConfirm = {
-                    viewModel.mode.value.let {
-                        if (it is AddOrEditPlantMode.EditPlant) {
-                            viewModel.deletePlant(it.plant)
-                        }
+        PopupDialog(
+            showDialog = showDeleteDialog,
+            title = stringResource(id = R.string.deletePlant),
+            text = stringResource(id = R.string.sureToDeletePlant),
+            confirmButtonText = stringResource(id = R.string.yes),
+            cancelButtonText = stringResource(id = R.string.no),
+            onConfirm = {
+                viewModel.mode.value.let {
+                    if (it is AddOrEditPlantMode.EditPlant) {
+                        viewModel.deletePlant(it.plant)
                     }
-                },
-                onCancel = {
-                    showDeleteDialog.value = false
                 }
-            )
-        }
+            },
+            onCancelOrDismiss = {
+                showDeleteDialog.value = false
+            }
+        )
 
         NewPlantImage(
             selectedImage = selectedImage,

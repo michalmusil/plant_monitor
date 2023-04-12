@@ -1,5 +1,9 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.notes
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -16,6 +20,7 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PlantNote
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantNoteListItem
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.NoPlantNotes
+import cz.mendelu.xmusil5.plantmonitor.ui.components.templates.PopupDialog
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailViewModel
@@ -35,6 +40,10 @@ fun PlantDetailNotes(
 
     val notesToDisplay = remember{
         mutableStateListOf<PlantNote>()
+    }
+
+    val showDeleteNoteDialog = rememberSaveable {
+        mutableStateOf(false)
     }
 
     val listState = rememberLazyListState()
@@ -72,6 +81,11 @@ fun PlantDetailNotes(
                 .weight(1f)
         )
 
+        DetelePlantNoteDialog(
+            showDialog = showDeleteNoteDialog,
+            viewModel = viewModel
+        )
+
         if (notesToDisplay.isEmpty()){
             NoPlantNotes(
                 modifier = Modifier
@@ -102,7 +116,8 @@ fun PlantDetailNotes(
                         PlantNoteListItem(
                             note = note,
                             onDelete = {
-                                viewModel.deletePlantNote(it.id)
+                                viewModel.plantNoteToDelete.value = it
+                                showDeleteNoteDialog.value = true
                             }
                         )
                     }
@@ -178,4 +193,24 @@ fun AddNewNoteField(
             }
         }
     }
+}
+
+@Composable
+fun DetelePlantNoteDialog(
+    showDialog: MutableState<Boolean>,
+    viewModel: PlantDetailViewModel
+) {
+    PopupDialog(
+        showDialog = showDialog,
+        title = stringResource(id = R.string.deletePlantNote),
+        text = stringResource(id = R.string.sureToDeletePlantNote),
+        confirmButtonText = stringResource(id = R.string.yes),
+        cancelButtonText = stringResource(id = R.string.no),
+        onConfirm = {
+            viewModel.deleteSelectedPlantNote()
+        },
+        onCancelOrDismiss = {
+            viewModel.plantNoteToDelete.value = null
+        }
+    )
 }
