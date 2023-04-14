@@ -41,9 +41,12 @@ import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementValueLimitPicker
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.templates.PopupDialog
+import cz.mendelu.xmusil5.plantmonitor.ui.components.tutorials.TutorialMeasurementLimits
+import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CircularIconButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.GalleryLauncherButton
+import cz.mendelu.xmusil5.plantmonitor.ui.tutorials.TutorialDeviceWifiConnect
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -366,7 +369,7 @@ fun AddOrEditPlantForm(
             )
         }
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
         CustomTextField(
             labelTitle = stringResource(id = R.string.plantName),
@@ -412,22 +415,36 @@ fun AddOrEditPlantForm(
 fun PlantValueLimitEditor(
     plantLimits: List<MeasurementValueLimitInEdit>,
 ){
+    val showLimitsTutorial = rememberSaveable{
+        mutableStateOf(false)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
     ){
-        Text(
-            text = stringResource(id = R.string.measurementValueLimits),
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(id = R.string.measurementValueLimits),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            MeasurementLimitsTutorial(
+                showTutorial = showLimitsTutorial
+            )
+        }
 
         Spacer(modifier = Modifier.height(10.dp))
-        
+
         plantLimits.forEach { measurementValueLimitForm ->
             val enabled = remember{
                 mutableStateOf(measurementValueLimitForm.enabled)
@@ -448,6 +465,24 @@ fun PlantValueLimitEditor(
             )
         }
     }
+}
+
+@Composable
+fun MeasurementLimitsTutorial(
+    showTutorial: MutableState<Boolean>
+){
+    CircularIconButton(
+        iconId = R.drawable.ic_questionmark,
+        size = 55.dp,
+        backgroundColor = MaterialTheme.colorScheme.secondary,
+        foregroundColor = MaterialTheme.colorScheme.onSecondary,
+        onClick = {
+            showTutorial.value = true
+        }
+    )
+    TutorialMeasurementLimits(
+        showTutorial = showTutorial
+    )
 }
 
 @Composable

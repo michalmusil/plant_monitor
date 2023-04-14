@@ -38,11 +38,13 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.SwitchCar
 import cz.mendelu.xmusil5.plantmonitor.ui.components.list_items.PlantListItem
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.components.templates.PopupDialog
+import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CircularIconButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.ExpandableCard
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.SmallLoadingIndicator
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.errorColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.onlineColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.shadowColor
+import cz.mendelu.xmusil5.plantmonitor.ui.tutorials.TutorialDeviceWifiConnect
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageUtils
 import cz.mendelu.xmusil5.plantmonitor.utils.customShadow
@@ -136,6 +138,10 @@ fun DeviceDetailAndControlScreenContent(
         mutableStateOf(false)
     }
 
+    val showDeviceWifiTutorial = rememberSaveable{
+        mutableStateOf(false)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -170,88 +176,60 @@ fun DeviceDetailAndControlScreenContent(
         )
 
         Box(
-            contentAlignment = Alignment.TopEnd,
+            contentAlignment = Alignment.TopStart,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                DeviceDetailAndControlIcon(device = device)
+            }
+            DeviceDetailAndControlWifiTutorial(showDeviceWifiTutorial)
+        }
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
+            errorMessage?.let {
+                Spacer(modifier = Modifier.height(10.dp))
                 Box(
-                    contentAlignment = Alignment.TopEnd,
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(180.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(10.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primary)
-                    ) {
-                        Image(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
-                            contentDescription = stringResource(id = R.string.deviceImage),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(23.dp)
-                        )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clip(CircleShape)
-                            .background(
-                                if (device.active) onlineColor else errorColor
-                            )
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = errorColor
                     )
                 }
-
-                errorMessage?.let {
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                    ) {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = errorColor
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-
-                Text(
-                    text = device.getDisplayName(context = LocalContext.current),
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                DeviceDetailAndControlInfo(
-                    device = device,
-                    viewModel = viewModel,
-                    navigation = navigation
-                )
             }
-
-            DeviceDetailAndControlLoadingIndicator(viewModel = viewModel)
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = device.getDisplayName(context = LocalContext.current),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            DeviceDetailAndControlInfo(
+                device = device,
+                viewModel = viewModel,
+                navigation = navigation
+            )
         }
+
+        DeviceDetailAndControlLoadingIndicator(viewModel = viewModel)
     }
 }
 
@@ -292,6 +270,61 @@ fun DeviceDetailAndControlLoadingIndicator(
     SmallLoadingIndicator(
         isShown = isShown
     )
+}
+
+@Composable
+fun DeviceDetailAndControlWifiTutorial(
+    showTutorial: MutableState<Boolean>
+){
+    CircularIconButton(
+        iconId = R.drawable.ic_questionmark,
+        size = 55.dp,
+        backgroundColor = MaterialTheme.colorScheme.secondary,
+        foregroundColor = MaterialTheme.colorScheme.onSecondary,
+        onClick = {
+            showTutorial.value = true
+        }
+    )
+    TutorialDeviceWifiConnect(
+        showTutorial = showTutorial
+    )
+}
+
+@Composable
+fun DeviceDetailAndControlIcon(
+    device: Device
+){
+    Box(
+        contentAlignment = Alignment.TopEnd,
+        modifier = Modifier
+            .size(180.dp)
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(10.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primary)
+        ) {
+            Image(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_measuring_device_filled),
+                contentDescription = stringResource(id = R.string.deviceImage),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(23.dp)
+            )
+        }
+        Box(
+            modifier = Modifier
+                .size(16.dp)
+                .clip(CircleShape)
+                .background(
+                    if (device.active) onlineColor else errorColor
+                )
+        )
+    }
 }
 
 @Composable

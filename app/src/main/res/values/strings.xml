@@ -151,4 +151,22 @@
     <string name="soilMoisture">Soil moisture</string>
 
 
+    <!--  DEVICE WIFI CONNECT TUTORIAL  -->
+    <string name="deviceWifiConnectTutorial">Connect to your local wifi</string>
+
+    <string name="deviceWifiConnect_intro">You have registered your device, but for first installation or when you move it around, you still have to connect it to your local Wifi, so that it can communicate measurements to us.</string>
+    <string name="deviceWifiConnect_timeWarning">After plugging your measuring device to power supply, you have 6 minutes time to finish following steps. If anything fails, you can repeat the whole process by plugging your device out and in again.</string>
+    <string name="deviceWifiConnect_firstStep">When device is plugged in, it starts a new Wifi network. The name of the network starts with \"PLANT_MONITOR_\" and last three characters of your device\'s communication identifier.</string>
+    <string name="deviceWifiConnect_secondStep">The password to the network IS your device\'s whole communication identifier. Connect to it using your phone or a computer.</string>
+    <string name="deviceWifiConnect_thirdStep">After connecting to the network, open your internet browser and input \"192.168.4.1\" into the search field.</string>
+    <string name="deviceWifiConnect_fourthStep">You will be taken to your measuring device configuration. Click on \"Configure WiFi\".</string>
+    <string name="deviceWifiConnect_fifthStep">From the listed nearby networks, select your home network that you want the measuring device to connect to, type in the password and click \"Save\"</string>
+    <string name="deviceWifiConnect_sixthStep">If you have done everything correctly, your device should now start to measure and transmit values to it\'s assigned plant every 30 minutes. The wifi credentials are saved and on next startup, the measuring device will remember to connect to your home network, so you don\'t have to repeat this process, unless you move the measuring device elsewhere.</string>
+
+    <!--  MEASUREMENT LIMITS TUTORIAL  -->
+    <string name="measurementLimitsTutorial">Acceptable measurement value range</string>
+
+    <string name="measurementLimitsTutorial_whatAreTheyFor">By setting acceptable measurement value range of a plant, you set a range of values, which the given characteristic (temperature, moisture..) is supposed to be at for the plant to stay healthy.</string>
+    <string name="measurementLimitsTutorial_whatHappensWhenExceed">When the range is exceeded during plant measurement, you will get a notification informing you of the fact. Displayed plant values will also have a red or orange coloring depending on how much they exceed the set limit.</string>
+
 </resources>

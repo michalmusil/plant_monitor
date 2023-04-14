@@ -30,8 +30,8 @@
     <string name="connectionError">Komunikace se serverem selhala</string>
     <string name="clickHereToAdd">Klikni zde pro přidání</string>
     <string name="couldNotLoadData">Nepodařilo se načíst data</string>
-    <string name="noPlantsYet">Nemáš zatím žádné rostliny</string>
-    <string name="noDevicesYet">Nemáš registrovaná žádná měřicí zařízení</string>
+    <string name="noPlantsYet">Nemáte zatím žádné rostliny</string>
+    <string name="noDevicesYet">Nemáte registrovaná žádná měřicí zařízení</string>
     <string name="plantNotFeelingWellTitle">Rostilna se necítí dobře</string>
     <string name="plantNotFeelingWellMessageEnd">překročila přijatelné hranice měření.</string>
     <string name="loginScreen">Přihlášení</string>
@@ -41,15 +41,15 @@
     <string name="goToLogin">Přejít na přihlášení</string>
     <string name="register">Registrovat</string>
     <string name="goToRegister">Přejít na registraci</string>
-    <string name="noAccountYet">Ještě nemáš účet?</string>
-    <string name="alreadyHaveAnAccount">Už máš účet?</string>
+    <string name="noAccountYet">Ještě nemáte účet?</string>
+    <string name="alreadyHaveAnAccount">Už máte účet?</string>
     <string name="invalidCredentials">Neplatné údaje</string>
     <string name="emailNotInCorrectFormat">E-mail není ve správném formátu</string>
     <string name="passwordTooShort">Heslo je moc krátké</string>
     <string name="plantsScreen">Rostliny</string>
     <string name="latestValues">Poslední naměřené hodnoty</string>
     <string name="noMeasurementsYet">Rostlina ještě nemá naměřené hodnoty</string>
-    <string name="noMeasurementsWithinRange">Rostlina nemá naměřené hodnoty ve zvoleném časovém rozsahu</string>
+    <string name="noMeasurementsWithinRange">Rostlina ve zvoleném časovém rozsahu nebyla měřena</string>
     <string name="addPlantScreen">Nová rostlina</string>
     <string name="editPlantScreen">Upravit rostlinu</string>
     <string name="plantName">Název</string>
@@ -58,9 +58,9 @@
     <string name="saveNewPlant">Přidat novou rostlinu</string>
     <string name="measurementValueLimits">Přijatelné hranice měření</string>
     <string name="deletePlantNote">Odstranit poznámku</string>
-    <string name="sureToDeletePlantNote">Určitě chceš odstranit tuto poznámku? Tato akce je neodvolatelná.</string>
+    <string name="sureToDeletePlantNote">Určitě chcete odstranit tuto poznámku? Tato akce je neodvolatelná.</string>
     <string name="deletePlant">Odstranit rostlinu</string>
-    <string name="sureToDeletePlant">Určitě chceš odstranit tuto rostlinu? Tato akce je neodvolatelná.</string>
+    <string name="sureToDeletePlant">Určitě chcete odstranit tuto rostlinu? Tato akce je neodvolatelná.</string>
     <string name="addPlantImage">Přidat obrázek</string>
     <string name="changePlantImage">Změnit obrázek</string>
     <string name="failedToDeletePlant">Rostlinu se nepodařilo odstranit</string>
@@ -70,7 +70,7 @@
     <string name="plantDetailScreen">Detail rostliny</string>
     <string name="basicInfo">Informace</string>
     <string name="notes">Poznámky</string>
-    <string name="noPlantNotesYet">K této rostlině ještě nemáš žádné poznámky</string>
+    <string name="noPlantNotesYet">K této rostlině ještě nemáte žádné poznámky</string>
     <string name="newNote">Nová poznámka</string>
     <string name="measurements">Měření</string>
     <string name="charts">Grafy</string>
@@ -90,7 +90,7 @@
     <string name="assignedToPlant">Právě přiřazeno k rostlině</string>
     <string name="assignToNewPlant">Přiřadit k jiné rostlině</string>
     <string name="unregisterDevice">Zrušit registraci měřicího zařízení</string>
-    <string name="sureToUnregisterDevice">Opravdu chceš zrušit registraci tohoto měřicího zařízení? Později si jej můžeš registrovat znovu.</string>
+    <string name="sureToUnregisterDevice">Opravdu chcete zrušit registraci tohoto měřicího zařízení? Později si jej můžete registrovat znovu</string>
     <string name="deviceUpdateFailed">Úprava zařízení se nezdařila</string>
     <string name="deviceIsActivePrimary">Zařízení je aktivní</string>
     <string name="deviceIsActiveSecondary">Všechny hodnoty naměřené tímto zařízením budou automaticky uloženy k přiřazené rostlině</string>
@@ -103,8 +103,8 @@
     <string name="logout">Odhlásit se</string>
     <string name="notificationsEnabledShort">Notifikace zapnuty</string>
     <string name="notificationsDisabledShort">Notifikace vypnuty</string>
-    <string name="notificationsEnabledLong">Když hodnota měření překročí nastavené akceptovatelné hranice, budeš notifikován.</string>
-    <string name="notificationsDisabledLong">Od této aplikace nebudeš dostávat žádné notifikace.</string>
+    <string name="notificationsEnabledLong">Když hodnota měření překročí nastavené akceptovatelné hranice, budete notifikován.</string>
+    <string name="notificationsDisabledLong">Od této aplikace nebudete dostávat žádné notifikace.</string>
     <string name="revertToSystemDefaults">Obnovit výchozí hodnotu</string>
     <string name="darkModeEnabled">Tmavý režim je zapnutý</string>
     <string name="darkModeDisabled">Tmavý režim je vypnutý</string>
@@ -112,4 +112,16 @@
     <string name="lightIntensity">Intenzita světla</string>
     <string name="soilMoisture">Vlhkost půdy</string>
     <string name="date">Datum</string>
+    <string name="deviceWifiConnectTutorial">Připojte měřicí zařízení k wifi</string>
+    <string name="deviceWifiConnect_intro">Zaregistrovali jste si zařízení, ale při první instalaci nebo při přenosu zařízení na jinou lokalitu jej ještě musíte připojit k vaší síti wifi, aby vám mohlo odesílat naměřené hodnoty.</string>
+    <string name="deviceWifiConnect_timeWarning">Po zapojení svého měřicího zařízení ke zdroji energie přes USB máte 6 minut na dokončení všech následujících kroků. Pokud kterýkoliv krok selže, můžete celý proces opakovat vypojením a opětovným zapojením měřicího zařízení.</string>
+    <string name="deviceWifiConnect_firstStep">Jakmile zařízení zapojíte, vytvoří ve svém okolí vlastní wifi síť. Název sítě začíná \"PLANT_MONITOR_\" a končí posledními třemi znaky komunikačního identifikátoru daného měřicího zařízení.</string>
+    <string name="deviceWifiConnect_secondStep">Heslo k vytvořené síti je celý komunikační identifikátor vašeho měřicího zařízení. Připojte se k vytvořené síti pomocí svého mobilu či počítače.</string>
+    <string name="deviceWifiConnect_thirdStep">Jakmile své mobilní zařízení či počítač k síti připojíte, otevřete internetový prohlížeč a do vyhledávacího okna zadejte \"192.168.4.1\".</string>
+    <string name="deviceWifiConnect_fourthStep">Prohlížeč vám zobrazí konfiguraci měřicího zařízení. Klikněte na \"Configure WiFi\".</string>
+    <string name="deviceWifiConnect_fifthStep">Z výčtu blizkých wifi sítí zvolte tu, ke které chcete připojit měřicí zařízení. Zadejte heslo pro zvolenou wifi síť a klikněte na \"Save\".</string>
+    <string name="deviceWifiConnect_sixthStep">Pokud jste údaje zadali správně, vaše měřicí zařízení nyní začne měřit a odesílat údaje každých 30 minut k rostlině, ke které je přiřezené. Měřicí zařízení zůstane k vaší wifi síti připojeno, takže celý tento proces již nemusíte opakovat ani po jeho vypnutí a opětovném zapnutí. Proces opakujte pouze pokud měřicí zařízení přesouváte na jinou wifi síť.</string>
+    <string name="measurementLimitsTutorial">Přijatelné hranice měření</string>
+    <string name="measurementLimitsTutorial_whatAreTheyFor">Když nastavíte přijatelné hranice měření, definujete rozsah hodnot, ve kterém by se jednotlivé charakteristiky (teplota, vlhkost půdy..) měly udržovat, aby rostlina zůstala zdravá.</string>
+    <string name="measurementLimitsTutorial_whatHappensWhenExceed">Pokud je rozsah překročen, dostanete notifikaci informující o špatném stavu rostliny. Překročené hodnoty budou podbarveny červeně či oranžově podle toho, jak moc nastavenou hranici překračují.</string>
 </resources>
