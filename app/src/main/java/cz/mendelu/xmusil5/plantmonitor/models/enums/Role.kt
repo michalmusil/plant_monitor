@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.models.api.user
+package cz.mendelu.xmusil5.plantmonitor.models.enums
 
 import cz.mendelu.xmusil5.plantmonitor.R
 

@@ -5,7 +5,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.User
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
-import cz.mendelu.xmusil5.plantmonitor.models.api.user.Role
+import cz.mendelu.xmusil5.plantmonitor.models.enums.Role
 
 class UserAuthRepositoryMock: IUserAuthRepository {
 

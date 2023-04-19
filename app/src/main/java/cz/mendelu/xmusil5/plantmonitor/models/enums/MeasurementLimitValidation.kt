@@ -1,4 +1,4 @@
-package cz.mendelu.xmusil5.plantmonitor.models.api.measurement
+package cz.mendelu.xmusil5.plantmonitor.models.enums
 
 import androidx.compose.ui.graphics.Color
 import cz.mendelu.xmusil5.plantmonitor.R

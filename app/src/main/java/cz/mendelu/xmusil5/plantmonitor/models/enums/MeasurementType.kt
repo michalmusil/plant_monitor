@@ -1,8 +1,7 @@
-package cz.mendelu.xmusil5.plantmonitor.models.api.measurement
+package cz.mendelu.xmusil5.plantmonitor.models.enums
 
 import androidx.compose.ui.graphics.Color
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.user.Role
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.disabledColor
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.lightIntensity
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.soilMoisture

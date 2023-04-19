@@ -1,8 +1,8 @@
 package cz.mendelu.xmusil5.plantmonitor.utils.validation.measurements
 
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementLimitValidation
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
+import cz.mendelu.xmusil5.plantmonitor.models.enums.MeasurementLimitValidation
+import cz.mendelu.xmusil5.plantmonitor.models.enums.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 
 interface IMeasurementsValidator {

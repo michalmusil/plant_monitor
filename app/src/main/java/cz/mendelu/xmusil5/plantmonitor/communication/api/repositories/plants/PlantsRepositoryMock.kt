@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import cz.mendelu.xmusil5.plantmonitor.user_session.UserSessionManagerMock
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationError
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
+import cz.mendelu.xmusil5.plantmonitor.models.enums.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant

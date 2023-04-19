@@ -26,7 +26,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.madrapps.plot.line.DataPoint
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
+import cz.mendelu.xmusil5.plantmonitor.models.enums.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementChartValuePopup
 import cz.mendelu.xmusil5.plantmonitor.ui.components.complex_reusables.MeasurementsLineChart
@@ -35,7 +35,6 @@ import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.Measuremen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.PlantDetailViewModel
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
 import kotlinx.coroutines.launch
-import java.util.*
 
 @Composable
 fun PlantDetailCharts(

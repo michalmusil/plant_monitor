@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.*
 import cz.mendelu.xmusil5.plantmonitor.datastore.DataStoreConstants
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.User
-import cz.mendelu.xmusil5.plantmonitor.models.api.user.Role
+import cz.mendelu.xmusil5.plantmonitor.models.enums.Role
 import cz.mendelu.xmusil5.plantmonitor.utils.userLoginDataStore
 import kotlinx.coroutines.flow.firstOrNull
 

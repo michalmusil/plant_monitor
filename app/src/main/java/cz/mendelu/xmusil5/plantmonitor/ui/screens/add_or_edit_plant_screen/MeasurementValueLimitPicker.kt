@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.ui.theme.disabledColor
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

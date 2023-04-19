@@ -1,8 +1,6 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.jsonAdapters.utils
 
 import com.squareup.moshi.*
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
-import cz.mendelu.xmusil5.plantmonitor.models.api.user.Role
 import cz.mendelu.xmusil5.plantmonitor.models.api.utils.DateTimeFromApi
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
 

@@ -34,7 +34,6 @@ import com.google.accompanist.pager.rememberPagerState
 import com.icontio.senscare_peresonal_mobile.ui.components.screens.LoadingScreen
 import com.icontio.senscare_peresonal_mobile.ui.components.templates.TopBarWithBackButton
 import cz.mendelu.xmusil5.plantmonitor.R
-import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import cz.mendelu.xmusil5.plantmonitor.ui.components.screens.ErrorScreen
 import cz.mendelu.xmusil5.plantmonitor.ui.screens.plant_detail_screen.contents.PlantDetailBasicInfo

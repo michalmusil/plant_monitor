@@ -4,7 +4,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Colors
 import androidx.compose.material.Text
-import androidx.compose.material.Typography
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,9 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.madrapps.plot.line.DataPoint
 import com.madrapps.plot.line.LineGraph
 import com.madrapps.plot.line.LinePlot
-import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.charts.ChartValueSet
-import cz.mendelu.xmusil5.plantmonitor.ui.theme.primary
 
 @Composable
 fun MeasurementsLineChart(

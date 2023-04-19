@@ -1,7 +1,7 @@
 package cz.mendelu.xmusil5.plantmonitor.user_session
 
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.User
-import cz.mendelu.xmusil5.plantmonitor.models.api.user.Role
+import cz.mendelu.xmusil5.plantmonitor.models.enums.Role
 import cz.mendelu.xmusil5.plantmonitor.navigation.INavigationRouter
 import javax.inject.Inject
 
