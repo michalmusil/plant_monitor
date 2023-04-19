@@ -2,14 +2,12 @@ package cz.mendelu.xmusil5.plantmonitor.ui.screens.add_or_edit_plant_screen
 
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.stopScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -125,6 +123,7 @@ fun AddOrEditPlantScreenContent(
     error: MutableState<String?>
 ){
     val cornerRadius = UiConstants.RADIUS_LARGE
+    val scrollState = rememberScrollState()
 
     val name = rememberSaveable{
         mutableStateOf("")
@@ -175,7 +174,7 @@ fun AddOrEditPlantScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
     ) {
 
         TopBarWithBackButton(
@@ -254,7 +253,8 @@ fun AddOrEditPlantScreenContent(
             )
 
             PlantValueLimitEditor(
-                plantLimits = measurementValueLimits
+                plantLimits = measurementValueLimits,
+                scrollState = scrollState
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -414,6 +414,7 @@ fun AddOrEditPlantForm(
 @Composable
 fun PlantValueLimitEditor(
     plantLimits: List<MeasurementValueLimitInEdit>,
+    scrollState: ScrollState
 ){
     val showLimitsTutorial = rememberSaveable{
         mutableStateOf(false)
@@ -462,6 +463,7 @@ fun PlantValueLimitEditor(
                     measurementValueLimitForm.enabled = it
                 },
                 title = stringResource(id = measurementValueLimitForm.limit.type.nameId),
+                parentScrollState = scrollState
             )
         }
     }
