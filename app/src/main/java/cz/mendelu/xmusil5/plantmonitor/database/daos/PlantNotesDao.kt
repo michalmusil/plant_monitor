@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PlantNotesDao {
     @Query("SELECT * FROM PlantNotes WHERE plantId = :plantId")
-    fun getByPlantId(plantId: Long): Flow<List<DbPlantNote>>
+    suspend fun getByPlantId(plantId: Long): List<DbPlantNote>
 
     @Insert
     suspend fun insert(plantNote: DbPlantNote): Long

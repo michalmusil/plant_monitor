@@ -5,9 +5,9 @@ import cz.mendelu.xmusil5.plantmonitor.models.database.entities.DbPlant
 import kotlinx.coroutines.flow.Flow
 
 interface IDbPlantsRepository {
-    suspend fun getAllPlants(): CommunicationResult<Flow<List<DbPlant>>>
+    suspend fun getAllPlants(): CommunicationResult<List<DbPlant>>
 
-    suspend fun getPlantById(plantId: Long): CommunicationResult<Flow<DbPlant?>>
+    suspend fun getPlantById(plantId: Long): CommunicationResult<DbPlant>
 
     suspend fun addPlant(plant: DbPlant): CommunicationResult<DbPlant>
 

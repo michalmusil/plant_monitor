@@ -1,33 +1,33 @@
-package cz.mendelu.xmusil5.plantmonitor.database.repositories.plants
+package cz.mendelu.xmusil5.plantmonitor.database.repositories.users
 
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
-import cz.mendelu.xmusil5.plantmonitor.database.daos.PlantsDao
+import cz.mendelu.xmusil5.plantmonitor.database.daos.UsersDao
 import cz.mendelu.xmusil5.plantmonitor.database.repositories.BaseDbRepository
-import cz.mendelu.xmusil5.plantmonitor.models.database.entities.DbPlant
+import cz.mendelu.xmusil5.plantmonitor.models.database.entities.DbUser
 import kotlinx.coroutines.flow.Flow
 
-class DbPlantsRepositoryImpl(
-    private val plantsDao: PlantsDao
-    ): BaseDbRepository(), IDbPlantsRepository {
-    override suspend fun getAllPlants(): CommunicationResult<List<DbPlant>> {
+class DbUsersRepositoryImpl(
+    private val usersDao: UsersDao
+): BaseDbRepository(), IDbUsersRepository {
+    override suspend fun getAllUsers(): CommunicationResult<List<DbUser>> {
         return processDbCall {
-            plantsDao.getAll()
+            usersDao.getAll()
         }
     }
 
-    override suspend fun getPlantById(plantId: Long): CommunicationResult<DbPlant> {
+    override suspend fun getById(userId: Long): CommunicationResult<DbUser> {
         return processDbCall {
-            plantsDao.getById(plantId)
+            usersDao.getById(userId)
         }
     }
 
-    override suspend fun addPlant(plant: DbPlant): CommunicationResult<DbPlant> {
+    override suspend fun addUser(user: DbUser): CommunicationResult<DbUser> {
         val result = processDbCall {
-            plantsDao.insert(plant)
+            usersDao.insert(user)
         }
         return when (result){
             is CommunicationResult.Success -> {
-                CommunicationResult.Success(plant)
+                CommunicationResult.Success(user)
             }
             is CommunicationResult.Error -> {
                 CommunicationResult.Error(error = result.error)
@@ -38,13 +38,13 @@ class DbPlantsRepositoryImpl(
         }
     }
 
-    override suspend fun updatePlant(plant: DbPlant): CommunicationResult<DbPlant> {
+    override suspend fun updateUser(user: DbUser): CommunicationResult<DbUser> {
         val result = processDbCall {
-            plantsDao.insert(plant)
+            usersDao.update(user)
         }
         return when (result){
             is CommunicationResult.Success -> {
-                CommunicationResult.Success(plant)
+                CommunicationResult.Success(user)
             }
             is CommunicationResult.Error -> {
                 CommunicationResult.Error(error = result.error)
@@ -55,9 +55,9 @@ class DbPlantsRepositoryImpl(
         }
     }
 
-    override suspend fun deletePlant(plant: DbPlant): CommunicationResult<Unit> {
+    override suspend fun deleteUser(user: DbUser): CommunicationResult<Unit> {
         return processDbCall {
-            plantsDao.delete(plant)
+            usersDao.delete(user)
         }
     }
 }
