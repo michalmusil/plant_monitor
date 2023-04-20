@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import cz.mendelu.xmusil5.plantmonitor.models.database.helpers.DbMeasurementValue
 import java.util.Calendar
 
-@Entity(tableName = "Measurement")
+@Entity(tableName = "Measurements")
 data class DbMeasurement(
     @PrimaryKey
     @ColumnInfo(name = "id")

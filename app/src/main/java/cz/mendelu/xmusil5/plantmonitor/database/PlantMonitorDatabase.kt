@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import cz.mendelu.xmusil5.plantmonitor.database.daos.PlantsDao
+import cz.mendelu.xmusil5.plantmonitor.database.daos.*
 import cz.mendelu.xmusil5.plantmonitor.database.type_converters.*
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
@@ -13,15 +13,13 @@ import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValue
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PlantNote
-import cz.mendelu.xmusil5.plantmonitor.models.database.entities.DbDevice
-import cz.mendelu.xmusil5.plantmonitor.models.database.entities.DbMeasurement
-import cz.mendelu.xmusil5.plantmonitor.models.database.entities.DbPlant
-import cz.mendelu.xmusil5.plantmonitor.models.database.entities.DbPlantNote
+import cz.mendelu.xmusil5.plantmonitor.models.database.entities.*
 
 @Database(entities = [
     DbPlant::class,
     DbDevice::class,
     DbMeasurement::class,
+    DbUser::class,
     DbPlantNote::class], version = 1, exportSchema = false)
 @TypeConverters(
     CalendarTypeConverter::class,
@@ -33,6 +31,10 @@ import cz.mendelu.xmusil5.plantmonitor.models.database.entities.DbPlantNote
 abstract class PlantMonitorDatabase : RoomDatabase() {
 
     abstract fun plantsDao(): PlantsDao
+    abstract fun devicesDao(): DevicesDao
+    abstract fun usersDao(): UsersDao
+    abstract fun plantNotesDao(): PlantNotesDao
+    abstract fun measurementsDao(): MeasurementsDao
 
     companion object {
 

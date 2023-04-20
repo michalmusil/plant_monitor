@@ -10,7 +10,7 @@ import java.util.Calendar
 @Entity(tableName = "Plants")
 data class DbPlant(
     @PrimaryKey
-    @ColumnInfo(name = "plantId")
+    @ColumnInfo(name = "id")
     val id: Long,
     @ColumnInfo(name = "userId")
     val userId: Long?,
