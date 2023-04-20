@@ -1,9 +1,6 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.add_or_edit_plant_screen
 
-import android.graphics.Bitmap
-import android.net.Uri
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.stopScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -44,10 +40,7 @@ import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CircularIconBut
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomButton
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.CustomTextField
 import cz.mendelu.xmusil5.plantmonitor.ui.components.ui_elements.GalleryLauncherButton
-import cz.mendelu.xmusil5.plantmonitor.ui.tutorials.TutorialDeviceWifiConnect
 import cz.mendelu.xmusil5.plantmonitor.ui.utils.UiConstants
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @Composable
 fun AddOrEditPlantScreen(
@@ -266,6 +259,7 @@ fun AddOrEditPlantScreenContent(
                 measurementValueLimits = measurementValueLimits,
                 viewModel = viewModel
             )
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }

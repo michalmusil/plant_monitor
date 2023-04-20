@@ -33,7 +33,7 @@ enum class MeasurementType(
         color = lightIntensity,
         iconId = R.drawable.ic_sun,
         minLimit = 0.0,
-        maxLimit = 50000.0
+        maxLimit = 60000.0
     ),
     SOIL_MOISTURE(
         typeNumber = 2,

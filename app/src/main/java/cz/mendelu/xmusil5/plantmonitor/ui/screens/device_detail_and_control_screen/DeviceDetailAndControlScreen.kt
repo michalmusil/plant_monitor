@@ -187,7 +187,15 @@ fun DeviceDetailAndControlScreenContent(
             ) {
                 DeviceDetailAndControlIcon(device = device)
             }
-            DeviceDetailAndControlWifiTutorial(showDeviceWifiTutorial)
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ){
+                DeviceDetailAndControlWifiTutorial(showDeviceWifiTutorial)
+                DeviceDetailAndControlLoadingIndicator(viewModel = viewModel)
+            }
         }
 
         Column(
@@ -228,8 +236,6 @@ fun DeviceDetailAndControlScreenContent(
                 navigation = navigation
             )
         }
-
-        DeviceDetailAndControlLoadingIndicator(viewModel = viewModel)
     }
 }
 
