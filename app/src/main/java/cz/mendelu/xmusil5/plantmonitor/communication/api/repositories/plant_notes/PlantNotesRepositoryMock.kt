@@ -1,8 +1,8 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plant_notes
 
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.PlantsRepositoryMock
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationError
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataError
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PostPlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.api.utils.DateTimeFromApi
@@ -50,18 +50,18 @@ class PlantNotesRepositoryMock: IPlantNotesRepository{
         )
     }
 
-    override suspend fun getByPlantId(plantId: Long): CommunicationResult<List<PlantNote>> {
+    override suspend fun getByPlantId(plantId: Long): DataResult<List<PlantNote>> {
         val matchingNotes =  PLANT_NOTES.filter {
             it.plantId == plantId
         }
-        return CommunicationResult.Success(data = matchingNotes)
+        return DataResult.Success(data = matchingNotes)
     }
 
-    override suspend fun addNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<PlantNote> {
+    override suspend fun addNewPlantNote(postPlantNote: PostPlantNote): DataResult<PlantNote> {
         val existingPlant = PlantsRepositoryMock.PLANTS.firstOrNull { it.id == postPlantNote.plantId }
         existingPlant?.let {
-            return CommunicationResult.Error(
-                error = CommunicationError(
+            return DataResult.Error(
+                error = DataError(
                     code = 404,
                     message = "No plant with this id"
                 )
@@ -77,17 +77,17 @@ class PlantNotesRepositoryMock: IPlantNotesRepository{
             )
         )
         PLANT_NOTES.add(newPlantNote)
-        return CommunicationResult.Success(data = newPlantNote)
+        return DataResult.Success(data = newPlantNote)
     }
 
-    override suspend fun deletePlantNote(plantNoteId: Long): CommunicationResult<Unit> {
+    override suspend fun deletePlantNote(plantNoteId: Long): DataResult<Unit> {
         val matching = PLANT_NOTES.firstOrNull { it.id == plantNoteId }
         matching?.let {
             PLANT_NOTES.remove(matching)
-            return CommunicationResult.Success(data = Unit)
+            return DataResult.Success(data = Unit)
         }
-        return CommunicationResult.Error(
-            error = CommunicationError(
+        return DataResult.Error(
+            error = DataError(
                 code = 404,
                 message = "No note with this id"
             )

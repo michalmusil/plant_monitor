@@ -3,7 +3,7 @@ package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices
 import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
@@ -15,7 +15,7 @@ class DevicesRepositoryImpl @Inject constructor(
     private val api: HousePlantMeasurementsApi
 ): BaseApiRepository(userSessionManager), IDevicesRepository {
 
-    override suspend fun getAllDevices(): CommunicationResult<List<Device>> {
+    override suspend fun getAllDevices(): DataResult<List<Device>> {
         return processRequest{
             api.getAllDevices(
                 userId = userSessionManager.getUserId(),
@@ -24,7 +24,7 @@ class DevicesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDeviceById(deviceId: Long): CommunicationResult<Device> {
+    override suspend fun getDeviceById(deviceId: Long): DataResult<Device> {
         return processRequest {
             api.getDeviceById(
                 id = deviceId,
@@ -33,7 +33,7 @@ class DevicesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun registerDevice(deviceRegister: PutDeviceRegister): CommunicationResult<Device> {
+    override suspend fun registerDevice(deviceRegister: PutDeviceRegister): DataResult<Device> {
         return processRequest {
             api.registerDevice(
                 putDeviceRegister = deviceRegister,
@@ -42,7 +42,7 @@ class DevicesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun unregisterDevice(deviceId: Long): CommunicationResult<Unit> {
+    override suspend fun unregisterDevice(deviceId: Long): DataResult<Unit> {
         return processRequest {
             api.unregisterDevice(
                 deviceId = deviceId,
@@ -51,7 +51,7 @@ class DevicesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deviceActivation(putDeviceActivation: PutDeviceActivation): CommunicationResult<Device> {
+    override suspend fun deviceActivation(putDeviceActivation: PutDeviceActivation): DataResult<Device> {
         return processRequest {
             api.deviceActivation(
                 putDeviceActivation = putDeviceActivation,
@@ -60,7 +60,7 @@ class DevicesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun assignDeviceToPlant(devicePlantAssignment: PutDevicePlantAssignment): CommunicationResult<Device> {
+    override suspend fun assignDeviceToPlant(devicePlantAssignment: PutDevicePlantAssignment): DataResult<Device> {
         return processRequest {
             api.devicePlantAssign(
                 putDevicePlantAssignment = devicePlantAssignment,

@@ -12,40 +12,41 @@ import retrofit2.Response
 abstract class BaseApiRepository(
     protected val userSessionManager: IUserSessionManager
 ) {
-    inline fun <T: Any> processRequest(request: () -> Response<T>): CommunicationResult<T> {
+    inline fun <T: Any> processRequest(request: () -> Response<T>): DataResult<T> {
         try {
             val response = request.invoke()
             if (!isAuthorized(response)){
                 logOut()
             }
             if (response.isSuccessful) {
-                response.body()?.let {
-                    return CommunicationResult.Success(it)
-                } ?: kotlin.run {
-                    return CommunicationResult.Error(
-                        CommunicationError(
-                            response.code(),
-                            response.errorBody().toString()
+                val body = response.body()
+                if (body != null){
+                    return DataResult.Success(body)
+                } else {
+                    return DataResult.Error(
+                        error = DataError(
+                            code = response.code(),
+                            message = response.errorBody().toString()
                         )
                     )
                 }
             } else {
-                return CommunicationResult.Error(
-                    CommunicationError(
-                        response.code(),
-                        response.errorBody().toString()
+                return DataResult.Error(
+                    error = DataError(
+                        code = response.code(),
+                        message = response.errorBody().toString()
                     )
                 )
             }
-        }catch (ex: Exception){
-            return CommunicationResult.Exception(ex)
+        } catch (ex: Exception){
+            return DataResult.Exception(exception = ex)
         }
     }
 
     inline fun processImageRequest(
         resultBitmapQuality: ImageQuality,
         request: () -> Response<ResponseBody>
-    ): CommunicationResult<Bitmap>{
+    ): DataResult<Bitmap>{
         try {
             val response = request.invoke()
 
@@ -60,26 +61,26 @@ abstract class BaseApiRepository(
                         quality = resultBitmapQuality
                     )
                     bitmap?.let {
-                        return CommunicationResult.Success(data = bitmap)
+                        return DataResult.Success(data = bitmap)
                     }
-                    return CommunicationResult.Exception(NullPointerException())
+                    return DataResult.Exception(NullPointerException())
                 }
-                return CommunicationResult.Error(
-                    CommunicationError(
+                return DataResult.Error(
+                    DataError(
                         response.code(),
                         response.errorBody().toString()
                     )
                 )
             } else {
-                return CommunicationResult.Error(
-                    CommunicationError(
+                return DataResult.Error(
+                    DataError(
                         response.code(),
                         response.errorBody().toString()
                     )
                 )
             }
         }catch(ex: Exception){
-            return CommunicationResult.Exception(ex)
+            return DataResult.Exception(ex)
         }
     }
 

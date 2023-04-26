@@ -9,7 +9,7 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.IUserAuthRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.notifications.token_manager.INotificationTokenManager
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.datastore.settings.ISettingsDataStore
 import cz.mendelu.xmusil5.plantmonitor.datastore.user_login.IUserLoginDataStore
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
@@ -39,10 +39,10 @@ class LoginViewModel @Inject constructor(
                 userSessionManager.setUser(lastLoggedIn)
                 val check = userAuthRepository.checkCurrentSignedUserValid()
                 when(check){
-                    is CommunicationResult.Success -> {
+                    is DataResult.Success -> {
                         uiState.value = LoginUiState.LoginSuccessfull(user = lastLoggedIn)
                     }
-                    is CommunicationResult.Exception -> {
+                    is DataResult.Exception -> {
                         uiState.value = LoginUiState.Error(errorStringCode = R.string.connectionError)
                     }
                     else -> {
@@ -65,7 +65,7 @@ class LoginViewModel @Inject constructor(
             )
             val result = userAuthRepository.login(userAuth)
             when(result){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     userSessionManager.setUser(user = result.data)
                     if (settingsDataStore.areNotificationsEnabled(user = result.data)){
                         updateNotificationToken()
@@ -74,10 +74,10 @@ class LoginViewModel @Inject constructor(
 
                     uiState.value = LoginUiState.LoginSuccessfull(user = result.data)
                 }
-                is CommunicationResult.Exception -> {
+                is DataResult.Exception -> {
                     uiState.value = LoginUiState.Error(errorStringCode = R.string.connectionError)
                 }
-                is CommunicationResult.Error -> {
+                is DataResult.Error -> {
                     uiState.value = LoginUiState.LoginFailed(messageStringCode = R.string.invalidCredentials)
                 }
             }
@@ -97,7 +97,7 @@ class LoginViewModel @Inject constructor(
                     notificationToken = notificationToken
                 )
             )
-            if (result !is CommunicationResult.Success) {
+            if (result !is DataResult.Success) {
                 Log.w(TAG, "Posting FCM registration token to api failed")
             }
         }

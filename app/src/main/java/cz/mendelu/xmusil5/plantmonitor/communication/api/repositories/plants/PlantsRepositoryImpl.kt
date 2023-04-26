@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PostPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.PutPlant
@@ -17,7 +17,7 @@ class PlantsRepositoryImpl @Inject constructor(
     private val api: HousePlantMeasurementsApi
 ): BaseApiRepository(userSessionManager), IPlantsRepository {
 
-    override suspend fun getAllPlants(): CommunicationResult<List<Plant>> {
+    override suspend fun getAllPlants(): DataResult<List<Plant>> {
         return processRequest{
             api.getAllPlants(
                 userId = userSessionManager.getUserId(),
@@ -26,7 +26,7 @@ class PlantsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPlantById(plantId: Long): CommunicationResult<Plant> {
+    override suspend fun getPlantById(plantId: Long): DataResult<Plant> {
         return processRequest {
             api.getPlantById(
                 id = plantId,
@@ -35,7 +35,7 @@ class PlantsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getPlantImage(plantId: Long, imageQuality: ImageQuality): CommunicationResult<Bitmap> {
+    override suspend fun getPlantImage(plantId: Long, imageQuality: ImageQuality): DataResult<Bitmap> {
         return processImageRequest(resultBitmapQuality = imageQuality){
             api.getPlantImage(
                 plantId = plantId,
@@ -47,7 +47,7 @@ class PlantsRepositoryImpl @Inject constructor(
     override suspend fun uploadPlantImage(
         plantId: Long,
         imagePart: MultipartBody.Part
-    ): CommunicationResult<Plant> {
+    ): DataResult<Plant> {
        return processRequest {
            api.uploadPlantImage(
                plantId = plantId,
@@ -57,7 +57,7 @@ class PlantsRepositoryImpl @Inject constructor(
        }
     }
 
-    override suspend fun postNewPlant(postPlant: PostPlant): CommunicationResult<Plant> {
+    override suspend fun postNewPlant(postPlant: PostPlant): DataResult<Plant> {
         return processRequest {
             api.postNewPlant(
                 postPlant = postPlant,
@@ -66,7 +66,7 @@ class PlantsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updatePlant(putPlant: PutPlant): CommunicationResult<Plant> {
+    override suspend fun updatePlant(putPlant: PutPlant): DataResult<Plant> {
         return processRequest {
             api.updatePlant(
                 putPlant = putPlant,
@@ -75,7 +75,7 @@ class PlantsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deletePlant(plantId: Long): CommunicationResult<Unit> {
+    override suspend fun deletePlant(plantId: Long): DataResult<Unit> {
         return processRequest {
             api.deletePlant(
                 id = plantId,

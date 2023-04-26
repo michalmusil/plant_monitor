@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.IDevicesRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceRegister
 import cz.mendelu.xmusil5.plantmonitor.utils.validation.strings.IStringValidator
@@ -28,7 +28,7 @@ class DevicesViewModel @Inject constructor(
         viewModelScope.launch {
             val result = devicesRepository.getAllDevices()
             when(result){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     if (result.data.isEmpty()){
                         uiState.value = DevicesUiState.NoDevicesYet()
                     }
@@ -39,10 +39,10 @@ class DevicesViewModel @Inject constructor(
                         uiState.value = DevicesUiState.DevicesLoaded(devicesWithAddedPlants)
                     }
                 }
-                is CommunicationResult.Error -> {
+                is DataResult.Error -> {
                     uiState.value = DevicesUiState.Error(R.string.somethingWentWrong)
                 }
-                is CommunicationResult.Exception -> {
+                is DataResult.Exception -> {
                     uiState.value = DevicesUiState.Error(R.string.connectionError)
                 }
             }
@@ -56,7 +56,7 @@ class DevicesViewModel @Inject constructor(
             val deviceToAdd = device
             deviceToAdd.plantId?.let {
                 val plantResult = plantsRepository.getPlantById(it)
-                if (plantResult is CommunicationResult.Success){
+                if (plantResult is DataResult.Success){
                     deviceToAdd.plant = plantResult.data
                 }
             }
@@ -77,13 +77,13 @@ class DevicesViewModel @Inject constructor(
             )
             val result = devicesRepository.registerDevice(deviceRegister = deviceRegistration)
             when(result){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     fetchDevices()
                 }
-                is CommunicationResult.Error -> {
+                is DataResult.Error -> {
                     onError()
                 }
-                is CommunicationResult.Exception -> {
+                is DataResult.Exception -> {
                     uiState.value = DevicesUiState.Error(errorStringCode = R.string.connectionError)
                 }
             }

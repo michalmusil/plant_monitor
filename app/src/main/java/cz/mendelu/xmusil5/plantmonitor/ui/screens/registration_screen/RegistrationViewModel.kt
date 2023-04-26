@@ -9,7 +9,7 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.IUserAuthRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.notifications.token_manager.INotificationTokenManager
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.datastore.settings.ISettingsDataStore
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
@@ -39,13 +39,13 @@ class RegistrationViewModel @Inject constructor(
             )
             val result = userAuthRepository.register(auth)
             when(result){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     login(registeredAuth = auth)
                 }
-                is CommunicationResult.Error -> {
+                is DataResult.Error -> {
                     uiState.value = RegistrationUiState.RegistrationFailed(messageStringCode = R.string.somethingWentWrong)
                 }
-                is CommunicationResult.Exception -> {
+                is DataResult.Exception -> {
                     uiState.value = RegistrationUiState.Error(errorStringCode = R.string.connectionError)
                 }
             }
@@ -60,7 +60,7 @@ class RegistrationViewModel @Inject constructor(
             )
             val result = userAuthRepository.login(userAuth)
             when(result){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     userSessionManager.setUser(user = result.data)
 
                     if (settingsDataStore.areNotificationsEnabled(user = result.data)){
@@ -69,10 +69,10 @@ class RegistrationViewModel @Inject constructor(
 
                     uiState.value = RegistrationUiState.RegistrationAndLoginSuccessfull(user = result.data)
                 }
-                is CommunicationResult.Exception -> {
+                is DataResult.Exception -> {
                     uiState.value = RegistrationUiState.Error(errorStringCode = R.string.connectionError)
                 }
-                is CommunicationResult.Error -> {
+                is DataResult.Error -> {
                     uiState.value = RegistrationUiState.LoginFailed()
                 }
             }
@@ -92,7 +92,7 @@ class RegistrationViewModel @Inject constructor(
                     notificationToken = notificationToken
                 )
             )
-            if (result !is CommunicationResult.Success) {
+            if (result !is DataResult.Success) {
                 Log.w(TAG, "Posting FCM registration token to api failed")
             }
         }

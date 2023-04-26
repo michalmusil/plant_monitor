@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements.IMeasurementsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
 import cz.mendelu.xmusil5.plantmonitor.utils.image.ImageQuality
@@ -31,7 +31,7 @@ class PlantsViewModel @Inject constructor(
             val result = plantsRepository.getAllPlants()
             result.let {
                 when(it){
-                    is CommunicationResult.Success -> {
+                    is DataResult.Success -> {
                         if(it.data.isEmpty()) {
                             uiState.value = PlantsUiState.NoPlantsYet()
                         }
@@ -39,10 +39,10 @@ class PlantsViewModel @Inject constructor(
                             uiState.value = PlantsUiState.PlantsLoaded(plants = it.data)
                         }
                     }
-                    is CommunicationResult.Exception -> {
+                    is DataResult.Exception -> {
                         uiState.value = PlantsUiState.Error(R.string.connectionError)
                     }
-                    is CommunicationResult.Error -> {
+                    is DataResult.Error -> {
                         uiState.value = PlantsUiState.Error(R.string.somethingWentWrong)
                     }
                 }
@@ -55,7 +55,7 @@ class PlantsViewModel @Inject constructor(
             val result = measurementsRepository.getLatestPlantMeasurementValues(
                 plantId = plant.id,
             )
-            if (result is CommunicationResult.Success){
+            if (result is DataResult.Success){
                 onValuesFetched(result.data)
             }
             else {
@@ -79,7 +79,7 @@ class PlantsViewModel @Inject constructor(
                 imageQuality = ImageQuality.SMALL
             )
             when(response){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     onSuccess(response.data)
                 }
                 else -> {

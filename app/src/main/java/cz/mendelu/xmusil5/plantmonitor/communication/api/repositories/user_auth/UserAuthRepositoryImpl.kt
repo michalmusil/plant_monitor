@@ -3,7 +3,7 @@ package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth
 import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.User
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PostAuth
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
@@ -14,19 +14,19 @@ class UserAuthRepositoryImpl @Inject constructor(
     private val api: HousePlantMeasurementsApi
 ): BaseApiRepository(userSessionManager), IUserAuthRepository {
 
-    override suspend fun login(postAuth: PostAuth): CommunicationResult<User> {
+    override suspend fun login(postAuth: PostAuth): DataResult<User> {
         return processRequest{
             api.login(postAuth)
         }
     }
 
-    override suspend fun register(postAuth: PostAuth): CommunicationResult<Unit> {
+    override suspend fun register(postAuth: PostAuth): DataResult<Unit> {
         return processRequest {
             api.register(postAuth)
         }
     }
 
-    override suspend fun updateNotificationToken(putNotificationToken: PutNotificationTokenUpdate): CommunicationResult<Unit> {
+    override suspend fun updateNotificationToken(putNotificationToken: PutNotificationTokenUpdate): DataResult<Unit> {
         return processRequest {
             api.updateNotificationToken(
                 putNotificationToken = putNotificationToken,
@@ -35,7 +35,7 @@ class UserAuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun checkCurrentSignedUserValid(): CommunicationResult<Unit> {
+    override suspend fun checkCurrentSignedUserValid(): DataResult<Unit> {
         return processRequest {
             api.getUserByIdResponse(
                 id = userSessionManager.getUserId(),

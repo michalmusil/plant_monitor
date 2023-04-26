@@ -1,7 +1,6 @@
 package cz.mendelu.xmusil5.plantmonitor.ui.screens.add_or_edit_plant_screen
 
 import android.content.Context
-import android.net.Uri
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -10,7 +9,7 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.ApiConstants.HOUSE_PLANT_MEASUREMENTS_API_IMAGE_UPLOAD_FORM_PART_NAME
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimitInEdit
@@ -66,7 +65,7 @@ class AddOrEditPlantViewModel @Inject constructor(
             val result = plantsRepository.postNewPlant(newPlant)
 
             when(result){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     plantImage.value?.let {
                         async {
                             savePlantImage(
@@ -77,10 +76,10 @@ class AddOrEditPlantViewModel @Inject constructor(
                     }
                     uiState.value = AddOrEditPlantUiState.PlantSaved()
                 }
-                is CommunicationResult.Exception -> {
+                is DataResult.Exception -> {
                     uiState.value = AddOrEditPlantUiState.PlantPostFailed(R.string.couldNotSavePlant)
                 }
-                is CommunicationResult.Error -> {
+                is DataResult.Error -> {
                     uiState.value = AddOrEditPlantUiState.PlantPostFailed(R.string.couldNotSavePlant)
                 }
             }
@@ -118,7 +117,7 @@ class AddOrEditPlantViewModel @Inject constructor(
                 val result = plantsRepository.updatePlant(updatedPlant)
 
                 when (result) {
-                    is CommunicationResult.Success -> {
+                    is DataResult.Success -> {
                         if (plantImage.value != null) {
                             async {
                                 savePlantImage(
@@ -129,11 +128,11 @@ class AddOrEditPlantViewModel @Inject constructor(
                         }
                         uiState.value = AddOrEditPlantUiState.PlantSaved()
                     }
-                    is CommunicationResult.Exception -> {
+                    is DataResult.Exception -> {
                         uiState.value =
                             AddOrEditPlantUiState.PlantPostFailed(R.string.couldNotSavePlant)
                     }
-                    is CommunicationResult.Error -> {
+                    is DataResult.Error -> {
                         uiState.value =
                             AddOrEditPlantUiState.PlantPostFailed(R.string.couldNotSavePlant)
                     }
@@ -146,7 +145,7 @@ class AddOrEditPlantViewModel @Inject constructor(
         existingPlant.value?.let {
             viewModelScope.launch {
                 val result = plantsRepository.deletePlant(plantId = it.id)
-                if (result is CommunicationResult.Success){
+                if (result is DataResult.Success){
                     uiState.value = AddOrEditPlantUiState.PlantDeleted()
                 }
                 else {
@@ -190,7 +189,7 @@ class AddOrEditPlantViewModel @Inject constructor(
             val plantCall = plantsRepository.getPlantById(plantId)
 
             when(plantCall){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     val resultPlant = plantCall.data
                     if (resultPlant.hasTitleImage){
                         fetchPlantImage(resultPlant)
@@ -200,10 +199,10 @@ class AddOrEditPlantViewModel @Inject constructor(
                     mode.value = AddOrEditPlantMode.EditPlant()
                     uiState.value = AddOrEditPlantUiState.PlantToEditLoaded()
                 }
-                is CommunicationResult.Error -> {
+                is DataResult.Error -> {
                     uiState.value = AddOrEditPlantUiState.Error(R.string.somethingWentWrong)
                 }
-                is CommunicationResult.Exception -> {
+                is DataResult.Exception -> {
                     uiState.value = AddOrEditPlantUiState.Error(R.string.connectionError)
                 }
             }
@@ -215,7 +214,7 @@ class AddOrEditPlantViewModel @Inject constructor(
             plantId = plant.id,
             imageQuality = ImageQuality.LARGE
         )
-        if (result is CommunicationResult.Success){
+        if (result is DataResult.Success){
             plantImage.value = BitmapWithUri(
                 uri = null,
                 bitmap = result.data

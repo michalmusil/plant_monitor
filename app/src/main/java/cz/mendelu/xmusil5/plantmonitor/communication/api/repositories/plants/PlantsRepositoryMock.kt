@@ -2,8 +2,8 @@ package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants
 
 import android.graphics.Bitmap
 import cz.mendelu.xmusil5.plantmonitor.user_session.UserSessionManagerMock
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationError
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataError
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementValueLimit
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
@@ -107,28 +107,28 @@ class PlantsRepositoryMock: IPlantsRepository {
     }
 
 
-    override suspend fun getAllPlants(): CommunicationResult<List<Plant>> {
-        return CommunicationResult.Success(data = PLANTS)
+    override suspend fun getAllPlants(): DataResult<List<Plant>> {
+        return DataResult.Success(data = PLANTS)
     }
 
-    override suspend fun getPlantById(plantId: Long): CommunicationResult<Plant> {
+    override suspend fun getPlantById(plantId: Long): DataResult<Plant> {
         val foundPlant = PLANTS.firstOrNull{
             it.id == plantId
         }
         foundPlant?.let {
-            return CommunicationResult.Success(data = it)
+            return DataResult.Success(data = it)
         }
-        return CommunicationResult.Error(
-            error = CommunicationError(
+        return DataResult.Error(
+            error = DataError(
                 code = 404,
                 message = "Plant not found"
             )
         )
     }
 
-    override suspend fun getPlantImage(plantId: Long, imageQuality: ImageQuality): CommunicationResult<Bitmap> {
-        return CommunicationResult.Error(
-            error = CommunicationError(
+    override suspend fun getPlantImage(plantId: Long, imageQuality: ImageQuality): DataResult<Bitmap> {
+        return DataResult.Error(
+            error = DataError(
                 code = 404,
                 message = "Image not found"
             )
@@ -138,22 +138,22 @@ class PlantsRepositoryMock: IPlantsRepository {
     override suspend fun uploadPlantImage(
         plantId: Long,
         imagePart: MultipartBody.Part
-    ): CommunicationResult<Plant> {
+    ): DataResult<Plant> {
         val plant = PLANTS.firstOrNull {
             it.id == plantId
         }
         plant?.let {
-            return CommunicationResult.Success(data = it)
+            return DataResult.Success(data = it)
         }
-        return CommunicationResult.Error(
-            error = CommunicationError(
+        return DataResult.Error(
+            error = DataError(
                 code = 404,
                 message = "Plant not found"
             )
         )
     }
 
-    override suspend fun postNewPlant(postPlant: PostPlant): CommunicationResult<Plant> {
+    override suspend fun postNewPlant(postPlant: PostPlant): DataResult<Plant> {
         val maxId = PLANTS.maxOf { it.id }
         val newPlant = Plant(
             id = maxId + 1,
@@ -168,10 +168,10 @@ class PlantsRepositoryMock: IPlantsRepository {
             ),
             valueLimits = postPlant.measurementValueLimits ?: listOf()
         )
-        return CommunicationResult.Success(data = newPlant)
+        return DataResult.Success(data = newPlant)
     }
 
-    override suspend fun updatePlant(putPlant: PutPlant): CommunicationResult<Plant> {
+    override suspend fun updatePlant(putPlant: PutPlant): DataResult<Plant> {
         val updatedPlant = Plant(
             id = putPlant.id,
             userId = UserSessionManagerMock.MOCKED_USER_ID,
@@ -185,10 +185,10 @@ class PlantsRepositoryMock: IPlantsRepository {
             ),
             valueLimits = putPlant.measurementValueLimits ?: listOf()
         )
-        return CommunicationResult.Success(data = updatedPlant)
+        return DataResult.Success(data = updatedPlant)
     }
 
-    override suspend fun deletePlant(plantId: Long): CommunicationResult<Unit> {
-        return CommunicationResult.Success(data = Unit)
+    override suspend fun deletePlant(plantId: Long): DataResult<Unit> {
+        return DataResult.Success(data = Unit)
     }
 }

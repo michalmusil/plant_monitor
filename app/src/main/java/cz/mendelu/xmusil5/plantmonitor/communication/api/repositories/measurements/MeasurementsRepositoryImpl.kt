@@ -3,7 +3,7 @@ package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measureme
 import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.utils.DateUtils
@@ -15,7 +15,7 @@ class MeasurementsRepositoryImpl @Inject constructor(
     private val api: HousePlantMeasurementsApi
 ): BaseApiRepository(userSessionManager), IMeasurementsRepository {
 
-    override suspend fun getMeasurementsOfPlant(plantId: Long, from: Calendar?, to: Calendar?): CommunicationResult<List<Measurement>> {
+    override suspend fun getMeasurementsOfPlant(plantId: Long, from: Calendar?, to: Calendar?): DataResult<List<Measurement>> {
         val stringFrom = when(from){
             is Calendar -> DateUtils.apiDateStringFromCalendar(from)
             else -> {null}
@@ -35,7 +35,7 @@ class MeasurementsRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getLatestPlantMeasurementValues(plantId: Long): CommunicationResult<List<LatestMeasurementValueOfPlant>> {
+    override suspend fun getLatestPlantMeasurementValues(plantId: Long): DataResult<List<LatestMeasurementValueOfPlant>> {
         return processRequest {
             api.getLatestPlantMeasurementValues(
                 plantId = plantId,

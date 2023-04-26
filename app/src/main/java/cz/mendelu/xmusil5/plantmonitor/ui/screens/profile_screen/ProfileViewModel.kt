@@ -8,7 +8,7 @@ import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.user_auth.IUserAuthRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.notifications.token_manager.INotificationTokenManager
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.datastore.settings.ISettingsDataStore
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.User
 import cz.mendelu.xmusil5.plantmonitor.models.api.user.PutNotificationTokenUpdate
@@ -71,7 +71,7 @@ class ProfileViewModel @Inject constructor(
                         )
                     )
                     when(result){
-                        is CommunicationResult.Success -> {
+                        is DataResult.Success -> {
                             settingsDataStore.setNotificationsEnabled(true, user)
                             notificationsEnabled.value = true
                         }
@@ -91,14 +91,14 @@ class ProfileViewModel @Inject constructor(
                     )
                 )
                 when(result){
-                    is CommunicationResult.Success -> {
+                    is DataResult.Success -> {
                         settingsDataStore.setNotificationsEnabled(false, user)
                         notificationsEnabled.value = false
                     }
-                    is CommunicationResult.Error -> {
+                    is DataResult.Error -> {
                         uiState.value = ProfileUiState.Error(R.string.somethingWentWrong)
                     }
-                    is CommunicationResult.Exception -> {
+                    is DataResult.Exception -> {
                         uiState.value = ProfileUiState.Error(R.string.connectionError)
                     }
                 }

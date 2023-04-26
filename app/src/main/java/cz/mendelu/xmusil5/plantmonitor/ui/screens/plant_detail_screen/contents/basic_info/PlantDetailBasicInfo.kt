@@ -93,26 +93,28 @@ fun PlantDetailBasicInfo(
                 }
             }
 
-            it.associatedDevice?.let {
-                DeviceCard(
-                    device = it,
-                    onClick = {
-                        navigation.toDeviceDetailAndControl(it.id)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 15.dp)
-                        .padding(horizontal = 5.dp)
-                        .customShadow(
-                            color = shadowColor,
-                            borderRadius = cornerRadius,
-                            spread = 0.dp,
-                            blurRadius = 5.dp,
-                            offsetY = 2.dp
-                        )
-                        .clip(RoundedCornerShape(cornerRadius))
-                        .background(MaterialTheme.colorScheme.surface)
-                )
+            it.associatedDevices?.let { devices ->
+                devices.forEach {
+                    DeviceCard(
+                        device = it,
+                        onClick = {
+                            navigation.toDeviceDetailAndControl(it.id)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 15.dp)
+                            .padding(horizontal = 5.dp)
+                            .customShadow(
+                                color = shadowColor,
+                                borderRadius = cornerRadius,
+                                spread = 0.dp,
+                                blurRadius = 5.dp,
+                                offsetY = 2.dp
+                            )
+                            .clip(RoundedCornerShape(cornerRadius))
+                            .background(MaterialTheme.colorScheme.surface)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))

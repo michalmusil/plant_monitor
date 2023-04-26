@@ -24,5 +24,5 @@ data class Plant(
 
     @Transient var mostRecentValues: List<LatestMeasurementValueOfPlant>? = null
 
-    @Transient var associatedDevice: Device? = null
+    @Transient var associatedDevices: List<Device>? = null
 }

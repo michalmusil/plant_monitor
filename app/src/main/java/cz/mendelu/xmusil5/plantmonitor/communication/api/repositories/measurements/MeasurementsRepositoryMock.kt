@@ -1,6 +1,6 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements
 
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.MeasurementType
@@ -84,14 +84,14 @@ class MeasurementsRepositoryMock: IMeasurementsRepository {
         )
     }
 
-    override suspend fun getMeasurementsOfPlant(plantId: Long, from: Calendar?, to: Calendar?): CommunicationResult<List<Measurement>> {
+    override suspend fun getMeasurementsOfPlant(plantId: Long, from: Calendar?, to: Calendar?): DataResult<List<Measurement>> {
         val matchingMeasurements = MEASUREMENTS.filter {
             it.plantId == plantId
         }
-        return CommunicationResult.Success(data = matchingMeasurements)
+        return DataResult.Success(data = matchingMeasurements)
     }
 
-    override suspend fun getLatestPlantMeasurementValues(plantId: Long): CommunicationResult<List<LatestMeasurementValueOfPlant>> {
+    override suspend fun getLatestPlantMeasurementValues(plantId: Long): DataResult<List<LatestMeasurementValueOfPlant>> {
         val matchingMeasurement = MEASUREMENTS.filter {
             it.plantId == plantId
         }.maxByOrNull {
@@ -109,7 +109,7 @@ class MeasurementsRepositoryMock: IMeasurementsRepository {
                 latestMeasurementValues.add(latestValue)
             }
         }
-        return CommunicationResult.Success(latestMeasurementValues)
+        return DataResult.Success(latestMeasurementValues)
     }
 
 

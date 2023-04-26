@@ -10,7 +10,7 @@ import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.ID
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.measurements.IMeasurementsRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plant_notes.IPlantNotesRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.Measurement
 import cz.mendelu.xmusil5.plantmonitor.models.api.measurement.LatestMeasurementValueOfPlant
@@ -90,24 +90,26 @@ class PlantDetailViewModel @Inject constructor(
             val plantCall = plantsRepository.getPlantById(plantId)
 
             var resultPlant: Plant? = null
-            var resultDevice: Device? = null
+            var resultDevices: List<Device>? = null
 
             when(plantCall){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     resultPlant = plantCall.data
                 }
-                is CommunicationResult.Error -> {
+                is DataResult.Error -> {
                     uiState.value = PlantDetailUiState.Error(R.string.somethingWentWrong)
                 }
-                is CommunicationResult.Exception -> {
+                is DataResult.Exception -> {
                     uiState.value = PlantDetailUiState.Error(R.string.connectionError)
                 }
             }
 
             if (resultPlant != null){
-                resultDevice = fetchPlantDevice(resultPlant.id)
-                resultDevice?.plant = resultPlant
-                resultPlant.associatedDevice = resultDevice
+                resultDevices = fetchPlantDevices(resultPlant.id)
+                resultDevices?.forEach {
+                    it.plant = resultPlant
+                }
+                resultPlant.associatedDevices = resultDevices
 
                 plant.value = resultPlant
                 fetchPlantNotes(resultPlant.id)
@@ -131,7 +133,7 @@ class PlantDetailViewModel @Inject constructor(
                 plantId = plantId,
                 imageQuality = ImageQuality.LARGE
             )
-            if (result is CommunicationResult.Success){
+            if (result is DataResult.Success){
                 plant.value?.let {
                     plant.value = it.apply {
                         titleImageBitmap = result.data
@@ -142,10 +144,10 @@ class PlantDetailViewModel @Inject constructor(
         }
     }
 
-    private suspend fun fetchPlantDevice(plantId: Long): Device?{
+    private suspend fun fetchPlantDevices(plantId: Long): List<Device>?{
         val deviceCall = devicesRepository.getAllDevices()
-        if (deviceCall is CommunicationResult.Success){
-            return deviceCall.data.firstOrNull() {
+        if (deviceCall is DataResult.Success){
+            return deviceCall.data.filter() {
                 it.plantId == plantId
             }
         }
@@ -160,17 +162,17 @@ class PlantDetailViewModel @Inject constructor(
                 to = to
             )
             when(result){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     measurements.value = result.data
                     fetchMostRecentValuesOfPlant(plantId)
                     chartValueSets.value = getAllChartValueSets(result.data)
 
                     uiState.value = PlantDetailUiState.MeasurementsLoaded()
                 }
-                is CommunicationResult.Error -> {
+                is DataResult.Error -> {
                     uiState.value = PlantDetailUiState.Error(R.string.somethingWentWrong)
                 }
-                is CommunicationResult.Exception -> {
+                is DataResult.Exception -> {
                     uiState.value = PlantDetailUiState.Error(R.string.connectionError)
                 }
             }
@@ -182,7 +184,7 @@ class PlantDetailViewModel @Inject constructor(
             val result = measurementsRepository.getLatestPlantMeasurementValues(
                 plantId = plantId
             )
-            if (result is CommunicationResult.Success){
+            if (result is DataResult.Success){
                 mostRecentMeasurementValues.value = result.data
             }
         }
@@ -192,7 +194,7 @@ class PlantDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val result = plantNotesRepository.getByPlantId(plantId = plantId)
 
-            if (result is CommunicationResult.Success){
+            if (result is DataResult.Success){
                 plantNotes.value = result.data
             }
         }
@@ -207,15 +209,15 @@ class PlantDetailViewModel @Inject constructor(
             viewModelScope.launch {
                 val result = plantNotesRepository.addNewPlantNote(newNote)
                 when(result){
-                    is CommunicationResult.Success -> {
+                    is DataResult.Success -> {
                         plant.value?.let {
                             fetchPlantNotes(it.id)
                         }
                     }
-                    is CommunicationResult.Error -> {
+                    is DataResult.Error -> {
                         uiState.value = PlantDetailUiState.Error(R.string.somethingWentWrong)
                     }
-                    is CommunicationResult.Exception -> {
+                    is DataResult.Exception -> {
                         uiState.value = PlantDetailUiState.Error(R.string.connectionError)
                     }
                 }
@@ -228,16 +230,16 @@ class PlantDetailViewModel @Inject constructor(
             viewModelScope.launch {
                 val result = plantNotesRepository.deletePlantNote(it.id)
                 when(result){
-                    is CommunicationResult.Success -> {
+                    is DataResult.Success -> {
                         plantNoteToDelete.value = null
                         plant.value?.let {
                             fetchPlantNotes(it.id)
                         }
                     }
-                    is CommunicationResult.Error -> {
+                    is DataResult.Error -> {
                         uiState.value = PlantDetailUiState.Error(R.string.somethingWentWrong)
                     }
-                    is CommunicationResult.Exception -> {
+                    is DataResult.Exception -> {
                         uiState.value = PlantDetailUiState.Error(R.string.connectionError)
                     }
                 }

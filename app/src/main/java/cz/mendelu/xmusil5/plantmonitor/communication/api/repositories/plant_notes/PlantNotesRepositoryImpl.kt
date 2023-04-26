@@ -3,7 +3,7 @@ package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plant_not
 import cz.mendelu.xmusil5.plantmonitor.user_session.IUserSessionManager
 import cz.mendelu.xmusil5.plantmonitor.communication.api.HousePlantMeasurementsApi
 import cz.mendelu.xmusil5.plantmonitor.communication.utils.BaseApiRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PlantNote
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant_note.PostPlantNote
 import javax.inject.Inject
@@ -13,7 +13,7 @@ class PlantNotesRepositoryImpl @Inject constructor(
     private val api: HousePlantMeasurementsApi
 ): BaseApiRepository(userSessionManager), IPlantNotesRepository {
 
-    override suspend fun getByPlantId(plantId: Long): CommunicationResult<List<PlantNote>> {
+    override suspend fun getByPlantId(plantId: Long): DataResult<List<PlantNote>> {
         return processRequest {
             api.getNotesOfPlant(
                 plantId = plantId,
@@ -22,7 +22,7 @@ class PlantNotesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun addNewPlantNote(postPlantNote: PostPlantNote): CommunicationResult<PlantNote> {
+    override suspend fun addNewPlantNote(postPlantNote: PostPlantNote): DataResult<PlantNote> {
         return processRequest {
             api.postNewPlantNote(
                 postPlantNote = postPlantNote,
@@ -31,7 +31,7 @@ class PlantNotesRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deletePlantNote(plantNoteId: Long): CommunicationResult<Unit> {
+    override suspend fun deletePlantNote(plantNoteId: Long): DataResult<Unit> {
         return processRequest {
             api.deletePlantNote(
                 plantNoteId = plantNoteId,

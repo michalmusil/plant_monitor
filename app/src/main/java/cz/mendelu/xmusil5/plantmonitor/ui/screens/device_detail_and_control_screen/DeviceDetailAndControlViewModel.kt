@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import cz.mendelu.xmusil5.plantmonitor.R
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices.IDevicesRepository
 import cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.plants.IPlantsRepository
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
 import cz.mendelu.xmusil5.plantmonitor.models.api.plant.Plant
@@ -31,7 +31,7 @@ class DeviceDetailAndControlViewModel @Inject constructor(
             isLoading.value = true
             val result = devicesRepository.getDeviceById(deviceId)
             when(result){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     val device = result.data
                     device.plantId?.let {
                         device.plant = fetchDevicePlant(it)
@@ -39,11 +39,11 @@ class DeviceDetailAndControlViewModel @Inject constructor(
                     uiState.value = DeviceDetailAndControlUiState.DeviceLoaded(device)
                     isLoading.value = false
                 }
-                is CommunicationResult.Error -> {
+                is DataResult.Error -> {
                     uiState.value = DeviceDetailAndControlUiState.Error(R.string.somethingWentWrong)
                     isLoading.value = false
                 }
-                is CommunicationResult.Exception -> {
+                is DataResult.Exception -> {
                     uiState.value = DeviceDetailAndControlUiState.Error(R.string.connectionError)
                     isLoading.value = false
                 }
@@ -53,7 +53,7 @@ class DeviceDetailAndControlViewModel @Inject constructor(
 
     private suspend fun fetchDevicePlant(plantId: Long): Plant?{
         val result = plantsRepository.getPlantById(plantId)
-        if (result is CommunicationResult.Success){
+        if (result is DataResult.Success){
             return result.data
         }
         return null
@@ -63,7 +63,7 @@ class DeviceDetailAndControlViewModel @Inject constructor(
         viewModelScope.launch {
             isLoading.value = true
             val result = plantsRepository.getAllPlants()
-            if (result is CommunicationResult.Success){
+            if (result is DataResult.Success){
                 onSuccess(result.data)
             }
             isLoading.value = false
@@ -85,7 +85,7 @@ class DeviceDetailAndControlViewModel @Inject constructor(
                 imageQuality = ImageQuality.SMALL
             )
             when(response){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     onSuccess(response.data)
                 }
                 else -> {
@@ -104,7 +104,7 @@ class DeviceDetailAndControlViewModel @Inject constructor(
             )
             val result = devicesRepository.deviceActivation(deviceActivationPost)
             when (result) {
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     val device = result.data
                     device.plantId?.let {
                         device.plant = fetchDevicePlant(it)
@@ -129,7 +129,7 @@ class DeviceDetailAndControlViewModel @Inject constructor(
             )
             val result = devicesRepository.assignDeviceToPlant(deviceAssignmentPost)
             when (result) {
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     val device = result.data
                     device.plantId?.let {
                         device.plant = fetchDevicePlant(it)
@@ -149,13 +149,13 @@ class DeviceDetailAndControlViewModel @Inject constructor(
         viewModelScope.launch {
             val result = devicesRepository.unregisterDevice(deviceId = deviceId)
             when(result){
-                is CommunicationResult.Success -> {
+                is DataResult.Success -> {
                     uiState.value = DeviceDetailAndControlUiState.DeviceUnregistered()
                 }
-                is CommunicationResult.Error -> {
+                is DataResult.Error -> {
                     uiState.value = DeviceDetailAndControlUiState.DeviceUpdateFailed(errorMessageCode = R.string.somethingWentWrong)
                 }
-                is CommunicationResult.Exception -> {
+                is DataResult.Exception -> {
                     uiState.value = DeviceDetailAndControlUiState.Error(errorStringCode = R.string.connectionError)
                 }
             }

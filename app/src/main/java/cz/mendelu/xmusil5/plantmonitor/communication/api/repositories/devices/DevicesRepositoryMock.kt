@@ -1,8 +1,8 @@
 package cz.mendelu.xmusil5.plantmonitor.communication.api.repositories.devices
 
 import cz.mendelu.xmusil5.plantmonitor.user_session.UserSessionManagerMock
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationError
-import cz.mendelu.xmusil5.plantmonitor.communication.utils.CommunicationResult
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataError
+import cz.mendelu.xmusil5.plantmonitor.communication.utils.DataResult
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.Device
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDeviceActivation
 import cz.mendelu.xmusil5.plantmonitor.models.api.device.PutDevicePlantAssignment
@@ -40,24 +40,24 @@ class DevicesRepositoryMock: IDevicesRepository {
         )
     }
 
-    override suspend fun getAllDevices(): CommunicationResult<List<Device>> {
-        return CommunicationResult.Success(data = DEVICES)
+    override suspend fun getAllDevices(): DataResult<List<Device>> {
+        return DataResult.Success(data = DEVICES)
     }
 
-    override suspend fun getDeviceById(deviceId: Long): CommunicationResult<Device> {
+    override suspend fun getDeviceById(deviceId: Long): DataResult<Device> {
         val foundDevice = DEVICES.firstOrNull{ it.id == deviceId }
         foundDevice?.let {
-            return CommunicationResult.Success(data = it)
+            return DataResult.Success(data = it)
         }
-        return CommunicationResult.Error(
-            error = CommunicationError(
+        return DataResult.Error(
+            error = DataError(
                 code = 404,
                 message = "Device not found"
             )
         )
     }
 
-    override suspend fun registerDevice(deviceRegister: PutDeviceRegister): CommunicationResult<Device> {
+    override suspend fun registerDevice(deviceRegister: PutDeviceRegister): DataResult<Device> {
         val maxId = DEVICES.maxOf { it.id }
         val newDevice = Device(
             id = maxId,
@@ -65,17 +65,17 @@ class DevicesRepositoryMock: IDevicesRepository {
             userId = UserSessionManagerMock.MOCKED_USER_ID,
             plantId = null
         )
-        return CommunicationResult.Success(data = newDevice)
+        return DataResult.Success(data = newDevice)
     }
 
-    override suspend fun unregisterDevice(deviceId: Long): CommunicationResult<Unit> {
+    override suspend fun unregisterDevice(deviceId: Long): DataResult<Unit> {
         DEVICES.removeIf {
             it.id == deviceId
         }
-        return CommunicationResult.Success(Unit)
+        return DataResult.Success(Unit)
     }
 
-    override suspend fun deviceActivation(putDeviceActivation: PutDeviceActivation): CommunicationResult<Device> {
+    override suspend fun deviceActivation(putDeviceActivation: PutDeviceActivation): DataResult<Device> {
         val foundDevice = DEVICES.firstOrNull{ it.id == putDeviceActivation.deviceId }
         foundDevice?.let {
             val activatedDevice = Device(
@@ -84,17 +84,17 @@ class DevicesRepositoryMock: IDevicesRepository {
                 userId = it.userId,
                 plantId = it.plantId
             )
-            return CommunicationResult.Success(data = activatedDevice)
+            return DataResult.Success(data = activatedDevice)
         }
-        return CommunicationResult.Error(
-            error = CommunicationError(
+        return DataResult.Error(
+            error = DataError(
                 code = 404,
                 message = "Device not found"
             )
         )
     }
 
-    override suspend fun assignDeviceToPlant(devicePlantAssignment: PutDevicePlantAssignment): CommunicationResult<Device> {
+    override suspend fun assignDeviceToPlant(devicePlantAssignment: PutDevicePlantAssignment): DataResult<Device> {
         val foundDevice = DEVICES.firstOrNull{ it.id == devicePlantAssignment.deviceId }
         foundDevice?.let {
             val assignedDevice = Device(
@@ -103,10 +103,10 @@ class DevicesRepositoryMock: IDevicesRepository {
                 userId = it.userId,
                 plantId = devicePlantAssignment.plantId
             )
-            return CommunicationResult.Success(data = assignedDevice)
+            return DataResult.Success(data = assignedDevice)
         }
-        return CommunicationResult.Error(
-            error = CommunicationError(
+        return DataResult.Error(
+            error = DataError(
                 code = 404,
                 message = "Device not found"
             )
