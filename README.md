@@ -18,6 +18,7 @@ To make the Android mobile app work, you need to:
 1. Change the REST API base URL to your instance in: ApiConstants.kt and if you are using plain http on your REST API, then also in res/xml/testing_network_security_config.xml
 2. Create a Firebase Project for the application (if you have already done so while setting up the REST API, use that one). Then set up the mobile app with the Firebase project.
 3. Run the app on your Android mobile device or Android studio emulator.
+4. It is possible, that the project will implicitly go into build flavour with mocked data. In that case, switch build flavour to prodDebug in Build > Select Build Variant
 
 Helpers:
 * Setting up an Android application with Firebase project: https://firebase.google.com/docs/android/setup
